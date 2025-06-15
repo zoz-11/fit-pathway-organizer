@@ -207,7 +207,7 @@ export const AthleteDashboard = () => {
             </Button>
           </div>
         </CardContent>
-      </div>
+      </Card>
     </div>
   );
 };
