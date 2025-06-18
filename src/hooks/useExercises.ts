@@ -1,6 +1,9 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
+
+type ExerciseCategory = Database['public']['Enums']['exercise_category'];
 
 export const useExercises = () => {
   return useQuery({
@@ -24,21 +27,19 @@ export const useExercises = () => {
   });
 };
 
-export const useExercisesByCategory = (category?: string) => {
+export const useExercisesByCategory = (category?: ExerciseCategory) => {
   return useQuery({
     queryKey: ['exercises', 'category', category],
     queryFn: async () => {
+      if (!category) return [];
+      
       console.log('Fetching exercises by category:', category);
-      let query = supabase
+      const { data, error } = await supabase
         .from('exercises')
         .select('*')
-        .eq('is_public', true);
-
-      if (category) {
-        query = query.eq('category', category);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
+        .eq('is_public', true)
+        .eq('category', category)
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching exercises by category:', error);

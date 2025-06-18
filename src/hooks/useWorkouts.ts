@@ -27,7 +27,7 @@ export const useUserWorkouts = (userId?: string) => {
       }
 
       console.log('Fetched workouts:', data);
-      return data;
+      return data || [];
     },
     enabled: !!userId,
   });
@@ -61,7 +61,7 @@ export const useTodayWorkouts = (userId?: string) => {
       }
 
       console.log('Fetched today workouts:', data);
-      return data;
+      return data || [];
     },
     enabled: !!userId,
   });

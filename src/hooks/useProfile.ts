@@ -13,7 +13,7 @@ export const useProfile = (userId?: string) => {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching profile:', error);
@@ -47,7 +47,7 @@ export const useTrainerAthletes = (trainerId?: string) => {
       }
 
       console.log('Fetched trainer athletes:', data);
-      return data;
+      return data || [];
     },
     enabled: !!trainerId,
   });
