@@ -9,18 +9,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
 
 interface HeaderProps {
   children?: React.ReactNode;
 }
 
 export const Header = ({ children }: HeaderProps) => {
-  // Mock user data - will be replaced with real auth
-  const user = {
-    name: "John Trainer",
-    email: "john@fitapp.com",
-    role: "trainer", // or "athlete"
-    avatar: null
+  const { user, profile, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   return (
@@ -46,14 +45,14 @@ export const Header = ({ children }: HeaderProps) => {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center space-x-2 p-2">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.avatar || undefined} />
+                  <AvatarImage src={undefined} />
                   <AvatarFallback className="bg-gradient-to-r from-blue-500 to-green-500 text-white">
-                    {user.name.split(' ').map(n => n[0]).join('')}
+                    {profile?.full_name ? profile.full_name.split(' ').map((n: string) => n[0]).join('') : user?.email?.[0]?.toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="text-left hidden md:block">
-                  <p className="text-sm font-medium">{user.name}</p>
-                  <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                  <p className="text-sm font-medium">{profile?.full_name || user?.email}</p>
+                  <p className="text-xs text-gray-500 capitalize">{profile?.role || 'user'}</p>
                 </div>
               </Button>
             </DropdownMenuTrigger>
@@ -63,7 +62,7 @@ export const Header = ({ children }: HeaderProps) => {
                 Profile Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600">
+              <DropdownMenuItem className="text-red-600" onClick={handleSignOut}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
               </DropdownMenuItem>

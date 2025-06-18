@@ -14,6 +14,7 @@ import {
   Apple
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SidebarProps {
   onClose?: () => void;
@@ -49,15 +50,14 @@ const athleteNavItems: NavItem[] = [
 ];
 
 export const Sidebar = ({ onClose }: SidebarProps) => {
-  // Mock user role - will be replaced with real auth
-  const userRole = "trainer"; // or "athlete"
-  const currentPath = "/"; // Will be replaced with real router
+  const { profile } = useAuth();
+  const userRole = profile?.role || "athlete";
+  const currentPath = "/";
   
   const navItems = userRole === "trainer" ? trainerNavItems : athleteNavItems;
 
   return (
     <div className="h-full bg-white border-r border-gray-200 flex flex-col">
-      {/* Close button for mobile */}
       <div className="flex items-center justify-between p-4 lg:hidden">
         <span className="text-lg font-semibold">Menu</span>
         <Button variant="ghost" size="icon" onClick={onClose}>
@@ -65,7 +65,6 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
         </Button>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 px-4 py-6 space-y-2">
         {navItems.map((item) => {
           const isActive = currentPath === item.href;
@@ -90,7 +89,6 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
         })}
       </nav>
 
-      {/* Footer */}
       <div className="p-4 border-t border-gray-200">
         <div className="text-center">
           <p className="text-xs text-gray-500">FitPathway Organizer</p>
