@@ -14,28 +14,50 @@ import {
   Camera,
   Apple
 } from "lucide-react";
+import { useProfile } from "@/hooks/useProfile";
+import { useTodayWorkouts, useUserWorkouts } from "@/hooks/useWorkouts";
 
 export const AthleteDashboard = () => {
-  // Mock data - will be replaced with real data from Supabase
-  const athleteData = {
-    name: "Sarah Wilson",
-    subscriptionStatus: "Active",
-    subscriptionExpiry: "2024-08-15",
-    weeklyProgress: 75,
-    completedWorkouts: 18,
-    totalWorkouts: 24,
-    streakDays: 7,
-    nextWorkout: "Upper Body Strength",
-    nextWorkoutTime: "Tomorrow, 9:00 AM"
-  };
+  // For demo purposes, using a mock user ID - will be replaced with real auth in Phase 2
+  const mockUserId = "demo-athlete-id";
+  
+  const { data: profile, isLoading: profileLoading } = useProfile(mockUserId);
+  const { data: todayWorkouts, isLoading: todayLoading } = useTodayWorkouts(mockUserId);
+  const { data: allWorkouts, isLoading: workoutsLoading } = useUserWorkouts(mockUserId);
 
-  const todayWorkouts = [
-    { name: "Warm-up Cardio", duration: "10 min", completed: true },
-    { name: "Strength Training", duration: "45 min", completed: true },
-    { name: "Core Workout", duration: "15 min", completed: false },
-    { name: "Cool Down Stretch", duration: "10 min", completed: false }
-  ];
+  // Calculate statistics from real data
+  const totalWorkoutsThisWeek = allWorkouts?.filter(workout => {
+    const workoutDate = new Date(workout.scheduled_date);
+    const now = new Date();
+    const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+    return workoutDate >= weekStart;
+  }).length || 0;
 
+  const completedWorkoutsThisWeek = allWorkouts?.filter(workout => {
+    const workoutDate = new Date(workout.scheduled_date);
+    const now = new Date();
+    const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
+    return workoutDate >= weekStart && workout.status === 'completed';
+  }).length || 0;
+
+  const weeklyProgress = totalWorkoutsThisWeek > 0 ? Math.round((completedWorkoutsThisWeek / totalWorkoutsThisWeek) * 100) : 0;
+
+  // Calculate streak (mock for now)
+  const streakDays = 7; // Will be calculated from actual completion data
+
+  // Get next workout
+  const nextWorkout = allWorkouts?.find(workout => 
+    new Date(workout.scheduled_date) > new Date() && workout.status === 'scheduled'
+  );
+
+  // Transform today's workouts for display
+  const todayWorkoutsList = todayWorkouts?.map(workout => ({
+    name: workout.title,
+    duration: `${workout.workout_exercises?.length || 0} exercises`,
+    completed: workout.status === 'completed'
+  })) || [];
+
+  // Mock weekly schedule data (will be calculated from real data)
   const weeklySchedule = [
     { day: "Mon", workouts: 2, completed: 2 },
     { day: "Tue", workouts: 1, completed: 1 },
@@ -46,18 +68,33 @@ export const AthleteDashboard = () => {
     { day: "Sun", workouts: 0, completed: 0 }
   ];
 
+  if (profileLoading || todayLoading || workoutsLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-gradient-to-r from-green-600 to-blue-600 rounded-lg p-6 text-white">
+          <h1 className="text-3xl font-bold mb-2">Loading your dashboard...</h1>
+          <p className="text-green-100">Please wait while we fetch your data.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const athleteName = profile?.full_name || "Athlete";
+  const subscriptionStatus = profile?.subscription_status || "trial";
+  const subscriptionExpiry = profile?.subscription_expiry || "2024-08-15";
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-green-600 to-blue-600 rounded-lg p-6 text-white">
-        <h1 className="text-3xl font-bold mb-2">Welcome back, {athleteData.name}!</h1>
+        <h1 className="text-3xl font-bold mb-2">Welcome back, {athleteName}!</h1>
         <p className="text-green-100">Ready to crush your fitness goals today?</p>
         <div className="mt-4 flex items-center space-x-4">
-          <Badge className="bg-white/20 text-white border-white/30">
-            {athleteData.subscriptionStatus}
+          <Badge className="bg-white/20 text-white border-white/30 capitalize">
+            {subscriptionStatus}
           </Badge>
           <span className="text-sm text-green-100">
-            Expires: {new Date(athleteData.subscriptionExpiry).toLocaleDateString()}
+            Expires: {new Date(subscriptionExpiry).toLocaleDateString()}
           </span>
         </div>
       </div>
@@ -72,10 +109,10 @@ export const AthleteDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600 mb-2">{athleteData.weeklyProgress}%</div>
-            <Progress value={athleteData.weeklyProgress} className="mb-2" />
+            <div className="text-2xl font-bold text-green-600 mb-2">{weeklyProgress}%</div>
+            <Progress value={weeklyProgress} className="mb-2" />
             <div className="text-sm text-gray-500">
-              {athleteData.completedWorkouts}/{athleteData.totalWorkouts} workouts completed
+              {completedWorkoutsThisWeek}/{totalWorkoutsThisWeek} workouts completed
             </div>
           </CardContent>
         </Card>
@@ -88,7 +125,7 @@ export const AthleteDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600 mb-2">{athleteData.streakDays} days</div>
+            <div className="text-2xl font-bold text-orange-600 mb-2">{streakDays} days</div>
             <div className="text-sm text-gray-500">Keep it up! 🔥</div>
           </CardContent>
         </Card>
@@ -101,8 +138,12 @@ export const AthleteDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-lg font-bold text-blue-600 mb-1">{athleteData.nextWorkout}</div>
-            <div className="text-sm text-gray-500">{athleteData.nextWorkoutTime}</div>
+            <div className="text-lg font-bold text-blue-600 mb-1">
+              {nextWorkout?.title || "No upcoming workouts"}
+            </div>
+            <div className="text-sm text-gray-500">
+              {nextWorkout ? new Date(nextWorkout.scheduled_date).toLocaleDateString() : "Schedule a workout"}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -117,38 +158,46 @@ export const AthleteDashboard = () => {
                 <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
                 Today's Workouts
               </span>
-              <Badge variant="outline">2/4 Complete</Badge>
+              <Badge variant="outline">
+                {todayWorkoutsList.filter(w => w.completed).length}/{todayWorkoutsList.length} Complete
+              </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {todayWorkouts.map((workout, index) => (
-              <div key={index} className={`flex items-center justify-between p-3 rounded-lg border ${
-                workout.completed 
-                  ? 'bg-green-50 border-green-200' 
-                  : 'bg-gray-50 border-gray-200'
-              }`}>
-                <div className="flex items-center space-x-3">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                    workout.completed 
-                      ? 'bg-green-500 text-white' 
-                      : 'border-2 border-gray-300'
-                  }`}>
-                    {workout.completed && <CheckCircle className="w-4 h-4" />}
-                  </div>
-                  <div>
-                    <p className={`font-medium ${workout.completed ? 'text-green-800' : 'text-gray-800'}`}>
-                      {workout.name}
-                    </p>
-                    <p className="text-sm text-gray-500">{workout.duration}</p>
-                  </div>
-                </div>
-                {!workout.completed && (
-                  <Button size="sm" className="bg-green-500 hover:bg-green-600">
-                    Start
-                  </Button>
-                )}
+            {todayWorkoutsList.length === 0 ? (
+              <div className="text-center py-4 text-gray-500">
+                No workouts scheduled for today
               </div>
-            ))}
+            ) : (
+              todayWorkoutsList.map((workout, index) => (
+                <div key={index} className={`flex items-center justify-between p-3 rounded-lg border ${
+                  workout.completed 
+                    ? 'bg-green-50 border-green-200' 
+                    : 'bg-gray-50 border-gray-200'
+                }`}>
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                      workout.completed 
+                        ? 'bg-green-500 text-white' 
+                        : 'border-2 border-gray-300'
+                    }`}>
+                      {workout.completed && <CheckCircle className="w-4 h-4" />}
+                    </div>
+                    <div>
+                      <p className={`font-medium ${workout.completed ? 'text-green-800' : 'text-gray-800'}`}>
+                        {workout.name}
+                      </p>
+                      <p className="text-sm text-gray-500">{workout.duration}</p>
+                    </div>
+                  </div>
+                  {!workout.completed && (
+                    <Button size="sm" className="bg-green-500 hover:bg-green-600">
+                      Start
+                    </Button>
+                  )}
+                </div>
+              ))
+            )}
           </CardContent>
         </Card>
 

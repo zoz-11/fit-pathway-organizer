@@ -12,30 +12,57 @@ import {
   AlertCircle
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useProfile } from "@/hooks/useProfile";
+import { useTrainerAthletes } from "@/hooks/useProfile";
+import { useExercises } from "@/hooks/useExercises";
 
 export const TrainerDashboard = () => {
-  // Mock data - will be replaced with real data from Supabase
+  // For demo purposes, using a mock trainer ID - will be replaced with real auth in Phase 2
+  const mockTrainerId = "demo-trainer-id";
+  
+  const { data: profile, isLoading: profileLoading } = useProfile(mockTrainerId);
+  const { data: athletes, isLoading: athletesLoading } = useTrainerAthletes(mockTrainerId);
+  const { data: exercises, isLoading: exercisesLoading } = useExercises();
+
+  // Calculate stats from real data
+  const totalMembers = athletes?.length || 0;
+  const activeMembers = athletes?.filter(athlete => 
+    athlete.subscription_status === 'active' || athlete.subscription_status === 'trial'
+  ).length || 0;
+  const totalExercises = exercises?.length || 0;
+
+  // Mock data for features not yet implemented
   const stats = {
-    totalMembers: 24,
-    activeMembers: 22,
-    totalExercises: 156,
     scheduledToday: 8,
     pendingRequests: 3,
     expiringSoon: 5
   };
 
   const recentActivity = [
-    { user: "Alice Johnson", action: "Completed workout", time: "2 hours ago" },
-    { user: "Mike Chen", action: "Requested renewal", time: "4 hours ago" },
-    { user: "Sarah Wilson", action: "Uploaded progress photo", time: "6 hours ago" },
-    { user: "Tom Rodriguez", action: "Sent message", time: "1 day ago" }
+    { user: "Demo Athlete", action: "Completed workout", time: "2 hours ago" },
+    { user: "Test User", action: "Requested renewal", time: "4 hours ago" },
+    { user: "Sample Member", action: "Uploaded progress photo", time: "6 hours ago" },
+    { user: "Example Athlete", action: "Sent message", time: "1 day ago" }
   ];
+
+  if (profileLoading || athletesLoading || exercisesLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-gradient-to-r from-blue-600 to-green-600 rounded-lg p-6 text-white">
+          <h1 className="text-3xl font-bold mb-2">Loading trainer dashboard...</h1>
+          <p className="text-blue-100">Please wait while we fetch your data.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const trainerName = profile?.full_name || "Trainer";
 
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-blue-600 to-green-600 rounded-lg p-6 text-white">
-        <h1 className="text-3xl font-bold mb-2">Welcome back, Trainer!</h1>
+        <h1 className="text-3xl font-bold mb-2">Welcome back, {trainerName}!</h1>
         <p className="text-blue-100">Here's what's happening with your athletes today.</p>
       </div>
 
@@ -49,10 +76,10 @@ export const TrainerDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{stats.totalMembers}</div>
+            <div className="text-2xl font-bold text-blue-600">{totalMembers}</div>
             <div className="text-sm text-green-600 flex items-center mt-1">
               <TrendingUp className="w-3 h-3 mr-1" />
-              +2 this month
+              Connected to database
             </div>
           </CardContent>
         </Card>
@@ -65,8 +92,10 @@ export const TrainerDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.activeMembers}</div>
-            <div className="text-sm text-gray-500 mt-1">92% active rate</div>
+            <div className="text-2xl font-bold text-green-600">{activeMembers}</div>
+            <div className="text-sm text-gray-500 mt-1">
+              {totalMembers > 0 ? Math.round((activeMembers / totalMembers) * 100) : 0}% active rate
+            </div>
           </CardContent>
         </Card>
 
@@ -78,7 +107,7 @@ export const TrainerDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-600">{stats.totalExercises}</div>
+            <div className="text-2xl font-bold text-purple-600">{totalExercises}</div>
             <div className="text-sm text-gray-500 mt-1">exercises available</div>
           </CardContent>
         </Card>
