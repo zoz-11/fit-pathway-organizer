@@ -111,18 +111,18 @@ export const SubscriptionManager = () => {
   }
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="text-center pb-4">
-        <CardTitle className="text-xl md:text-2xl">Choose Your Plan</CardTitle>
+        <CardTitle className="text-lg md:text-xl">Choose Your Plan</CardTitle>
         <p className="text-sm text-muted-foreground mt-2">
           Unlock premium features to accelerate your fitness journey
         </p>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {subscriptionStatus.subscribed && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3">
             <div className="flex items-center">
-              <Check className="h-5 w-5 text-green-600 mr-2 flex-shrink-0" />
+              <Check className="h-4 w-4 text-green-600 mr-2 flex-shrink-0" />
               <span className="text-green-800 text-sm">
                 You're currently subscribed to the <strong>{subscriptionStatus.plan}</strong> plan
               </span>
@@ -130,60 +130,62 @@ export const SubscriptionManager = () => {
           </div>
         )}
 
-        <div className="grid gap-4 md:gap-6">
+        <div className="space-y-4">
           {plans.map((plan) => {
             const Icon = plan.icon;
             const isCurrentPlan = subscriptionStatus.plan === plan.id;
             
             return (
-              <Card key={plan.id} className={`relative ${plan.popular ? 'ring-2 ring-blue-500' : ''}`}>
+              <Card key={plan.id} className={`relative w-full ${plan.popular ? 'ring-2 ring-blue-500' : ''}`}>
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-blue-600 text-white">Most Popular</Badge>
+                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-blue-600 text-white text-xs">Most Popular</Badge>
                   </div>
                 )}
                 
-                <CardHeader className="text-center pb-4">
-                  <div className="flex justify-center mb-2">
-                    <Icon className="h-8 w-8 text-blue-600" />
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <Icon className="h-6 w-6 text-blue-600" />
+                      <div>
+                        <h3 className="font-semibold text-base">{plan.name}</h3>
+                        <div className="text-lg font-bold text-blue-600">
+                          {plan.price}
+                          <span className="text-xs text-gray-500">/month</span>
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant={isCurrentPlan ? "outline" : "default"}
+                      disabled={isCurrentPlan || upgrading === plan.id}
+                      onClick={() => handleUpgrade(plan.id)}
+                      className="min-w-[80px]"
+                    >
+                      {upgrading === plan.id ? (
+                        <div className="flex items-center">
+                          <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+                          <span className="text-xs">Loading</span>
+                        </div>
+                      ) : isCurrentPlan ? (
+                        'Current'
+                      ) : (
+                        <>
+                          <CreditCard className="h-3 w-3 mr-1" />
+                          {subscriptionStatus.subscribed ? 'Upgrade' : 'Subscribe'}
+                        </>
+                      )}
+                    </Button>
                   </div>
-                  <CardTitle className="text-lg">{plan.name}</CardTitle>
-                  <div className="text-2xl font-bold text-blue-600">
-                    {plan.price}
-                    <span className="text-sm text-gray-500">/month</span>
-                  </div>
-                </CardHeader>
-                
-                <CardContent>
-                  <ul className="space-y-2 mb-6">
+                  
+                  <ul className="space-y-1 text-sm">
                     {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-start text-sm">
-                        <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
+                      <li key={index} className="flex items-start">
+                        <Check className="h-3 w-3 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
-                  
-                  <Button
-                    className="w-full"
-                    variant={isCurrentPlan ? "outline" : "default"}
-                    disabled={isCurrentPlan || upgrading === plan.id}
-                    onClick={() => handleUpgrade(plan.id)}
-                  >
-                    {upgrading === plan.id ? (
-                      <div className="flex items-center">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Processing...
-                      </div>
-                    ) : isCurrentPlan ? (
-                      'Current Plan'
-                    ) : (
-                      <>
-                        <CreditCard className="h-4 w-4 mr-2" />
-                        {subscriptionStatus.subscribed ? 'Upgrade' : 'Subscribe'}
-                      </>
-                    )}
-                  </Button>
                 </CardContent>
               </Card>
             );
