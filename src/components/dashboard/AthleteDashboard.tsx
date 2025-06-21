@@ -5,6 +5,7 @@ import { Calendar, Trophy, Target, Flame, Play, MessageSquare } from "lucide-rea
 import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const StatCard = ({ title, value, icon: Icon, description }: {
   title: string;
@@ -27,16 +28,31 @@ const StatCard = ({ title, value, icon: Icon, description }: {
 export const AthleteDashboard = () => {
   const { profile } = useAuth();
 
+  const handleStartWorkout = () => {
+    toast.success("Starting your workout! Let's go!");
+  };
+
+  const handleViewDetails = () => {
+    toast.info("Workout details feature coming soon!");
+  };
+
+  const handleScheduleWorkout = () => {
+    toast.info("Schedule workout feature coming soon!");
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">My Fitness Journey</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">My Fitness Journey</h1>
+          <p className="text-muted-foreground mt-1">
             Welcome back, {profile?.full_name || 'Athlete'}! Ready to crush your fitness goals?
           </p>
         </div>
-        <Button className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600">
+        <Button 
+          onClick={handleStartWorkout}
+          className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 w-full md:w-auto px-6 py-2"
+        >
           <Play className="mr-2 h-4 w-4" />
           Start Workout
         </Button>
@@ -71,7 +87,7 @@ export const AthleteDashboard = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-6">
           {/* Today's Workout */}
           <Card>
@@ -82,12 +98,21 @@ export const AthleteDashboard = () => {
               <div className="p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg">
                 <h3 className="font-semibold text-lg">Upper Body Strength</h3>
                 <p className="text-sm text-muted-foreground">45 minutes • 6 exercises</p>
-                <div className="mt-3 flex items-center space-x-2">
-                  <Button size="sm">
+                <div className="mt-3 flex flex-col sm:flex-row gap-2">
+                  <Button 
+                    size="sm" 
+                    onClick={handleStartWorkout}
+                    className="flex-1 sm:flex-none"
+                  >
                     <Play className="mr-2 h-4 w-4" />
                     Start Now
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={handleViewDetails}
+                    className="flex-1 sm:flex-none"
+                  >
                     View Details
                   </Button>
                 </div>
@@ -139,7 +164,9 @@ export const AthleteDashboard = () => {
         </div>
 
         {/* AI Fitness Coach */}
-        <AiChatAssistant />
+        <div className="order-first lg:order-last">
+          <AiChatAssistant />
+        </div>
       </div>
 
       {/* Upcoming Workouts */}
@@ -149,26 +176,47 @@ export const AthleteDashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg gap-2">
               <div>
                 <p className="font-medium">Cardio Blast</p>
                 <p className="text-sm text-muted-foreground">Tomorrow • 30 min</p>
               </div>
-              <Button variant="outline" size="sm">Schedule</Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleScheduleWorkout}
+                className="w-full sm:w-auto"
+              >
+                Schedule
+              </Button>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg gap-2">
               <div>
                 <p className="font-medium">Leg Day</p>
                 <p className="text-sm text-muted-foreground">Sunday • 60 min</p>
               </div>
-              <Button variant="outline" size="sm">Schedule</Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleScheduleWorkout}
+                className="w-full sm:w-auto"
+              >
+                Schedule
+              </Button>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg gap-2">
               <div>
                 <p className="font-medium">Core & Flexibility</p>
                 <p className="text-sm text-muted-foreground">Monday • 20 min</p>
               </div>
-              <Button variant="outline" size="sm">Schedule</Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleScheduleWorkout}
+                className="w-full sm:w-auto"
+              >
+                Schedule
+              </Button>
             </div>
           </div>
         </CardContent>

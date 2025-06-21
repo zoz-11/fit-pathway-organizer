@@ -49,7 +49,14 @@ export const AiChatAssistant = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error(`AI service error: ${error.message || 'Unknown error'}`);
+      }
+
+      if (!data || !data.response) {
+        throw new Error('Invalid response from AI service');
+      }
 
       const assistantMessage: Message = {
         role: 'assistant',
@@ -61,6 +68,14 @@ export const AiChatAssistant = () => {
     } catch (error) {
       console.error('Error sending message:', error);
       toast.error('Failed to get AI response. Please try again.');
+      
+      // Add error message to chat
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -101,7 +116,7 @@ export const AiChatAssistant = () => {
                       : 'bg-gray-100 text-gray-900'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
                   <p className="text-xs opacity-70 mt-1">
                     {message.timestamp.toLocaleTimeString()}
                   </p>

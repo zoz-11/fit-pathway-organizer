@@ -5,6 +5,7 @@ import { Users, Calendar, Dumbbell, BarChart3, MessageSquare, Plus } from "lucid
 import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const StatCard = ({ title, value, icon: Icon, description }: {
   title: string;
@@ -27,16 +28,35 @@ const StatCard = ({ title, value, icon: Icon, description }: {
 export const TrainerDashboard = () => {
   const { profile } = useAuth();
 
+  const handleAddAthlete = () => {
+    toast.info("Add athlete feature coming soon!");
+  };
+
+  const handleScheduleWorkout = () => {
+    toast.info("Schedule workout feature coming soon!");
+  };
+
+  const handleSendMessage = () => {
+    toast.info("Messaging feature coming soon!");
+  };
+
+  const handleCreateExercise = () => {
+    toast.info("Create exercise feature coming soon!");
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Trainer Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Trainer Dashboard</h1>
+          <p className="text-muted-foreground mt-1">
             Welcome back, {profile?.full_name || 'Trainer'}! Here's what's happening with your athletes.
           </p>
         </div>
-        <Button className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600">
+        <Button 
+          onClick={handleAddAthlete}
+          className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 w-full md:w-auto"
+        >
           <Plus className="mr-2 h-4 w-4" />
           Add New Athlete
         </Button>
@@ -71,7 +91,7 @@ export const TrainerDashboard = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-6">
           {/* Quick Actions */}
           <Card>
@@ -79,19 +99,35 @@ export const TrainerDashboard = () => {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={handleScheduleWorkout}
+              >
                 <Calendar className="mr-2 h-4 w-4" />
                 Schedule Workout
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={handleAddAthlete}
+              >
                 <Users className="mr-2 h-4 w-4" />
                 Add New Athlete
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={handleSendMessage}
+              >
                 <MessageSquare className="mr-2 h-4 w-4" />
                 Send Message
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={handleCreateExercise}
+              >
                 <Dumbbell className="mr-2 h-4 w-4" />
                 Create Exercise
               </Button>
@@ -103,7 +139,9 @@ export const TrainerDashboard = () => {
         </div>
 
         {/* AI Assistant */}
-        <AiChatAssistant />
+        <div className="order-first lg:order-last">
+          <AiChatAssistant />
+        </div>
       </div>
 
       {/* Recent Activity */}
@@ -114,23 +152,23 @@ export const TrainerDashboard = () => {
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-center space-x-4">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <div className="flex-1">
-                <p className="text-sm font-medium">John completed Upper Body Workout</p>
+              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">John completed Upper Body Workout</p>
                 <p className="text-xs text-muted-foreground">2 hours ago</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <div className="flex-1">
-                <p className="text-sm font-medium">Sarah started Cardio Program</p>
+              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">Sarah started Cardio Program</p>
                 <p className="text-xs text-muted-foreground">4 hours ago</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-              <div className="flex-1">
-                <p className="text-sm font-medium">Mike missed scheduled workout</p>
+              <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0"></div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">Mike missed scheduled workout</p>
                 <p className="text-xs text-muted-foreground">Yesterday</p>
               </div>
             </div>
