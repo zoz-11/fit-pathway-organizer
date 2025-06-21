@@ -1,0 +1,9 @@
+review:
+  enable: true
+  rules:
+    - rule: "No TODO comments"
+      pattern: "TODO"
+      message: "Please resolve all TODO comments before merging."
+    - rule: "No debug logs"
+      pattern: "console.log"
+      message: "Remove console.log statements before merging."
