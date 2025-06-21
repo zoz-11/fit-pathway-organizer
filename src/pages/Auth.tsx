@@ -42,6 +42,7 @@ const Auth = () => {
       if (data.user && !data.user.email_confirmed_at) {
         setMessage("Please check your email and click the link to verify your account!");
       } else if (data.user) {
+        // Force a page refresh to ensure clean auth state
         window.location.href = "/";
       }
     } catch (error: any) {
@@ -67,6 +68,7 @@ const Auth = () => {
       if (error) throw error;
 
       if (data.user) {
+        // Force a page refresh to ensure clean auth state
         window.location.href = "/";
       }
     } catch (error: any) {
