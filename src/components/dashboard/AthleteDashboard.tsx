@@ -1,9 +1,9 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Trophy, Target, Flame, Play, MessageSquare, Clock, Dumbbell } from "lucide-react";
+import { Calendar, Trophy, Target, Flame, Play, Clock, Dumbbell } from "lucide-react";
 import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
+import { WorkoutDetailsModal } from "@/components/workout/WorkoutDetailsModal";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -30,6 +30,7 @@ export const AthleteDashboard = () => {
   const { profile } = useAuth();
   const [workoutInProgress, setWorkoutInProgress] = useState(false);
   const [workoutTime, setWorkoutTime] = useState(0);
+  const [showWorkoutModal, setShowWorkoutModal] = useState(false);
 
   const handleStartWorkout = () => {
     if (!workoutInProgress) {
@@ -37,15 +38,12 @@ export const AthleteDashboard = () => {
       setWorkoutTime(0);
       toast.success("Workout started! Timer is now running.");
       
-      // Simple timer that increments every second
       const timer = setInterval(() => {
         setWorkoutTime(prev => prev + 1);
       }, 1000);
       
-      // Store timer reference so we can clear it later
       (window as any).workoutTimer = timer;
     } else {
-      // End workout
       setWorkoutInProgress(false);
       clearInterval((window as any).workoutTimer);
       const minutes = Math.floor(workoutTime / 60);
@@ -62,9 +60,7 @@ export const AthleteDashboard = () => {
   };
 
   const handleViewDetails = () => {
-    toast.info("Opening workout details...", {
-      description: "Upper Body Strength: 6 exercises including Push-ups, Pull-ups, Bench Press, Shoulder Press, Bicep Curls, and Tricep Dips"
-    });
+    setShowWorkoutModal(true);
   };
 
   const handleScheduleWorkout = () => {
@@ -104,7 +100,6 @@ export const AthleteDashboard = () => {
         </Button>
       </div>
 
-      {/* Workout Timer Card - shown when workout is in progress */}
       {workoutInProgress && (
         <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200">
           <CardContent className="p-4">
@@ -124,7 +119,6 @@ export const AthleteDashboard = () => {
         </Card>
       )}
 
-      {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Workouts This Week"
@@ -152,10 +146,8 @@ export const AthleteDashboard = () => {
         />
       </div>
 
-      {/* Main Content Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          {/* Today's Workout */}
           <Card>
             <CardHeader>
               <CardTitle>Today's Workout</CardTitle>
@@ -199,7 +191,6 @@ export const AthleteDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Progress Chart */}
           <Card>
             <CardHeader>
               <CardTitle>Weekly Progress</CardTitle>
@@ -220,7 +211,6 @@ export const AthleteDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Upcoming Workouts */}
           <Card>
             <CardHeader>
               <CardTitle>Upcoming Workouts</CardTitle>
@@ -255,15 +245,17 @@ export const AthleteDashboard = () => {
           </Card>
         </div>
 
-        {/* Right Column */}
         <div className="space-y-6">
-          {/* AI Fitness Coach */}
           <AiChatAssistant />
-          
-          {/* Subscription Management */}
           <SubscriptionManager />
         </div>
       </div>
+
+      <WorkoutDetailsModal
+        isOpen={showWorkoutModal}
+        onClose={() => setShowWorkoutModal(false)}
+        onStartWorkout={handleStartWorkout}
+      />
     </div>
   );
 };

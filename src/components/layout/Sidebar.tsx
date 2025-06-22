@@ -15,8 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface SidebarProps {
   onClose?: () => void;
@@ -25,44 +24,41 @@ interface SidebarProps {
 interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
-  action: () => void;
+  path: string;
   role?: 'trainer' | 'athlete' | 'both';
 }
 
 export const Sidebar = ({ onClose }: SidebarProps) => {
   const { profile } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const userRole = profile?.role || "athlete";
   
-  const handleNavigation = (path: string, label: string) => {
-    if (path === "/") {
-      navigate("/");
-    } else {
-      toast.info(`${label} page coming soon!`);
-    }
+  const handleNavigation = (path: string) => {
+    navigate(path);
     onClose?.();
   };
 
   const trainerNavItems: NavItem[] = [
-    { icon: Home, label: "Dashboard", action: () => handleNavigation("/", "Dashboard"), role: "both" },
-    { icon: Users, label: "Members", action: () => handleNavigation("/members", "Members"), role: "trainer" },
-    { icon: Dumbbell, label: "Exercise Library", action: () => handleNavigation("/exercises", "Exercise Library"), role: "trainer" },
-    { icon: Calendar, label: "Schedules", action: () => handleNavigation("/schedules", "Schedules"), role: "both" },
-    { icon: Apple, label: "Diet Plans", action: () => handleNavigation("/diet-plans", "Diet Plans"), role: "trainer" },
-    { icon: MessageSquare, label: "Messages", action: () => handleNavigation("/messages", "Messages"), role: "both" },
-    { icon: BarChart3, label: "Reports", action: () => handleNavigation("/reports", "Reports"), role: "trainer" },
-    { icon: User, label: "Profile", action: () => handleNavigation("/profile", "Profile"), role: "both" },
-    { icon: Settings, label: "Settings", action: () => handleNavigation("/settings", "Settings"), role: "both" },
+    { icon: Home, label: "Dashboard", path: "/", role: "both" },
+    { icon: Users, label: "Members", path: "/members", role: "trainer" },
+    { icon: Dumbbell, label: "Exercise Library", path: "/exercises", role: "trainer" },
+    { icon: Calendar, label: "Schedules", path: "/schedule", role: "both" },
+    { icon: Apple, label: "Diet Plans", path: "/diet-plan", role: "trainer" },
+    { icon: MessageSquare, label: "Messages", path: "/messages", role: "both" },
+    { icon: BarChart3, label: "Reports", path: "/reports", role: "trainer" },
+    { icon: User, label: "Profile", path: "/profile", role: "both" },
+    { icon: Settings, label: "Settings", path: "/settings", role: "both" },
   ];
 
   const athleteNavItems: NavItem[] = [
-    { icon: Home, label: "Dashboard", action: () => handleNavigation("/", "Dashboard"), role: "both" },
-    { icon: Calendar, label: "My Schedule", action: () => handleNavigation("/my-schedule", "My Schedule"), role: "athlete" },
-    { icon: BookOpen, label: "My Diet Plan", action: () => handleNavigation("/my-diet", "My Diet Plan"), role: "athlete" },
-    { icon: BarChart3, label: "Progress", action: () => handleNavigation("/progress", "Progress"), role: "athlete" },
-    { icon: MessageSquare, label: "Messages", action: () => handleNavigation("/messages", "Messages"), role: "both" },
-    { icon: User, label: "Profile", action: () => handleNavigation("/profile", "Profile"), role: "both" },
-    { icon: Settings, label: "Settings", action: () => handleNavigation("/settings", "Settings"), role: "both" },
+    { icon: Home, label: "Dashboard", path: "/", role: "both" },
+    { icon: Calendar, label: "My Schedule", path: "/schedule", role: "athlete" },
+    { icon: BookOpen, label: "My Diet Plan", path: "/diet-plan", role: "athlete" },
+    { icon: BarChart3, label: "Progress", path: "/progress", role: "athlete" },
+    { icon: MessageSquare, label: "Messages", path: "/messages", role: "both" },
+    { icon: User, label: "Profile", path: "/profile", role: "both" },
+    { icon: Settings, label: "Settings", path: "/settings", role: "both" },
   ];
   
   const navItems = userRole === "trainer" ? trainerNavItems : athleteNavItems;
@@ -78,7 +74,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
 
       <nav className="flex-1 px-4 py-6 space-y-2">
         {navItems.map((item) => {
-          const isActive = false; // For now, since we're not implementing full routing
+          const isActive = location.pathname === item.path;
           const Icon = item.icon;
           
           return (
@@ -91,7 +87,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
                   ? "bg-gradient-to-r from-blue-500 to-green-500 text-white shadow-md" 
                   : "hover:bg-blue-50 hover:text-blue-700"
               )}
-              onClick={item.action}
+              onClick={() => handleNavigation(item.path)}
             >
               <Icon className="h-5 w-5" />
               <span>{item.label}</span>

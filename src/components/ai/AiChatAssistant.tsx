@@ -19,7 +19,7 @@ export const AiChatAssistant = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hi! I'm your AI fitness coach powered by OpenRouter. I can help you with workout advice, nutrition tips, and answer any fitness-related questions. How can I assist you today?",
+      content: "Hi! I'm your AI fitness coach. I can help you with workout advice, nutrition tips, and answer any fitness-related questions. How can I assist you today?",
       timestamp: new Date()
     }
   ]);
@@ -77,7 +77,6 @@ export const AiChatAssistant = () => {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       toast.error(`AI Chat Error: ${errorMessage}`);
       
-      // Add error message to chat
       const errorResponse: Message = {
         role: 'assistant',
         content: `I apologize, but I'm experiencing technical difficulties. Error: ${errorMessage}. Please try again, and if the problem persists, check that the OpenRouter API key is properly configured.`,
@@ -106,11 +105,11 @@ export const AiChatAssistant = () => {
   };
 
   return (
-    <Card className="h-[600px] flex flex-col">
+    <Card className="h-[500px] flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center">
           <MessageCircle className="h-5 w-5 mr-2 text-blue-600" />
-          <CardTitle>AI Fitness Coach (OpenRouter)</CardTitle>
+          <CardTitle>AI Fitness Coach</CardTitle>
         </div>
         <Button variant="ghost" size="sm" onClick={clearChat}>
           <RefreshCw className="h-4 w-4" />
