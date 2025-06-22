@@ -243,7 +243,7 @@ export const AthleteDashboard = () => {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={handleScheduleWork out}
+                      onClick={handleScheduleWorkout}
                       className="w-full sm:w-auto"
                     >
                       Schedule
