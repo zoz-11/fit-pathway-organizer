@@ -67,7 +67,7 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
   ];
 
   const handleStartWorkout = () => {
-    onStartWork out();
+    onStartWorkout();
     onClose();
   };
 
@@ -141,7 +141,7 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
 
           {/* Action Buttons */}
           <div className="flex space-x-3 pt-4 border-t">
-            <Button onClick={handleStartWork out} className="flex-1">
+            <Button onClick={handleStartWorkout} className="flex-1">
               <Play className="h-4 w-4 mr-2" />
               Start Workout
             </Button>
