@@ -83,12 +83,17 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
     // In a real app, this would open a video modal or navigate to a demo page
   };
 
-  const handleClose = (e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
+  const handleClose = (open: boolean) => {
+    if (!open) {
+      console.log('Closing workout modal');
+      onClose();
     }
-    console.log('Closing workout modal');
+  };
+
+  const handleCloseButton = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Closing workout modal via button');
     onClose();
   };
 
@@ -168,7 +173,7 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
             </Button>
             <Button 
               variant="outline" 
-              onClick={handleClose}
+              onClick={handleCloseButton}
               className="hover:bg-gray-50"
             >
               Close
