@@ -35,8 +35,11 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   const userRole = profile?.role || "athlete";
   
   const handleNavigation = (path: string) => {
+    console.log('Navigating to:', path);
     navigate(path);
-    onClose?.();
+    if (onClose) {
+      onClose();
+    }
   };
 
   const trainerNavItems: NavItem[] = [
@@ -67,7 +70,18 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
     <div className="h-full bg-white border-r border-gray-200 flex flex-col">
       <div className="flex items-center justify-between p-4 lg:hidden">
         <span className="text-lg font-semibold">Menu</span>
-        <Button variant="ghost" size="icon" onClick={onClose}>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (onClose) {
+              onClose();
+            }
+          }}
+          className="hover:bg-gray-100"
+        >
           <X className="h-5 w-5" />
         </Button>
       </div>
@@ -82,15 +96,19 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
               key={item.label}
               variant={isActive ? "default" : "ghost"}
               className={cn(
-                "w-full justify-start space-x-3 py-3 px-4 cursor-pointer",
+                "w-full justify-start space-x-3 py-3 px-4 cursor-pointer text-left",
                 isActive 
                   ? "bg-gradient-to-r from-blue-500 to-green-500 text-white shadow-md" 
-                  : "hover:bg-blue-50 hover:text-blue-700"
+                  : "hover:bg-blue-50 hover:text-blue-700 text-gray-700"
               )}
-              onClick={() => handleNavigation(item.path)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleNavigation(item.path);
+              }}
             >
-              <Icon className="h-5 w-5" />
-              <span>{item.label}</span>
+              <Icon className="h-5 w-5 flex-shrink-0" />
+              <span className="truncate">{item.label}</span>
             </Button>
           );
         })}

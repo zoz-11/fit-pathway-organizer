@@ -8,6 +8,8 @@ export const useProfile = (userId?: string) => {
     queryFn: async () => {
       if (!userId) return null;
       
+      console.log('Fetching profile for user:', userId);
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -19,8 +21,11 @@ export const useProfile = (userId?: string) => {
         throw error;
       }
 
+      console.log('Profile fetched successfully:', data);
       return data;
     },
     enabled: !!userId,
+    retry: 3,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
