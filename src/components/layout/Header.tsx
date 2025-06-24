@@ -1,7 +1,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Bell, Settings, LogOut } from "lucide-react";
+import { Bell, Settings, LogOut, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   children?: React.ReactNode;
@@ -17,9 +18,18 @@ interface HeaderProps {
 
 export const Header = ({ children }: HeaderProps) => {
   const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignOut = async () => {
     await signOut();
+  };
+
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
+
+  const handleSettingsClick = () => {
+    navigate('/settings');
   };
 
   return (
@@ -43,7 +53,7 @@ export const Header = ({ children }: HeaderProps) => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center space-x-2 p-2">
+              <Button variant="ghost" className="flex items-center space-x-2 p-2 hover:bg-gray-100">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={undefined} />
                   <AvatarFallback className="bg-gradient-to-r from-blue-500 to-green-500 text-white">
@@ -56,13 +66,17 @@ export const Header = ({ children }: HeaderProps) => {
                 </div>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem>
+            <DropdownMenuContent align="end" className="w-56 bg-white border shadow-lg z-50">
+              <DropdownMenuItem onClick={handleProfileClick} className="cursor-pointer hover:bg-gray-50">
+                <User className="mr-2 h-4 w-4" />
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSettingsClick} className="cursor-pointer hover:bg-gray-50">
                 <Settings className="mr-2 h-4 w-4" />
-                Profile Settings
+                Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600" onClick={handleSignOut}>
+              <DropdownMenuItem className="text-red-600 cursor-pointer hover:bg-red-50" onClick={handleSignOut}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
               </DropdownMenuItem>

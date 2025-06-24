@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageCircle, Send, Bot, User, RefreshCw } from "lucide-react";
+import { MessageCircle, Send, Bot, User, RefreshCw, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -25,6 +26,7 @@ export const AiChatAssistant = () => {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { profile } = useAuth();
 
   const sendMessage = async () => {
@@ -40,6 +42,7 @@ export const AiChatAssistant = () => {
     const currentInput = input;
     setInput('');
     setIsLoading(true);
+    setError(null);
 
     try {
       console.log('Sending message to AI coach:', currentInput);
@@ -75,11 +78,12 @@ export const AiChatAssistant = () => {
     } catch (error) {
       console.error('Detailed error in sendMessage:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setError(errorMessage);
       toast.error(`AI Chat Error: ${errorMessage}`);
       
       const errorResponse: Message = {
         role: 'assistant',
-        content: `I apologize, but I'm experiencing technical difficulties. Error: ${errorMessage}. Please try again, and if the problem persists, check that the OpenRouter API key is properly configured.`,
+        content: `I apologize, but I'm experiencing technical difficulties right now. The error was: ${errorMessage}. Please try again in a moment, and if the problem continues, contact support.`,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorResponse]);
@@ -94,6 +98,7 @@ export const AiChatAssistant = () => {
       content: "Chat cleared! I'm your AI fitness coach. How can I help you today?",
       timestamp: new Date()
     }]);
+    setError(null);
     toast.info('Chat history cleared');
   };
 
@@ -111,9 +116,17 @@ export const AiChatAssistant = () => {
           <MessageCircle className="h-5 w-5 mr-2 text-blue-600" />
           <CardTitle>AI Fitness Coach</CardTitle>
         </div>
-        <Button variant="ghost" size="sm" onClick={clearChat}>
-          <RefreshCw className="h-4 w-4" />
-        </Button>
+        <div className="flex gap-2">
+          {error && (
+            <div className="flex items-center text-red-500 text-sm">
+              <AlertCircle className="h-4 w-4 mr-1" />
+              <span>Connection Error</span>
+            </div>
+          )}
+          <Button variant="ghost" size="sm" onClick={clearChat}>
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col p-0">
         <ScrollArea className="flex-1 p-4">
@@ -154,18 +167,15 @@ export const AiChatAssistant = () => {
                 <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
                   <Bot className="h-4 w-4 text-blue-600" />
                 </div>
-                <div className="bg-gray-100 rounded-lg p-3">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  </div>
+                <div className="bg-gray-100 rounded-lg p-3 flex items-center gap-2">
+                  <LoadingSpinner size="sm" />
+                  <span className="text-sm text-gray-600">AI is thinking...</span>
                 </div>
               </div>
             )}
           </div>
         </ScrollArea>
-        <div className="p-4 border-t">
+        <div className="p-4 border-t bg-gray-50">
           <div className="flex gap-2">
             <Input
               value={input}
@@ -173,9 +183,13 @@ export const AiChatAssistant = () => {
               onKeyPress={handleKeyPress}
               placeholder="Ask me anything about fitness..."
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 bg-white"
             />
-            <Button onClick={sendMessage} disabled={isLoading || !input.trim()}>
+            <Button 
+              onClick={sendMessage} 
+              disabled={isLoading || !input.trim()}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
               <Send className="h-4 w-4" />
             </Button>
           </div>
