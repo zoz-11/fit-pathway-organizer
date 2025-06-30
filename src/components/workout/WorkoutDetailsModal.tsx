@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -99,7 +98,7 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-white">
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-white dark:bg-card">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gray-900">Upper Body Strength Workout</DialogTitle>
         </DialogHeader>
