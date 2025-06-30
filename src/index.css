@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Apple HIG styles */
+@import './apple-hig-styles.css';
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
 
 @layer base {
@@ -99,5 +102,37 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Enhanced clickability and interaction styles */
+@layer utilities {
+  .clickable-enhanced {
+    @apply cursor-pointer transition-all duration-200 ease-in-out;
+    -webkit-tap-highlight-color: rgba(0, 122, 255, 0.3);
+    touch-action: manipulation;
+    user-select: none;
+  }
+  
+  .clickable-enhanced:hover {
+    @apply transform -translate-y-0.5 shadow-lg;
+  }
+  
+  .clickable-enhanced:active {
+    @apply transform translate-y-0 shadow-md;
+  }
+  
+  .btn-apple {
+    @apply bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:shadow-sm;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .card-apple {
+    @apply bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border border-gray-100;
+  }
+  
+  .card-apple:hover {
+    @apply transform -translate-y-1;
   }
 }
