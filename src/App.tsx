@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { ThemeProvider } from "next-themes";
 import { useEffect } from "react";
 import { initializeClickabilityFixes } from "./fix-app-issues.js";
 import "./apple-hig-styles.css";
@@ -37,76 +38,78 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-          <Routes>
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/subscription-success" element={<SubscriptionSuccess />} />
-            <Route path="/subscription-cancel" element={<SubscriptionCancel />} />
-            <Route 
-              path="/" 
-              element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/schedule" 
-              element={
-                <ProtectedRoute>
-                  <Schedule />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/diet-plan" 
-              element={
-                <ProtectedRoute>
-                  <DietPlan />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/progress" 
-              element={
-                <ProtectedRoute>
-                  <Progress />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/messages" 
-              element={
-                <ProtectedRoute>
-                  <Messages />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/profile" 
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/settings" 
-              element={
-                <ProtectedRoute>
-                  <Settings />
-                </ProtectedRoute>
-              } 
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+            <Routes>
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+              <Route path="/subscription-cancel" element={<SubscriptionCancel />} />
+              <Route 
+                path="/" 
+                element={
+                  <ProtectedRoute>
+                    <Index />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/schedule" 
+                element={
+                  <ProtectedRoute>
+                    <Schedule />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/diet-plan" 
+                element={
+                  <ProtectedRoute>
+                    <DietPlan />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/progress" 
+                element={
+                  <ProtectedRoute>
+                    <Progress />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/messages" 
+                element={
+                  <ProtectedRoute>
+                    <Messages />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/settings" 
+                element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </QueryClientProvider>
   );
 };

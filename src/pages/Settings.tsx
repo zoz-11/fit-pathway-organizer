@@ -6,14 +6,20 @@ import { Label } from "@/components/ui/label";
 import { Bell, Shield, Palette, Smartphone, LogOut, Globe, Download, HelpCircle } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "next-themes";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Settings = () => {
   const { signOut } = useAuth();
-  const [darkMode, setDarkMode] = useState(false);
+  const { theme, setTheme } = useTheme();
   const [language, setLanguage] = useState('en');
   const [units, setUnits] = useState('imperial');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleNotificationToggle = (type: string, enabled: boolean) => {
     toast.success(`${type} notifications ${enabled ? 'enabled' : 'disabled'}`);
@@ -25,9 +31,8 @@ const Settings = () => {
   };
 
   const handleDarkModeToggle = (enabled: boolean) => {
-    setDarkMode(enabled);
+    setTheme(enabled ? 'dark' : 'light');
     toast.info(`Dark mode ${enabled ? 'enabled' : 'disabled'}`);
-    // In a real app, this would toggle the theme
   };
 
   const handleExportData = () => {
@@ -39,6 +44,10 @@ const Settings = () => {
     toast.info('Opening support portal...');
     // In a real app, this would open support chat or email
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <AppLayout>
@@ -62,7 +71,7 @@ const Settings = () => {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="workout-reminders" className="text-base font-medium">Workout Reminders</Label>
-                <p className="text-sm text-gray-600">Get notified before scheduled workouts</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Get notified before scheduled workouts</p>
               </div>
               <Switch
                 id="workout-reminders"
@@ -73,7 +82,7 @@ const Settings = () => {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="progress-updates" className="text-base font-medium">Progress Updates</Label>
-                <p className="text-sm text-gray-600">Weekly progress reports and achievements</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Weekly progress reports and achievements</p>
               </div>
               <Switch
                 id="progress-updates"
@@ -84,7 +93,7 @@ const Settings = () => {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="meal-reminders" className="text-base font-medium">Meal Reminders</Label>
-                <p className="text-sm text-gray-600">Reminders for meals and hydration</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Reminders for meals and hydration</p>
               </div>
               <Switch
                 id="meal-reminders"
@@ -94,7 +103,7 @@ const Settings = () => {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="social-notifications" className="text-base font-medium">Social Notifications</Label>
-                <p className="text-sm text-gray-600">Messages from trainers and community</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Messages from trainers and community</p>
               </div>
               <Switch
                 id="social-notifications"
@@ -114,37 +123,37 @@ const Settings = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="space-y-1">
                 <Label className="text-base font-medium">Profile Visibility</Label>
-                <p className="text-sm text-gray-600">Control who can see your profile</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Control who can see your profile</p>
               </div>
               <Button variant="outline" size="sm" onClick={() => toast.info('Profile visibility settings opened')}>
                 Manage
               </Button>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="space-y-1">
                 <Label className="text-base font-medium">Data Sharing</Label>
-                <p className="text-sm text-gray-600">Control how your data is shared</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Control how your data is shared</p>
               </div>
               <Button variant="outline" size="sm" onClick={() => toast.info('Data sharing preferences configured')}>
                 Configure
               </Button>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="space-y-1">
                 <Label className="text-base font-medium">Two-Factor Authentication</Label>
-                <p className="text-sm text-gray-600">Add extra security to your account</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Add extra security to your account</p>
               </div>
               <Button variant="outline" size="sm" onClick={() => toast.info('Two-factor authentication setup started')}>
                 Enable
               </Button>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
               <div className="space-y-1">
                 <Label className="text-base font-medium">Change Password</Label>
-                <p className="text-sm text-gray-600">Update your account password</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Update your account password</p>
               </div>
               <Button variant="outline" size="sm" onClick={() => toast.info('Password change form opened')}>
                 Update
@@ -165,18 +174,18 @@ const Settings = () => {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label htmlFor="dark-mode" className="text-base font-medium">Dark Mode</Label>
-                <p className="text-sm text-gray-600">Switch to dark theme</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Switch to dark theme</p>
               </div>
               <Switch
                 id="dark-mode"
-                checked={darkMode}
+                checked={theme === 'dark'}
                 onCheckedChange={handleDarkModeToggle}
               />
             </div>
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label className="text-base font-medium">Language</Label>
-                <p className="text-sm text-gray-600">Choose your preferred language</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Choose your preferred language</p>
               </div>
               <select 
                 value={language}
@@ -184,7 +193,7 @@ const Settings = () => {
                   setLanguage(e.target.value);
                   toast.success(`Language changed to ${e.target.options[e.target.selectedIndex].text}`);
                 }}
-                className="flex h-10 w-40 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex h-10 w-40 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
               >
                 <option value="en">English</option>
                 <option value="es">Spanish</option>
@@ -196,7 +205,7 @@ const Settings = () => {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label className="text-base font-medium">Units</Label>
-                <p className="text-sm text-gray-600">Weight and distance units</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Weight and distance units</p>
               </div>
               <select 
                 value={units}
@@ -204,7 +213,7 @@ const Settings = () => {
                   setUnits(e.target.value);
                   toast.success(`Units changed to ${e.target.value}`);
                 }}
-                className="flex h-10 w-32 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex h-10 w-32 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
               >
                 <option value="imperial">Imperial</option>
                 <option value="metric">Metric</option>
@@ -222,34 +231,34 @@ const Settings = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <div className="space-y-1">
                 <Label className="text-base font-medium flex items-center gap-2">
                   <Download className="h-4 w-4" />
                   Export Data
                 </Label>
-                <p className="text-sm text-gray-600">Download your workout and progress data</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Download your workout and progress data</p>
               </div>
               <Button variant="outline" size="sm" onClick={handleExportData}>
                 Export
               </Button>
             </div>
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+            <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
               <div className="space-y-1">
                 <Label className="text-base font-medium flex items-center gap-2">
                   <HelpCircle className="h-4 w-4" />
                   Support
                 </Label>
-                <p className="text-sm text-gray-600">Get help or contact support</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Get help or contact support</p>
               </div>
               <Button variant="outline" size="sm" onClick={handleContactSupport}>
                 Contact
               </Button>
             </div>
-            <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
+            <div className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
               <div className="space-y-1">
-                <Label className="text-base font-medium text-red-600">Delete Account</Label>
-                <p className="text-sm text-gray-600">Permanently delete your account</p>
+                <Label className="text-base font-medium text-red-600 dark:text-red-400">Delete Account</Label>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Permanently delete your account</p>
               </div>
               <Button 
                 variant="destructive" 
@@ -260,7 +269,7 @@ const Settings = () => {
               </Button>
             </div>
             <div className="pt-4 border-t">
-              <Button onClick={handleSignOut} variant="outline" className="w-full hover:bg-gray-50">
+              <Button onClick={handleSignOut} variant="outline" className="w-full hover:bg-gray-50 dark:hover:bg-gray-800">
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>

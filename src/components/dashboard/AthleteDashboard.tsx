@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Trophy, Target, Flame, Play, Clock, Dumbbell } from "lucide-react";
@@ -31,9 +32,10 @@ export const AthleteDashboard = () => {
   const [workoutInProgress, setWorkoutInProgress] = useState(false);
   const [workoutTime, setWorkoutTime] = useState(0);
   const [showWorkoutModal, setShowWorkoutModal] = useState(false);
+  const [workoutCompleted, setWorkoutCompleted] = useState(false);
 
   const handleStartWorkout = () => {
-    if (!workoutInProgress) {
+    if (!workoutInProgress && !workoutCompleted) {
       setWorkoutInProgress(true);
       setWorkoutTime(0);
       toast.success("Workout started! Timer is now running.");
@@ -43,14 +45,18 @@ export const AthleteDashboard = () => {
       }, 1000);
       
       (window as any).workoutTimer = timer;
-    } else {
+    } else if (workoutInProgress) {
       setWorkoutInProgress(false);
+      setWorkoutCompleted(true);
       clearInterval((window as any).workoutTimer);
       const minutes = Math.floor(workoutTime / 60);
       const seconds = workoutTime % 60;
       toast.success(`Workout completed! Duration: ${minutes}m ${seconds}s`);
-      setWorkoutTime(0);
     }
+  };
+
+  const handleViewDetails = () => {
+    setShowWorkoutModal(true);
   };
 
   const formatTime = (seconds: number) => {
@@ -59,66 +65,25 @@ export const AthleteDashboard = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleViewDetails = () => {
-    setShowWorkoutModal(true);
-  };
-
-  const handleScheduleWorkout = () => {
-    toast.success("Workout scheduled!", {
-      description: "Your workout has been added to your calendar"
-    });
-  };
-
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">My Fitness Journey</h1>
-          <p className="text-muted-foreground mt-1">
-            Welcome back, {profile?.full_name || 'Athlete'}! Ready to crush your fitness goals?
+          <p className="text-muted-foreground">
+            Welcome back, Athlete! Ready to crush your fitness goals?
           </p>
         </div>
         <Button 
-          onClick={handleStartWorkout}
-          className={`${
-            workoutInProgress 
-              ? 'bg-red-500 hover:bg-red-600' 
-              : 'bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600'
-          } w-full md:w-auto px-6 py-2`}
+          onClick={() => toast.success("Starting new workout session!")}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium"
         >
-          {workoutInProgress ? (
-            <>
-              <Clock className="mr-2 h-4 w-4" />
-              End Workout ({formatTime(workoutTime)})
-            </>
-          ) : (
-            <>
-              <Play className="mr-2 h-4 w-4" />
-              Start Workout
-            </>
-          )}
+          <Dumbbell className="mr-2 h-4 w-4" />
+          Start Workout
         </Button>
       </div>
 
-      {workoutInProgress && (
-        <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <div>
-                  <h3 className="font-semibold text-lg">Workout In Progress</h3>
-                  <p className="text-sm text-muted-foreground">Upper Body Strength</p>
-                </div>
-              </div>
-              <div className="text-2xl font-bold text-green-600">
-                {formatTime(workoutTime)}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
+      {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Workouts This Week"
@@ -146,27 +111,50 @@ export const AthleteDashboard = () => {
         />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Today's Workout</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg">
-                <div className="flex items-center space-x-3 mb-2">
-                  <Dumbbell className="h-5 w-5 text-blue-600" />
-                  <h3 className="font-semibold text-lg">Upper Body Strength</h3>
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Today's Workout */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Dumbbell className="h-5 w-5 text-blue-600" />
+              Today's Workout
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-semibold text-green-800 dark:text-green-200">Upper Body Strength</h3>
+                  <span className="text-sm text-green-600 dark:text-green-400">45 minutes • 6 exercises</span>
                 </div>
-                <p className="text-sm text-muted-foreground mb-3">45 minutes • 6 exercises</p>
-                <div className="flex flex-col sm:flex-row gap-2">
+                <p className="text-sm text-green-700 dark:text-green-300 mb-3">
+                  Focus on building upper body strength with compound movements
+                </p>
+                {workoutInProgress && (
+                  <div className="mb-3 p-2 bg-blue-100 dark:bg-blue-900/30 rounded text-center">
+                    <span className="text-blue-800 dark:text-blue-200 font-mono text-lg">
+                      {formatTime(workoutTime)}
+                    </span>
+                  </div>
+                )}
+                <div className="flex gap-2">
                   <Button 
-                    size="sm" 
                     onClick={handleStartWorkout}
-                    className="flex-1 sm:flex-none"
-                    variant={workoutInProgress ? "destructive" : "default"}
+                    className={`flex-1 sm:flex-none ${
+                      workoutCompleted 
+                        ? 'bg-green-600 hover:bg-green-700' 
+                        : workoutInProgress 
+                          ? 'bg-red-600 hover:bg-red-700' 
+                          : 'bg-blue-600 hover:bg-blue-700'
+                    }`}
+                    disabled={workoutCompleted}
                   >
-                    {workoutInProgress ? (
+                    {workoutCompleted ? (
+                      <>
+                        <Trophy className="mr-2 h-4 w-4" />
+                        Completed
+                      </>
+                    ) : workoutInProgress ? (
                       <>
                         <Clock className="mr-2 h-4 w-4" />
                         End Workout
@@ -188,74 +176,67 @@ export const AthleteDashboard = () => {
                   </Button>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Weekly Progress</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
-                  <div key={day} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50">
-                    <span className="font-medium">{day}</span>
-                    <div className="flex items-center space-x-2">
-                      {index < 4 && <span className="text-green-600 font-semibold">✓ Completed</span>}
-                      {index === 4 && <span className="text-blue-600 font-semibold">Today</span>}
-                      {index > 4 && <span className="text-gray-400">Planned</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Upcoming Workouts</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {[
-                  { name: 'Cardio Blast', time: 'Tomorrow • 30 min', icon: '🏃' },
-                  { name: 'Leg Day', time: 'Sunday • 60 min', icon: '🦵' },
-                  { name: 'Core & Flexibility', time: 'Monday • 20 min', icon: '🧘' }
-                ].map((workout, index) => (
-                  <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg gap-2">
-                    <div className="flex items-center space-x-3">
-                      <span className="text-2xl">{workout.icon}</span>
-                      <div>
-                        <p className="font-medium">{workout.name}</p>
-                        <p className="text-sm text-muted-foreground">{workout.time}</p>
-                      </div>
-                    </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={handleScheduleWorkout}
-                      className="w-full sm:w-auto"
-                    >
-                      Schedule
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="space-y-6">
+        {/* AI Chat Assistant */}
+        <div className="mb-6">
           <AiChatAssistant />
-          <SubscriptionManager />
         </div>
       </div>
 
-      <WorkoutDetailsModal
-        isOpen={showWorkoutModal}
-        onClose={() => setShowWorkoutModal(false)}
-        onStartWorkout={handleStartWorkout}
-      />
+      {/* Weekly Progress */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Weekly Progress</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {[
+              { day: 'Mon', completed: true },
+              { day: 'Tue', completed: true },
+              { day: 'Wed', completed: true },
+              { day: 'Thu', completed: true },
+              { day: 'Fri', completed: false },
+              { day: 'Sat', completed: false },
+              { day: 'Sun', completed: false }
+            ].map((day, index) => (
+              <div key={index} className="flex items-center justify-between p-3 rounded-lg border">
+                <span className="font-medium">{day.day}</span>
+                <span className={`text-sm px-2 py-1 rounded ${
+                  day.completed 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' 
+                    : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+                }`}>
+                  {day.completed ? '✓ Completed' : 'Pending'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <SubscriptionManager />
+      
+      {showWorkoutModal && (
+        <WorkoutDetailsModal 
+          isOpen={showWorkoutModal}
+          onClose={() => setShowWorkoutModal(false)}
+          workout={{
+            name: "Upper Body Strength",
+            duration: 45,
+            exercises: [
+              { name: "Push-ups", sets: 3, reps: 12 },
+              { name: "Pull-ups", sets: 3, reps: 8 },
+              { name: "Bench Press", sets: 4, reps: 10 },
+              { name: "Shoulder Press", sets: 3, reps: 12 },
+              { name: "Bicep Curls", sets: 3, reps: 15 },
+              { name: "Tricep Dips", sets: 3, reps: 12 }
+            ]
+          }}
+        />
+      )}
     </div>
   );
 };

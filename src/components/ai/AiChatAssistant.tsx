@@ -139,15 +139,15 @@ export const AiChatAssistant = () => {
                 }`}
               >
                 {message.role === 'assistant' && (
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                    <Bot className="h-4 w-4 text-blue-600" />
+                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                    <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   </div>
                 )}
                 <div
                   className={`max-w-[80%] rounded-lg p-3 ${
                     message.role === 'user'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-900'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
                   }`}
                 >
                   <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
@@ -164,18 +164,18 @@ export const AiChatAssistant = () => {
             ))}
             {isLoading && (
               <div className="flex items-start gap-2 justify-start">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                  <Bot className="h-4 w-4 text-blue-600" />
+                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                  <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <div className="bg-gray-100 rounded-lg p-3 flex items-center gap-2">
+                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 flex items-center gap-2">
                   <LoadingSpinner size="sm" />
-                  <span className="text-sm text-gray-600">AI is thinking...</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">AI is thinking...</span>
                 </div>
               </div>
             )}
           </div>
         </ScrollArea>
-        <div className="p-4 border-t bg-gray-50">
+        <div className="p-4 border-t bg-gray-50 dark:bg-gray-900/50 mt-4">
           <div className="flex gap-2">
             <Input
               value={input}
@@ -183,7 +183,7 @@ export const AiChatAssistant = () => {
               onKeyPress={handleKeyPress}
               placeholder="Ask me anything about fitness..."
               disabled={isLoading}
-              className="flex-1 bg-white"
+              className="flex-1 bg-white dark:bg-gray-800"
             />
             <Button 
               onClick={sendMessage} 
