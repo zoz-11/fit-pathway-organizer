@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Apple, Coffee, Utensils, Moon } from "lucide-react";
@@ -120,7 +119,7 @@ const DietPlan = () => {
                 <CardContent>
                   <div className="space-y-3">
                     {meal.foods.map((food, foodIndex) => (
-                      <div key={foodIndex} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div key={foodIndex} className="flex items-center justify-between p-3 bg-white dark:bg-card rounded-lg">
                         <div>
                           <p className="font-medium">{food.name}</p>
                           <p className="text-sm text-gray-600">{food.calories} cal • {food.protein} protein</p>

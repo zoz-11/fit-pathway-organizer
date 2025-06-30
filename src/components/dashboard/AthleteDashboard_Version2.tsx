@@ -157,17 +157,17 @@ export const AthleteDashboard_Version2 = () => {
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-4 w-full md:w-auto">
-                <div className="flex flex-col items-center justify-center p-2 bg-white rounded-lg shadow-sm">
+                <div className="flex flex-col items-center justify-center p-2 bg-white dark:bg-card rounded-lg shadow-sm">
                   <Clock className="h-4 w-4 text-blue-500 mb-1" />
                   <span className="text-xl font-bold">{formatTime(workoutTime)}</span>
                   <span className="text-xs text-gray-500">Duration</span>
                 </div>
-                <div className="flex flex-col items-center justify-center p-2 bg-white rounded-lg shadow-sm">
+                <div className="flex flex-col items-center justify-center p-2 bg-white dark:bg-card rounded-lg shadow-sm">
                   <Heart className={`h-4 w-4 ${getHeartRateColor(heartRate)} mb-1`} />
                   <span className={`text-xl font-bold ${getHeartRateColor(heartRate)}`}>{heartRate}</span>
                   <span className="text-xs text-gray-500">BPM</span>
                 </div>
-                <div className="flex flex-col items-center justify-center p-2 bg-white rounded-lg shadow-sm">
+                <div className="flex flex-col items-center justify-center p-2 bg-white dark:bg-card rounded-lg shadow-sm">
                   <Flame className="h-4 w-4 text-orange-500 mb-1" />
                   <span className="text-xl font-bold">{Math.round(caloriesBurned)}</span>
                   <span className="text-xs text-gray-500">Calories</span>
@@ -273,10 +273,10 @@ export const AthleteDashboard_Version2 = () => {
                 <CardContent>
                   <div className="space-y-3">
                     {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
-                      <div key={day} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50">
+                      <div key={day} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800">
                         <span className="font-medium">{day}</span>
                         <div className="flex-1 mx-4">
-                          <Progress value={index < 4 ? 100 : index === 4 ? 60 : 0} className="h-2" />
+                          <Progress value={index < 4 ? 100 : index === 4 ? 60 : 0} className="h-2 bg-gray-200 dark:bg-gray-800" />
                         </div>
                         <div className="flex items-center space-x-2 min-w-[100px] text-right">
                           {index < 4 && <span className="text-green-600 font-semibold">✓ Completed</span>}
@@ -301,7 +301,7 @@ export const AthleteDashboard_Version2 = () => {
                       { name: 'Leg Day', time: 'Sunday • 60 min', icon: '🦵', intensity: 'High' },
                       { name: 'Core & Flexibility', time: 'Monday • 20 min', icon: '🧘', intensity: 'Low' }
                     ].map((workout, index) => (
-                      <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg gap-2 hover:bg-gray-100 transition-colors">
+                      <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 dark:bg-card rounded-lg gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                         <div className="flex items-center space-x-3">
                           <span className="text-2xl">{workout.icon}</span>
                           <div>
@@ -351,14 +351,14 @@ export const AthleteDashboard_Version2 = () => {
                         <span className="text-sm font-medium">Weekly Goal Progress</span>
                         <span className="text-sm font-medium">70%</span>
                       </div>
-                      <Progress value={70} className="h-2" />
+                      <Progress value={70} className="h-2 bg-gray-200 dark:bg-gray-800" />
                     </div>
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className="text-sm font-medium">Monthly Target</span>
                         <span className="text-sm font-medium">45%</span>
                       </div>
-                      <Progress value={45} className="h-2" />
+                      <Progress value={45} className="h-2 bg-gray-200 dark:bg-gray-800" />
                     </div>
                     <div className="pt-2">
                       <h4 className="text-sm font-medium mb-2">Recent Achievements</h4>
@@ -393,7 +393,7 @@ export const AthleteDashboard_Version2 = () => {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">Your fitness journey visualized over time</p>
-              <div className="h-[300px] flex items-center justify-center bg-gray-50 rounded-md">
+              <div className="h-[300px] flex items-center justify-center bg-gray-50 dark:bg-card rounded-md">
                 <p className="text-muted-foreground">Progress charts will be displayed here</p>
               </div>
             </CardContent>
@@ -461,25 +461,25 @@ export const AthleteDashboard_Version2 = () => {
                   <h3 className="text-sm font-medium text-gray-500">Calories</h3>
                   <p className="text-2xl font-bold">1,840</p>
                   <p className="text-xs text-gray-500">of 2,200 goal</p>
-                  <Progress value={83} className="h-1 mt-2" />
+                  <Progress value={83} className="h-1 mt-2 bg-gray-200 dark:bg-gray-800" />
                 </div>
                 <div className="p-4 bg-red-50 rounded-lg text-center">
                   <h3 className="text-sm font-medium text-gray-500">Protein</h3>
                   <p className="text-2xl font-bold">96g</p>
                   <p className="text-xs text-gray-500">of 120g goal</p>
-                  <Progress value={80} className="h-1 mt-2" />
+                  <Progress value={80} className="h-1 mt-2 bg-gray-200 dark:bg-gray-800" />
                 </div>
                 <div className="p-4 bg-yellow-50 rounded-lg text-center">
                   <h3 className="text-sm font-medium text-gray-500">Carbs</h3>
                   <p className="text-2xl font-bold">210g</p>
                   <p className="text-xs text-gray-500">of 250g goal</p>
-                  <Progress value={84} className="h-1 mt-2" />
+                  <Progress value={84} className="h-1 mt-2 bg-gray-200 dark:bg-gray-800" />
                 </div>
                 <div className="p-4 bg-green-50 rounded-lg text-center">
                   <h3 className="text-sm font-medium text-gray-500">Fats</h3>
                   <p className="text-2xl font-bold">58g</p>
                   <p className="text-xs text-gray-500">of 70g goal</p>
-                  <Progress value={82} className="h-1 mt-2" />
+                  <Progress value={82} className="h-1 mt-2 bg-gray-200 dark:bg-gray-800" />
                 </div>
               </div>
               
@@ -491,7 +491,7 @@ export const AthleteDashboard_Version2 = () => {
                   { meal: 'Snack', food: 'Greek yogurt with nuts', calories: 240, time: '3:00 PM' },
                   { meal: 'Dinner', food: 'Salmon with quinoa and vegetables', calories: 600, time: '7:00 PM' }
                 ].map((meal, i) => (
-                  <div key={i} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div key={i} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-card rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                     <div>
                       <div className="flex items-center">
                         <span className="font-medium">{meal.meal}</span>

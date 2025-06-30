@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Target, Calendar, Award } from "lucide-react";
@@ -87,7 +86,7 @@ const Progress = () => {
           <CardContent>
             <div className="space-y-4">
               {progressData.map((data, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-card rounded-lg">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 text-center font-medium">{data.month}</div>
                     <div className="flex-1">
@@ -101,7 +100,7 @@ const Progress = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="w-32 bg-gray-200 rounded-full h-2">
+                  <div className="w-32 bg-gray-200 dark:bg-gray-800 rounded-full h-2">
                     <div 
                       className="bg-blue-600 h-2 rounded-full" 
                       style={{ width: `${(data.workouts / 25) * 100}%` }}
@@ -145,7 +144,7 @@ const Progress = () => {
                   <p className="font-medium">Reach 165 lbs</p>
                   <p className="text-sm text-gray-600">5 lbs to go</p>
                 </div>
-                <div className="w-32 bg-gray-200 rounded-full h-2">
+                <div className="w-32 bg-gray-200 dark:bg-gray-800 rounded-full h-2">
                   <div className="bg-green-600 h-2 rounded-full" style={{ width: '70%' }}></div>
                 </div>
               </div>
@@ -154,7 +153,7 @@ const Progress = () => {
                   <p className="font-medium">30-day streak</p>
                   <p className="text-sm text-gray-600">15 days completed</p>
                 </div>
-                <div className="w-32 bg-gray-200 rounded-full h-2">
+                <div className="w-32 bg-gray-200 dark:bg-gray-800 rounded-full h-2">
                   <div className="bg-blue-600 h-2 rounded-full" style={{ width: '50%' }}></div>
                 </div>
               </div>
