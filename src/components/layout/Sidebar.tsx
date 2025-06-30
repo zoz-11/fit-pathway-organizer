@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { 
   Home, 
@@ -67,9 +66,9 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   const navItems = userRole === "trainer" ? trainerNavItems : athleteNavItems;
 
   return (
-    <div className="h-full bg-white border-r border-gray-200 flex flex-col">
+    <div className="h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col">
       <div className="flex items-center justify-between p-4 lg:hidden">
-        <span className="text-lg font-semibold">Menu</span>
+        <span className="text-lg font-semibold dark:text-white">Menu</span>
         <Button 
           variant="ghost" 
           size="icon" 
@@ -80,7 +79,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
               onClose();
             }
           }}
-          className="hover:bg-gray-100"
+          className="hover:bg-gray-100 dark:hover:bg-gray-800"
         >
           <X className="h-5 w-5" />
         </Button>
@@ -99,7 +98,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
                 "w-full justify-start space-x-3 py-3 px-4 cursor-pointer text-left",
                 isActive 
                   ? "bg-gradient-to-r from-blue-500 to-green-500 text-white shadow-md" 
-                  : "hover:bg-blue-50 hover:text-blue-700 text-gray-700"
+                  : "hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400 text-gray-700 dark:text-gray-300"
               )}
               onClick={(e) => {
                 e.preventDefault();
@@ -114,10 +113,10 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
         <div className="text-center">
-          <p className="text-xs text-gray-500">FitPathway Organizer</p>
-          <p className="text-xs text-gray-400">v1.0.0</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">FitPathway Organizer</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500">v1.0.0</p>
         </div>
       </div>
     </div>

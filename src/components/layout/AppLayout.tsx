@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
@@ -13,7 +12,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="flex h-screen">
         {/* Mobile sidebar overlay */}
         {sidebarOpen && (
@@ -43,7 +42,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
             </Button>
           </Header>
           
-          <main className="flex-1 overflow-auto p-6">
+          <main className="flex-1 overflow-auto p-6 bg-background">
             {children}
           </main>
         </div>

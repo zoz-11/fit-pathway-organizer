@@ -1,4 +1,3 @@
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Bell, Settings, LogOut, User } from "lucide-react";
@@ -33,7 +32,7 @@ export const Header = ({ children }: HeaderProps) => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4">
+    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           {children}
@@ -41,7 +40,7 @@ export const Header = ({ children }: HeaderProps) => {
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
               FitPathway
             </h1>
-            <p className="text-sm text-gray-500">Organizer</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Organizer</p>
           </div>
         </div>
 
@@ -53,7 +52,7 @@ export const Header = ({ children }: HeaderProps) => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center space-x-2 p-2 hover:bg-gray-100">
+              <Button variant="ghost" className="flex items-center space-x-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={undefined} />
                   <AvatarFallback className="bg-gradient-to-r from-blue-500 to-green-500 text-white">
@@ -61,22 +60,22 @@ export const Header = ({ children }: HeaderProps) => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="text-left hidden md:block">
-                  <p className="text-sm font-medium">{profile?.full_name || user?.email}</p>
-                  <p className="text-xs text-gray-500 capitalize">{profile?.role || 'user'}</p>
+                  <p className="text-sm font-medium dark:text-white">{profile?.full_name || user?.email}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{profile?.role || 'user'}</p>
                 </div>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-white border shadow-lg z-50">
-              <DropdownMenuItem onClick={handleProfileClick} className="cursor-pointer hover:bg-gray-50">
+            <DropdownMenuContent align="end" className="w-56 bg-white dark:bg-gray-800 border dark:border-gray-700 shadow-lg z-50">
+              <DropdownMenuItem onClick={handleProfileClick} className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleSettingsClick} className="cursor-pointer hover:bg-gray-50">
+              <DropdownMenuItem onClick={handleSettingsClick} className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600 cursor-pointer hover:bg-red-50" onClick={handleSignOut}>
+              <DropdownMenuItem className="text-red-600 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20" onClick={handleSignOut}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
               </DropdownMenuItem>
