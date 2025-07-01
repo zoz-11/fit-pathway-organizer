@@ -106,22 +106,22 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
         <div className="space-y-6">
           {/* Workout Summary */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-100">
+            <div className="text-center p-4 bg-white dark:bg-card rounded-lg border border-blue-100 dark:border-blue-900">
               <Clock className="h-6 w-6 text-blue-600 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-600">Duration</p>
               <p className="text-lg font-bold text-blue-600">45 min</p>
             </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg border border-green-100">
+            <div className="text-center p-4 bg-white dark:bg-card rounded-lg border border-green-100 dark:border-green-900">
               <Target className="h-6 w-6 text-green-600 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-600">Exercises</p>
               <p className="text-lg font-bold text-green-600">6</p>
             </div>
-            <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-100">
+            <div className="text-center p-4 bg-white dark:bg-card rounded-lg border border-orange-100 dark:border-orange-900">
               <Flame className="h-6 w-6 text-orange-600 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-600">Difficulty</p>
               <p className="text-lg font-bold text-orange-600">Medium</p>
             </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-100">
+            <div className="text-center p-4 bg-white dark:bg-card rounded-lg border border-purple-100 dark:border-purple-900">
               <Target className="h-6 w-6 text-purple-600 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-600">Target</p>
               <p className="text-lg font-bold text-purple-600">Upper</p>
@@ -149,7 +149,7 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
                         size="sm" 
                         variant="outline"
                         onClick={(e) => handleWatchDemo(exercise.name, e)}
-                        className="hover:bg-blue-50 hover:border-blue-300"
+                        className="hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-900"
                       >
                         <Play className="h-4 w-4 mr-1" />
                         Watch Demo
