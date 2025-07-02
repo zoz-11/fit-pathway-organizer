@@ -23,4 +23,4 @@ CREATE POLICY "Users can update their own profile" ON public.profiles
   FOR UPDATE USING (public.user_owns_profile(id));
 
 CREATE POLICY "Users can insert their own profile" ON public.profiles
-  FOR INSERT WITH CHECK (public.user_owns_profile(id));
+  FOR INSERT WITH CHECK (auth.uid() = id);
