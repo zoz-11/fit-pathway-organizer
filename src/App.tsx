@@ -17,7 +17,13 @@ import DietPlan from "./pages/DietPlan";
 import Progress from "./pages/Progress";
 import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
+import WorkoutLibrary from "./pages/WorkoutLibrary";
+import Achievements from "./pages/Achievements";
+import AssignedWorkoutsTrainer from "./pages/AssignedWorkoutsTrainer";
+import AssignedWorkouts from "./pages/AssignedWorkouts";
+import AthleteProgress from "./pages/AthleteProgress";
 import Settings from "./pages/Settings";
+import Members from "./pages/Members";
 import NotFound from "./pages/NotFound";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCancel from "./pages/SubscriptionCancel";
@@ -65,6 +71,46 @@ const App = () => {
                 } 
               />
               <Route 
+                path="/assigned-workouts" 
+                element={
+                  <ProtectedRoute>
+                    <AssignedWorkouts />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/achievements" 
+                element={
+                  <ProtectedRoute>
+                    <Achievements />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/assigned-workouts-trainer" 
+                element={
+                  <ProtectedRoute>
+                    <AssignedWorkoutsTrainer />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/workout-library" 
+                element={
+                  <ProtectedRoute>
+                    <WorkoutLibrary />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/athlete-progress/:athleteId" 
+                element={
+                  <ProtectedRoute>
+                    <AthleteProgress />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
                 path="/diet-plan" 
                 element={
                   <ProtectedRoute>
@@ -101,6 +147,14 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <Settings />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/members" 
+                element={
+                  <ProtectedRoute>
+                    <Members />
                   </ProtectedRoute>
                 } 
               />

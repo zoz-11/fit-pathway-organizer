@@ -8,7 +8,8 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Settings = () => {
   const { signOut } = useAuth();
@@ -16,9 +17,63 @@ const Settings = () => {
   const [language, setLanguage] = useState('en');
   const [units, setUnits] = useState('imperial');
   const [mounted, setMounted] = useState(false);
+  const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false);
+  const [twoFactorLoading, setTwoFactorLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+    const fetchTwoFactorStatus = async () => {
+      setTwoFactorLoading(true);
+      try {
+        const { data, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+        if (error) throw error;
+        setIsTwoFactorEnabled(data.currentLevel === 'aal2');
+      } catch (error) {
+        console.error('Error fetching 2FA status:', error);
+        toast.error('Failed to fetch 2FA status.');
+      } finally {
+        setTwoFactorLoading(false);
+      }
+    };
+    fetchTwoFactorStatus();
+  }, []);
+
+  const handleTwoFactorToggle = useCallback(async (enabled: boolean) => {
+    setTwoFactorLoading(true);
+    try {
+      if (enabled) {
+        const { data, error } = await supabase.auth.mfa.enroll({
+          factorType: 'totp',
+        });
+        if (error) throw error;
+        // In a real app, you'd show the QR code and secret to the user here
+        // and prompt them to verify it.
+        toast.info('2FA enrollment initiated. Please complete setup in your authenticator app.');
+      } else {
+        // To disable 2FA, you typically need to unenroll all factors.
+        // This example assumes a simple unenrollment, but a more robust solution
+        // would list and unenroll specific factors.
+        const { data: factors, error: listError } = await supabase.auth.mfa.listFactors();
+        if (listError) throw listError;
+
+        const totpFactor = factors.find(factor => factor.factorType === 'totp');
+        if (totpFactor) {
+          const { error } = await supabase.auth.mfa.unenroll({
+            factorId: totpFactor.id,
+          });
+          if (error) throw error;
+          toast.success('Two-factor authentication disabled.');
+          setIsTwoFactorEnabled(false);
+        } else {
+          toast.info('No TOTP factor found to disable.');
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling 2FA:', error);
+      toast.error(`Failed to ${enabled ? 'enable' : 'disable'} 2FA.`);
+    } finally {
+      setTwoFactorLoading(false);
+    }
   }, []);
 
   const handleNotificationToggle = (type: string, enabled: boolean) => {
@@ -146,8 +201,13 @@ const Settings = () => {
                 <Label className="text-base font-medium">Two-Factor Authentication</Label>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Add extra security to your account</p>
               </div>
-              <Button variant="outline" size="sm" onClick={() => toast.info('Two-factor authentication setup started')}>
-                Enable
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => handleTwoFactorToggle(!isTwoFactorEnabled)}
+                disabled={twoFactorLoading}
+              >
+                {twoFactorLoading ? 'Loading...' : (isTwoFactorEnabled ? 'Disable' : 'Enable')}
               </Button>
             </div>
             <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">

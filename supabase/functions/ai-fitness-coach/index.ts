@@ -1,6 +1,7 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.43.2";
 
 const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
 
@@ -16,6 +17,42 @@ serve(async (req) => {
 
   try {
     const { message, userProfile, workoutHistory } = await req.json();
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
+    );
+
+    const {
+      data: { user },
+    } = await supabaseClient.auth.getUser();
+
+    if (!user) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: No active session' }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // Optional: Verify that the userProfile.id matches the authenticated user.id
+    // This adds an extra layer of security to ensure users are only querying for their own data.
+    if (userProfile && userProfile.id && userProfile.id !== user.id) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized: User ID mismatch' }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
     console.log('Received request:', { message, userProfile });
 

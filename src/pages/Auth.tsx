@@ -46,16 +46,32 @@ const Auth = () => {
         throw error;
       }
 
-      if (data.user && !data.user.email_confirmed_at) {
-        setMessage("Account created! Please check your email (including spam folder) and click the verification link before signing in.");
-      } else if (data.user) {
-        console.log("Signup successful, redirecting...");
-        // Force a page refresh to ensure clean auth state
-        window.location.href = "/";
+      if (data.user) {
+        console.log("User created, now inserting into profiles table...");
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .insert([{ id: data.user.id, full_name: fullName, role: role, email: email }]);
+
+        if (profileError) {
+          console.error("Error inserting profile:", profileError);
+          // In a production app, you might want to delete the user if profile creation fails
+          // to avoid having users without a profile.
+          // await supabase.auth.api.deleteUser(data.user.id);
+          setError("Failed to create your profile. Please try again.");
+          return;
+        }
+
+        if (!data.user.email_confirmed_at) {
+          setMessage("Account created! Please check your email (including spam folder) and click the verification link before signing in.");
+        } else {
+          console.log("Signup successful, redirecting...");
+          // Force a page refresh to ensure clean auth state
+          window.location.href = "/";
+        }
       }
     } catch (error: any) {
-      console.error("Sign up error details:", error);
-      setError(error.message || "An error occurred during sign up");
+      console.error("Sign up error:", error);
+      setError((error as Error).message || "An error occurred during sign up");
     } finally {
       setLoading(false);
     }

@@ -6,6 +6,7 @@ import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
 import { WorkoutDetailsModal } from "@/components/workout/WorkoutDetailsModal";
 import { useAuth } from "@/hooks/useAuth";
+import { useStreaks } from "@/hooks/useStreaks";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -29,6 +30,7 @@ const StatCard = ({ title, value, icon: Icon, description }: {
 
 export const AthleteDashboard = () => {
   const { profile } = useAuth();
+  const { data: streakData, isLoading: isLoadingStreaks } = useStreaks();
   const [workoutInProgress, setWorkoutInProgress] = useState(false);
   const [workoutTime, setWorkoutTime] = useState(0);
   const [showWorkoutModal, setShowWorkoutModal] = useState(false);
@@ -43,12 +45,16 @@ export const AthleteDashboard = () => {
       const timer = setInterval(() => {
         setWorkoutTime(prev => prev + 1);
       }, 1000);
-      
-      (window as any).workoutTimer = timer;
+
+      interface CustomWindow extends Window {
+        workoutTimer?: NodeJS.Timeout;
+      }
+
+      (window as CustomWindow).workoutTimer = timer;
     } else if (workoutInProgress) {
       setWorkoutInProgress(false);
       setWorkoutCompleted(true);
-      clearInterval((window as any).workoutTimer);
+      clearInterval((window as CustomWindow).workoutTimer);
       const minutes = Math.floor(workoutTime / 60);
       const seconds = workoutTime % 60;
       toast.success(`Workout completed! Duration: ${minutes}m ${seconds}s`);
@@ -93,9 +99,9 @@ export const AthleteDashboard = () => {
         />
         <StatCard
           title="Streak"
-          value="7 days"
+          value={isLoadingStreaks ? "..." : `${streakData?.currentStreak || 0} days`}
           icon={Flame}
-          description="Personal best!"
+          description="Current streak!"
         />
         <StatCard
           title="Goals Achieved"

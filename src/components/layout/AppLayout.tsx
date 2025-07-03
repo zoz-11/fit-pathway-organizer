@@ -4,6 +4,9 @@ import { Header } from "./Header";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 
+import { ProfileCompletionBanner } from "@/components/ui/ProfileCompletionBanner";
+import { InvitationNotifications } from "@/components/members/InvitationNotifications";
+
 interface AppLayoutProps {
   children: React.ReactNode;
 }
@@ -43,6 +46,8 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           </Header>
           
           <main className="flex-1 overflow-auto p-6 bg-background">
+            <ProfileCompletionBanner />
+            <InvitationNotifications />
             {children}
           </main>
         </div>
