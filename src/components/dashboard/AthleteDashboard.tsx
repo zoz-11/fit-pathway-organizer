@@ -223,17 +223,9 @@ export const AthleteDashboard = () => {
         <WorkoutDetailsModal 
           isOpen={showWorkoutModal}
           onClose={() => setShowWorkoutModal(false)}
-          workout={{
-            name: "Upper Body Strength",
-            duration: 45,
-            exercises: [
-              { name: "Push-ups", sets: 3, reps: 12 },
-              { name: "Pull-ups", sets: 3, reps: 8 },
-              { name: "Bench Press", sets: 4, reps: 10 },
-              { name: "Shoulder Press", sets: 3, reps: 12 },
-              { name: "Bicep Curls", sets: 3, reps: 15 },
-              { name: "Tricep Dips", sets: 3, reps: 12 }
-            ]
+          onStartWorkout={() => {
+            console.log("Starting workout from dashboard");
+            setShowWorkoutModal(false);
           }}
         />
       )}

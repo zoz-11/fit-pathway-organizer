@@ -25,6 +25,8 @@ const Auth = () => {
     setMessage(null);
 
     try {
+      console.log("Starting signup process with:", { email, fullName, role });
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -37,16 +39,22 @@ const Auth = () => {
         },
       });
 
-      if (error) throw error;
+      console.log("Signup response:", { data, error });
+
+      if (error) {
+        console.error("Supabase signup error:", error);
+        throw error;
+      }
 
       if (data.user && !data.user.email_confirmed_at) {
         setMessage("Please check your email and click the link to verify your account!");
       } else if (data.user) {
+        console.log("Signup successful, redirecting...");
         // Force a page refresh to ensure clean auth state
         window.location.href = "/";
       }
     } catch (error: any) {
-      console.error("Sign up error:", error);
+      console.error("Sign up error details:", error);
       setError(error.message || "An error occurred during sign up");
     } finally {
       setLoading(false);
