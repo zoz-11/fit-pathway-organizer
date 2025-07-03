@@ -69,7 +69,7 @@ const Auth = () => {
           window.location.href = "/";
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Sign up error:", error);
       setError((error as Error).message || "An error occurred during sign up");
     } finally {
@@ -104,13 +104,17 @@ const Auth = () => {
         // Force a page refresh to ensure clean auth state
         window.location.href = "/";
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Sign in error:", error);
+<<<<<<< Updated upstream
       if (error.message.includes("Failed to fetch")) {
         setError("Connection error. Please check your internet connection and try again.");
       } else {
         setError(error.message || "An error occurred during sign in");
       }
+=======
+      setError((error as Error).message || "An error occurred during sign in");
+>>>>>>> Stashed changes
     } finally {
       setLoading(false);
     }

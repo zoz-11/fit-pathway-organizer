@@ -30,6 +30,7 @@ interface AssignmentData {
   description: string;
 }
 
+<<<<<<< Updated upstream
 interface InvitationData {
   trainerName: string;
 }
@@ -38,6 +39,12 @@ interface NotificationEmailRequest {
   to: string;
   type: 'workout_reminder' | 'progress_update' | 'welcome' | 'assignment' | 'invitation';
   data: WorkoutReminderData | ProgressUpdateData | WelcomeData | AssignmentData | InvitationData;
+=======
+interface NotificationEmailRequest {
+  to: string;
+  type: 'workout_reminder' | 'progress_update' | 'welcome' | 'assignment';
+  data: WorkoutReminderData | ProgressUpdateData | WelcomeData | AssignmentData;
+>>>>>>> Stashed changes
 }
 
 const handler = async (req: Request): Promise<Response> => {
