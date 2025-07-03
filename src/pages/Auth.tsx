@@ -47,7 +47,7 @@ const Auth = () => {
       }
 
       if (data.user && !data.user.email_confirmed_at) {
-        setMessage("Please check your email and click the link to verify your account!");
+        setMessage("Account created! Please check your email (including spam folder) and click the verification link before signing in.");
       } else if (data.user) {
         console.log("Signup successful, redirecting...");
         // Force a page refresh to ensure clean auth state
@@ -73,7 +73,16 @@ const Auth = () => {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message === "Email not confirmed") {
+          setError("Please verify your email before signing in. Check your inbox and spam folder for the verification link.");
+        } else if (error.message.includes("Failed to fetch")) {
+          setError("Connection error. Please check your internet connection and try again.");
+        } else {
+          setError(error.message || "An error occurred during sign in");
+        }
+        return;
+      }
 
       if (data.user) {
         // Force a page refresh to ensure clean auth state
@@ -81,7 +90,11 @@ const Auth = () => {
       }
     } catch (error: any) {
       console.error("Sign in error:", error);
-      setError(error.message || "An error occurred during sign in");
+      if (error.message.includes("Failed to fetch")) {
+        setError("Connection error. Please check your internet connection and try again.");
+      } else {
+        setError(error.message || "An error occurred during sign in");
+      }
     } finally {
       setLoading(false);
     }
