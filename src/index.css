@@ -1,9 +1,8 @@
+@import './apple-hig-styles.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import Apple HIG styles */
-@import './apple-hig-styles.css';
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
 

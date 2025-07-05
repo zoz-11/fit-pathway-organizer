@@ -65,18 +65,34 @@ CREATE POLICY "Trainers can view their athletes" ON public.profiles
 
 -- Recreate the handle_new_user function to ensure it works correctly
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER AS $
+DECLARE
+  _full_name TEXT;
+  _role public.user_role;
 BEGIN
+  _full_name := COALESCE(NEW.raw_user_meta_data->>'full_name', 'User');
+  _role := COALESCE((NEW.raw_user_meta_data->>'role')::public.user_role, 'athlete');
+
+  -- Validate full_name
+  IF _full_name IS NULL OR _full_name = '' THEN
+    RAISE EXCEPTION 'Full name cannot be empty.';
+  END IF;
+
+  -- Validate role
+  IF _role IS NULL OR (_role != 'trainer' AND _role != 'athlete') THEN
+    RAISE EXCEPTION 'Invalid role specified. Role must be ''trainer'' or ''athlete''.';
+  END IF;
+
   INSERT INTO public.profiles (id, email, full_name, role)
   VALUES (
     NEW.id,
     NEW.email,
-    COALESCE(NEW.raw_user_meta_data->>'full_name', 'User'),
-    COALESCE((NEW.raw_user_meta_data->>'role')::user_role, 'athlete')
+    _full_name,
+    _role
   );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Drop existing trigger if it exists and recreate
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;

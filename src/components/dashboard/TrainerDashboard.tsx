@@ -1,12 +1,20 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Calendar, Dumbbell, BarChart3, MessageSquare, Plus, UserPlus, Send, PlusCircle } from "lucide-react";
+import { Users, Calendar, Dumbbell, BarChart3, Plus, UserPlus, Send, PlusCircle } from "lucide-react";
 import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
-import { useAuth } from "@/hooks/useAuth";
+import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
+import { useAuth } from "@/hooks/useAuthHook";
 import { toast } from "sonner";
 import { useState } from "react";
+
+interface Activity {
+  id: number;
+  text: string;
+  time: string;
+  type: "success" | "info" | "warning";
+}
 
 const StatCard = ({ title, value, icon: Icon, description }: {
   title: string;
@@ -28,18 +36,15 @@ const StatCard = ({ title, value, icon: Icon, description }: {
 
 export const TrainerDashboard = () => {
   const { profile } = useAuth();
-  const [activities, setActivities] = useState([
-    { id: 1, text: "John completed Upper Body Workout", time: "2 hours ago", type: "success" },
-    { id: 2, text: "Sarah started Cardio Program", time: "4 hours ago", type: "info" },
-    { id: 3, text: "Mike missed scheduled workout", time: "Yesterday", type: "warning" },
-  ]);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  
 
   const handleAddAthlete = () => {
     const newActivity = {
       id: activities.length + 1,
       text: "New athlete 'Alex Johnson' has been added to your roster",
       time: "Just now",
-      type: "success"
+      type: "success" as const
     };
     setActivities(prev => [newActivity, ...prev]);
     toast.success("New athlete added successfully!", {
@@ -52,7 +57,7 @@ export const TrainerDashboard = () => {
       id: activities.length + 1,
       text: "Workout scheduled for John - Upper Body Strength (Tomorrow 10 AM)",
       time: "Just now",
-      type: "info"
+      type: "info" as const
     };
     setActivities(prev => [newActivity, ...prev]);
     toast.success("Workout scheduled!", {
@@ -71,7 +76,7 @@ export const TrainerDashboard = () => {
       id: activities.length + 1,
       text: "New exercise 'Diamond Push-ups' added to exercise library",
       time: "Just now",
-      type: "success"
+      type: "success" as const
     };
     setActivities(prev => [newActivity, ...prev]);
     toast.success("Exercise created!", {
@@ -94,7 +99,7 @@ export const TrainerDashboard = () => {
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Trainer Dashboard</h1>
           <p className="text-muted-foreground mt-1">
-            Welcome back, {profile?.full_name || 'Trainer'}! Here's what's happening with your athletes.
+            Welcome back, {profile?.full_name ?? 'Trainer'}! Here's what's happening with your athletes.
           </p>
         </div>
         <Button 
@@ -201,24 +206,7 @@ export const TrainerDashboard = () => {
           </Card>
 
           {/* Recent Activity */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {activities.map((activity) => (
-                  <div key={activity.id} className="flex items-start space-x-4 p-2 rounded-lg hover:bg-gray-50">
-                    <span className="text-lg mt-0.5">{getActivityIcon(activity.type)}</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">{activity.text}</p>
-                      <p className="text-xs text-muted-foreground">{activity.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <ActivityFeed />
         </div>
 
         {/* Right Column */}

@@ -1,6 +1,4 @@
-
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -9,6 +7,8 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { ThemeProvider } from "next-themes";
 import { useEffect } from "react";
 import { initializeClickabilityFixes } from "./fix-app-issues.js";
+import { usePushNotifications } from "./hooks/usePushNotifications";
+import { toast } from "./components/ui/use-toast";
 import "./apple-hig-styles.css";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -27,6 +27,8 @@ import Members from "./pages/Members";
 import NotFound from "./pages/NotFound";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCancel from "./pages/SubscriptionCancel";
+import Goals from "./pages/Goals";
+import OAuthCallback from "./pages/OAuthCallback";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,7 +40,10 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
+  usePushNotifications(); // Initialize push notifications
+
   useEffect(() => {
+    // Initializes fixes for clickability issues, particularly relevant for mobile browsers.
     initializeClickabilityFixes();
   }, []);
 
@@ -47,8 +52,7 @@ const App = () => {
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
         <AuthProvider>
           <TooltipProvider>
-            <Toaster />
-            <Sonner />
+            <SonnerToaster />
             <BrowserRouter>
             <Routes>
               <Route path="/auth" element={<Auth />} />
@@ -150,14 +154,23 @@ const App = () => {
                   </ProtectedRoute>
                 } 
               />
-              <Route 
-                path="/members" 
+              <Route
+                path="/members"
                 element={
                   <ProtectedRoute>
                     <Members />
                   </ProtectedRoute>
-                } 
+                }
               />
+              <Route
+                path="/goals"
+                element={
+                  <ProtectedRoute>
+                    <Goals />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/oauth-callback" element={<OAuthCallback />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

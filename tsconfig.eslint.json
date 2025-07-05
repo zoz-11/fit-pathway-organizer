@@ -1,14 +1,11 @@
 {
   "extends": "./tsconfig.json",
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "dashboard/**/*.ts",
-    "dashboard/**/*.tsx",
-    "supabase/**/*.ts",
-    "supabase/**/*.tsx",
-    "vite.config.ts",
+    "src",
+    "dashboard",
+    "supabase/functions",
     "tailwind.config.ts",
+    "vite.config.ts",
     "eslint.config.js"
   ]
 }

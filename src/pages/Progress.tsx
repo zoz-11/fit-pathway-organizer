@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Target, Calendar, Award } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { ProgressCharts } from "@/components/dashboard/ProgressCharts";
+import { AdvancedAnalytics } from "@/components/dashboard/AdvancedAnalytics";
 
 const Progress = () => {
   const progressData = [
@@ -79,38 +81,10 @@ const Progress = () => {
         </div>
 
         {/* Progress Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>6-Month Progress</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {progressData.map((data, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-card rounded-lg">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 text-center font-medium">{data.month}</div>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-4">
-                        <div className="text-sm">
-                          <span className="font-medium">{data.workouts}</span> workouts
-                        </div>
-                        <div className="text-sm">
-                          <span className="font-medium">{data.weight}</span> lbs
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-32 bg-gray-200 dark:bg-gray-800 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full" 
-                      style={{ width: `${(data.workouts / 25) * 100}%` }}
-                    ></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <ProgressCharts />
+
+        {/* Advanced Analytics */}
+        <AdvancedAnalytics />
 
         {/* Achievements */}
         <Card>

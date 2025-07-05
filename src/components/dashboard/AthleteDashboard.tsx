@@ -5,7 +5,8 @@ import { Calendar, Trophy, Target, Flame, Play, Clock, Dumbbell } from "lucide-r
 import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
 import { WorkoutDetailsModal } from "@/components/workout/WorkoutDetailsModal";
-import { useAuth } from "@/hooks/useAuth";
+import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
+import { useAuth } from "@/hooks/useAuthHook";
 import { useStreaks } from "@/hooks/useStreaks";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -35,30 +36,54 @@ export const AthleteDashboard = () => {
   const [workoutTime, setWorkoutTime] = useState(0);
   const [showWorkoutModal, setShowWorkoutModal] = useState(false);
   const [workoutCompleted, setWorkoutCompleted] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [timerIntervalId, setTimerIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   const handleStartWorkout = () => {
     if (!workoutInProgress && !workoutCompleted) {
+      // Start workout
       setWorkoutInProgress(true);
       setWorkoutTime(0);
+      setIsPaused(false);
       toast.success("Workout started! Timer is now running.");
       
       const timer = setInterval(() => {
         setWorkoutTime(prev => prev + 1);
       }, 1000);
+      setTimerIntervalId(timer);
 
-      interface CustomWindow extends Window {
-        workoutTimer?: NodeJS.Timeout;
+    } else if (workoutInProgress && !isPaused) {
+      // Pause workout
+      setIsPaused(true);
+      if (timerIntervalId) {
+        clearInterval(timerIntervalId);
+        setTimerIntervalId(null);
       }
-
-      (window as CustomWindow).workoutTimer = timer;
-    } else if (workoutInProgress) {
-      setWorkoutInProgress(false);
-      setWorkoutCompleted(true);
-      clearInterval((window as CustomWindow).workoutTimer);
-      const minutes = Math.floor(workoutTime / 60);
-      const seconds = workoutTime % 60;
-      toast.success(`Workout completed! Duration: ${minutes}m ${seconds}s`);
+      toast.info("Workout paused.");
+    } else if (workoutInProgress && isPaused) {
+      // Resume workout
+      setIsPaused(false);
+      const timer = setInterval(() => {
+        setWorkoutTime(prev => prev + 1);
+      }, 1000);
+      setTimerIntervalId(timer);
+      toast.success("Workout resumed!");
+    } else if (workoutCompleted) {
+      // End workout (if already completed, this button won't be active)
+      // This case should ideally not be reachable if the button is disabled
     }
+  };
+
+  const handleEndWorkout = () => {
+    setWorkoutInProgress(false);
+    setWorkoutCompleted(true);
+    if (timerIntervalId) {
+      clearInterval(timerIntervalId);
+      setTimerIntervalId(null);
+    }
+    const minutes = Math.floor(workoutTime / 60);
+    const seconds = workoutTime % 60;
+    toast.success(`Workout completed! Duration: ${minutes}m ${seconds}s`);
   };
 
   const handleViewDetails = () => {
@@ -147,24 +172,22 @@ export const AthleteDashboard = () => {
                   <Button 
                     onClick={handleStartWorkout}
                     className={`flex-1 sm:flex-none ${
-                      workoutCompleted 
-                        ? 'bg-green-600 hover:bg-green-700' 
-                        : workoutInProgress 
-                          ? 'bg-red-600 hover:bg-red-700' 
-                          : 'bg-blue-600 hover:bg-blue-700'
+                      workoutInProgress && !isPaused ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-blue-600 hover:bg-blue-700'
                     }`}
                     disabled={workoutCompleted}
                   >
-                    {workoutCompleted ? (
-                      <>
-                        <Trophy className="mr-2 h-4 w-4" />
-                        Completed
-                      </>
-                    ) : workoutInProgress ? (
-                      <>
-                        <Clock className="mr-2 h-4 w-4" />
-                        End Workout
-                      </>
+                    {workoutInProgress ? (
+                      isPaused ? (
+                        <>
+                          <Play className="mr-2 h-4 w-4" />
+                          Resume Workout
+                        </>
+                      ) : (
+                        <>
+                          <Clock className="mr-2 h-4 w-4" />
+                          Pause Workout
+                        </>
+                      )
                     ) : (
                       <>
                         <Play className="mr-2 h-4 w-4" />
@@ -172,6 +195,15 @@ export const AthleteDashboard = () => {
                       </>
                     )}
                   </Button>
+                  {workoutInProgress && (
+                    <Button 
+                      onClick={handleEndWorkout}
+                      className="flex-1 sm:flex-none bg-red-600 hover:bg-red-700"
+                    >
+                      <Trophy className="mr-2 h-4 w-4" />
+                      End Workout
+                    </Button>
+                  )}
                   <Button 
                     variant="outline" 
                     size="sm"
@@ -224,6 +256,9 @@ export const AthleteDashboard = () => {
       </Card>
 
       <SubscriptionManager />
+
+      {/* Activity Feed */}
+      <ActivityFeed />
       
       {showWorkoutModal && (
         <WorkoutDetailsModal 

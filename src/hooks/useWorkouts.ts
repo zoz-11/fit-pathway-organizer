@@ -1,7 +1,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuth';
+import { useAuth } from './useAuthHook';
 
 export const useScheduledWorkouts = (userId?: string) => {
   return useQuery({
@@ -28,7 +28,7 @@ export const useScheduledWorkouts = (userId?: string) => {
       }
 
       console.log('Fetched scheduled workouts:', data);
-      return data || [];
+      return data ?? [];
     },
     enabled: !!userId,
   });
@@ -122,7 +122,7 @@ export const useTodayWorkouts = (userId?: string) => {
       }
 
       console.log('Fetched today workouts:', data);
-      return data || [];
+      return data ?? [];
     },
     enabled: !!userId,
   });

@@ -1,5 +1,5 @@
 
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuthHook';
 import { Navigate } from 'react-router-dom';
 
 interface ProtectedRouteProps {
@@ -10,6 +10,7 @@ interface ProtectedRouteProps {
 export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const { user, profile, loading } = useAuth();
 
+  // Show a loading spinner while authentication status is being determined
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center">
@@ -21,10 +22,12 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
     );
   }
 
+  // If no user is authenticated, redirect to the authentication page
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
 
+  // If a specific role is required and the authenticated user does not have that role, display an access denied message
   if (requiredRole && profile?.role !== requiredRole) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center">
@@ -36,5 +39,6 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
     );
   }
 
+  // If authenticated and authorized, render the children components
   return <>{children}</>;
 };

@@ -22,6 +22,13 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           <div 
             className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
             onClick={() => setSidebarOpen(false)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                setSidebarOpen(false);
+              }
+            }}
+            tabIndex={0}
+            role="button"
           />
         )}
         

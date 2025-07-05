@@ -5,6 +5,20 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Dumbbell, Calendar } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
+// Type guard for workout assignment
+interface WorkoutAssignmentRaw {
+  id: unknown;
+  status: unknown;
+  completed_at?: unknown;
+  due_date?: unknown;
+  workout?: unknown;
+}
+
+// Type guard for workout assignment
+function isWorkoutAssignment(a: WorkoutAssignmentRaw): a is { id: number; status: string; completed_at?: string; due_date?: string; workout?: { name?: string } } {
+  return typeof a === 'object' && a !== null && typeof a.id === 'number' && typeof a.status === 'string';
+}
+
 const AssignedWorkouts = () => {
   const { assignments, isLoading, markAsComplete } = useWorkoutAssignments();
 
@@ -16,8 +30,11 @@ const AssignedWorkouts = () => {
     );
   }
 
-  const pendingWorkouts = assignments?.filter(a => a.status === 'pending') || [];
-  const completedWorkouts = assignments?.filter(a => a.status === 'completed') || [];
+  // Filter out any invalid assignments (e.g., SelectQueryError)
+  const validAssignments = Array.isArray(assignments) ? assignments.filter(isWorkoutAssignment) : [];
+
+  const pendingWorkouts = validAssignments.filter(a => a.status === 'pending');
+  const completedWorkouts = validAssignments.filter(a => a.status === 'completed');
 
   const getMonthlyWorkoutData = () => {
     const monthlyData: { name: string; workouts: number }[] = [];
@@ -113,11 +130,10 @@ const AssignedWorkouts = () => {
                 pendingWorkouts.map((assignment) => (
                   <div key={assignment.id} className="p-4 border rounded-lg flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold">{assignment.workout.name}</h3>
-                      <p className="text-sm text-muted-foreground">Assigned by: {assignment.trainer.full_name}</p>
-                      <p className="text-sm text-muted-foreground">Due Date: {new Date(assignment.due_date).toLocaleDateString()}</p>
+                      <h3 className="font-semibold">{assignment.workout?.name || 'Unnamed Workout'}</h3>
+                      <p className="text-sm text-muted-foreground">Due Date: {assignment.due_date ? new Date(assignment.due_date).toLocaleDateString() : 'N/A'}</p>
                     </div>
-                    <Button onClick={() => markAsComplete.mutate(assignment.id)}>
+                    <Button onClick={() => markAsComplete.mutate(Number(assignment.id))}>
                       <CheckCircle className="h-4 w-4 mr-2" />
                       Mark as Complete
                     </Button>
@@ -141,9 +157,8 @@ const AssignedWorkouts = () => {
                 completedWorkouts.map((assignment) => (
                   <div key={assignment.id} className="p-4 border rounded-lg flex items-center justify-between bg-green-50/50">
                     <div>
-                      <h3 className="font-semibold">{assignment.workout.name}</h3>
-                      <p className="text-sm text-muted-foreground">Assigned by: {assignment.trainer.full_name}</p>
-                      <p className="text-sm text-muted-foreground">Completed on: {new Date(assignment.completed_at).toLocaleDateString()}</p>
+                      <h3 className="font-semibold">{assignment.workout?.name || 'Unnamed Workout'}</h3>
+                      <p className="text-sm text-muted-foreground">Completed on: {assignment.completed_at ? new Date(assignment.completed_at).toLocaleDateString() : 'N/A'}</p>
                     </div>
                     <span className="text-green-600 font-medium">Completed</span>
                   </div>
@@ -158,3 +173,5 @@ const AssignedWorkouts = () => {
     </AppLayout>
   );
 };
+
+export default AssignedWorkouts;

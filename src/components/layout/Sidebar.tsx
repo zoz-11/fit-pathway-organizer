@@ -10,10 +10,12 @@ import {
   X,
   User,
   BookOpen,
-  Apple
+  Apple,
+  Target,
+  Trophy
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuthHook";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface SidebarProps {
@@ -31,7 +33,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   const { profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const userRole = profile?.role || "athlete";
+  const userRole = profile?.role ?? "athlete";
   
   const handleNavigation = (path: string) => {
     console.log('Navigating to:', path);
@@ -51,6 +53,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
     { icon: Apple, label: "Diet Plans", path: "/diet-plan", role: "trainer" },
     { icon: MessageSquare, label: "Messages", path: "/messages", role: "both" },
     { icon: BarChart3, label: "Reports", path: "/reports", role: "trainer" },
+    { icon: Target, label: "Goals", path: "/goals", role: "both" },
     { icon: User, label: "Profile", path: "/profile", role: "both" },
     { icon: Settings, label: "Settings", path: "/settings", role: "both" },
   ];

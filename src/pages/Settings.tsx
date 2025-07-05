@@ -5,10 +5,12 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Bell, Shield, Palette, Smartphone, LogOut, Globe, Download, HelpCircle } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuthHook";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
+import { handleApiError } from "@/lib/utils";
 import { useState, useEffect, useCallback } from "react";
+import MfaSetupDialog from "@/components/auth/MfaSetupDialog";
 import { supabase } from "@/integrations/supabase/client";
 
 const Settings = () => {
@@ -19,6 +21,10 @@ const Settings = () => {
   const [mounted, setMounted] = useState(false);
   const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false);
   const [twoFactorLoading, setTwoFactorLoading] = useState(true);
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [secret, setSecret] = useState<string | null>(null);
+  const [factorId, setFactorId] = useState<string | null>(null);
+  const [showMfaSetupDialog, setShowMfaSetupDialog] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -30,7 +36,7 @@ const Settings = () => {
         setIsTwoFactorEnabled(data.currentLevel === 'aal2');
       } catch (error) {
         console.error('Error fetching 2FA status:', error);
-        toast.error('Failed to fetch 2FA status.');
+        handleApiError(error, 'Failed to fetch 2FA status.');
       } finally {
         setTwoFactorLoading(false);
       }
@@ -46,13 +52,14 @@ const Settings = () => {
           factorType: 'totp',
         });
         if (error) throw error;
-        // In a real app, you'd show the QR code and secret to the user here
-        // and prompt them to verify it.
+        if (data.totp) {
+          setQrCode(data.totp.qr_code);
+          setSecret(data.totp.secret);
+          setFactorId(data.id);
+          setShowMfaSetupDialog(true);
+        }
         toast.info('2FA enrollment initiated. Please complete setup in your authenticator app.');
       } else {
-        // To disable 2FA, you typically need to unenroll all factors.
-        // This example assumes a simple unenrollment, but a more robust solution
-        // would list and unenroll specific factors.
         const { data: factors, error: listError } = await supabase.auth.mfa.listFactors();
         if (listError) throw listError;
 
@@ -70,7 +77,7 @@ const Settings = () => {
       }
     } catch (error) {
       console.error('Error toggling 2FA:', error);
-      toast.error(`Failed to ${enabled ? 'enable' : 'disable'} 2FA.`);
+      handleApiError(error, `Failed to ${enabled ? 'enable' : 'disable'} 2FA.`);
     } finally {
       setTwoFactorLoading(false);
     }
@@ -90,9 +97,26 @@ const Settings = () => {
     toast.info(`Dark mode ${enabled ? 'enabled' : 'disabled'}`);
   };
 
-  const handleExportData = () => {
+  const handleExportData = async () => {
     toast.info('Preparing data export... This may take a few minutes.');
-    // In a real app, this would trigger data export
+    try {
+      const { data, error } = await supabase.functions.invoke('export-data');
+      if (error) throw error;
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `fitpathway_data_${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success('Data exported successfully!');
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      handleApiError(error, `Failed to export data`);
+    }
   };
 
   const handleContactSupport = () => {
@@ -337,6 +361,16 @@ const Settings = () => {
           </CardContent>
         </Card>
       </div>
+      {showMfaSetupDialog && (
+        <MfaSetupDialog
+          isOpen={showMfaSetupDialog}
+          onClose={() => setShowMfaSetupDialog(false)}
+          qrCode={qrCode}
+          secret={secret}
+          factorId={factorId}
+          onMfaEnabled={() => setIsTwoFactorEnabled(true)}
+        />
+      )}
     </AppLayout>
   );
 };

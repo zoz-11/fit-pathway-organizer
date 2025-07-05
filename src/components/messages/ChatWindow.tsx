@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 import { useMessages } from "@/hooks/useMessages";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuthHook";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -77,7 +77,7 @@ export const ChatWindow = ({ participantId, participantName }: ChatWindowProps) 
                   >
                     <p className="text-sm">{msg.content}</p>
                     <span className="text-xs opacity-75 mt-1 block">
-                      {new Date(msg.sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                 </div>

@@ -21,7 +21,7 @@ type AssignWorkoutFormValues = z.infer<typeof assignWorkoutSchema>;
 
 export const AssignWorkoutDialog = () => {
   const [open, setOpen] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm<AssignWorkoutFormValues>({
+  const { register, handleSubmit } = useForm<AssignWorkoutFormValues>({
     resolver: zodResolver(assignWorkoutSchema),
   });
   const { assignWorkout } = useWorkoutAssignments();

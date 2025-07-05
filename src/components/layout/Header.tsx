@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuthHook";
 import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
@@ -56,12 +56,12 @@ export const Header = ({ children }: HeaderProps) => {
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={undefined} />
                   <AvatarFallback className="bg-gradient-to-r from-blue-500 to-green-500 text-white">
-                    {profile?.full_name ? profile.full_name.split(' ').map((n: string) => n[0]).join('') : user?.email?.[0]?.toUpperCase() || 'U'}
+                    {profile?.full_name ? profile.full_name.split(' ').map((n: string) => n[0]).join('') : user?.email?.[0]?.toUpperCase() ?? 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="text-left hidden md:block">
-                  <p className="text-sm font-medium dark:text-white">{profile?.full_name || user?.email}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{profile?.role || 'user'}</p>
+                  <p className="text-sm font-medium dark:text-white">{profile?.full_name ?? user?.email}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{profile?.role ?? 'user'}</p>
                 </div>
               </Button>
             </DropdownMenuTrigger>

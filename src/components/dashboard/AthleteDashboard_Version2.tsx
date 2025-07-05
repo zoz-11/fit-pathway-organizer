@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Trophy, Target, Flame, Play, MessageSquare, Clock, Dumbbell, BarChart, Activity, Heart } from "lucide-react";
+import { Calendar, Trophy, Target, Flame, Play, Clock, Dumbbell, BarChart, Activity, Heart } from "lucide-react";
 import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuthHook";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -97,7 +97,7 @@ export const AthleteDashboard_Version2 = () => {
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">My Fitness Journey</h1>
           <p className="text-muted-foreground mt-1">
-            Welcome back, {profile?.full_name || 'Athlete'}! Ready to crush your fitness goals?
+            Welcome back, {profile?.full_name ?? 'Athlete'}! Ready to crush your fitness goals?
           </p>
         </div>
         <Button 
@@ -278,8 +278,8 @@ export const AthleteDashboard_Version2 = () => {
                       { name: 'Cardio Blast', time: 'Tomorrow • 30 min', icon: '🏃', intensity: 'Medium' },
                       { name: 'Leg Day', time: 'Sunday • 60 min', icon: '🦵', intensity: 'High' },
                       { name: 'Core & Flexibility', time: 'Monday • 20 min', icon: '🧘', intensity: 'Low' }
-                    ].map((workout, index) => (
-                      <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 dark:bg-card rounded-lg gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    ].map((workout) => (
+                      <div key={`${workout.name}-${workout.time}`} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 dark:bg-card rounded-lg gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                         <div className="flex items-center space-x-3">
                           <span className="text-2xl">{workout.icon}</span>
                           <div>
@@ -287,13 +287,23 @@ export const AthleteDashboard_Version2 = () => {
                             <div className="flex items-center">
                               <p className="text-sm text-muted-foreground">{workout.time}</p>
                               <span className="mx-2 text-gray-300">•</span>
-                              <span className={`text-xs px-2 py-0.5 rounded-full ${
+                              const intensityClass = 
                                 workout.intensity === 'High' ? 'bg-red-100 text-red-700' :
                                 workout.intensity === 'Medium' ? 'bg-orange-100 text-orange-700' :
-                                'bg-green-100 text-green-700'
-                              }`}>
-                                {workout.intensity}
-                              </span>
+                                'bg-green-100 text-green-700';
+                              
+                              return (
+                                const intensityClass = 
+                                workout.intensity === 'High' ? 'bg-red-100 text-red-700' :
+                                workout.intensity === 'Medium' ? 'bg-orange-100 text-orange-700' :
+                                'bg-green-100 text-green-700';
+                              
+                              return (
+                                <span className={`text-xs px-2 py-0.5 rounded-full ${intensityClass}`}>
+                                  {workout.intensity}
+                                </span>
+                              );
+                              );
                             </div>
                           </div>
                         </div>
@@ -388,8 +398,8 @@ export const AthleteDashboard_Version2 = () => {
                     { label: 'Weight', value: '165 lbs', change: '-2.5 lbs this month' },
                     { label: 'Body Fat', value: '18%', change: '-1.2% this month' },
                     { label: 'Muscle Mass', value: '72.4 lbs', change: '+1.8 lbs this month' }
-                  ].map((metric, i) => (
-                    <div key={i} className="flex justify-between items-center p-2 border-b last:border-0">
+                  ].map((metric) => (
+                    <div key={metric.label} className="flex justify-between items-center p-2 border-b last:border-0">
                       <span className="font-medium">{metric.label}</span>
                       <div className="text-right">
                         <div className="font-bold">{metric.value}</div>
@@ -411,8 +421,8 @@ export const AthleteDashboard_Version2 = () => {
                     { label: 'Avg. Workout Duration', value: '42 min', change: '+5 min from last month' },
                     { label: 'Weekly Active Days', value: '4.5 days', change: '+0.5 days from last month' },
                     { label: 'Calories Burned (Weekly)', value: '3,240', change: '+320 from last month' }
-                  ].map((metric, i) => (
-                    <div key={i} className="flex justify-between items-center p-2 border-b last:border-0">
+                  ].map((metric) => (
+                    <div key={metric.label} className="flex justify-between items-center p-2 border-b last:border-0">
                       <span className="font-medium">{metric.label}</span>
                       <div className="text-right">
                         <div className="font-bold">{metric.value}</div>
@@ -468,8 +478,8 @@ export const AthleteDashboard_Version2 = () => {
                   { meal: 'Lunch', food: 'Grilled chicken salad with olive oil dressing', calories: 580, time: '12:15 PM' },
                   { meal: 'Snack', food: 'Greek yogurt with nuts', calories: 240, time: '3:00 PM' },
                   { meal: 'Dinner', food: 'Salmon with quinoa and vegetables', calories: 600, time: '7:00 PM' }
-                ].map((meal, i) => (
-                  <div key={i} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-card rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                ].map((meal) => (
+                  <div key={`${meal.meal}-${meal.time}`} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-card rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                     <div>
                       <div className="flex items-center">
                         <span className="font-medium">{meal.meal}</span>

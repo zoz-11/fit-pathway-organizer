@@ -2,6 +2,27 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+import { z } from "npm:zod@3.23.4";
+
+// Helper function for audit logging
+async function logAudit(supabaseClient: any, userId: string | undefined, action: string, details: any) {
+  try {
+    const { error } = await supabaseClient
+      .from('audit_logs')
+      .insert([
+        {
+          user_id: userId,
+          action: action,
+          details: details,
+        },
+      ]);
+    if (error) {
+      console.error("Error inserting audit log:", error);
+    }
+  } catch (e) {
+    console.error("Exception while logging audit:", e);
+  }
+}
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -10,42 +31,58 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface WorkoutReminderData {
-  workoutName: string;
-  scheduledTime: string;
-}
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 5; // 5 requests per minute
 
-interface ProgressUpdateData {
-  workoutsCompleted: number;
-  totalTime: number;
-}
+const requestCounts = new Map<string, { count: number; lastReset: number }>();
 
-interface WelcomeData {
-  name: string;
-  role: string;
-}
+const WorkoutReminderDataSchema = z.object({
+  workoutName: z.string().min(1, "Workout name cannot be empty"),
+  scheduledTime: z.string().datetime("Scheduled time must be a valid datetime string"),
+});
 
-interface AssignmentData {
-  workoutName: string;
-  description: string;
-}
+const ProgressUpdateDataSchema = z.object({
+  workoutsCompleted: z.number().int().min(0, "Workouts completed cannot be negative"),
+  totalTime: z.number().min(0, "Total time cannot be negative"),
+});
 
-<<<<<<< Updated upstream
-interface InvitationData {
-  trainerName: string;
-}
+const WelcomeDataSchema = z.object({
+  name: z.string().min(1, "Name cannot be empty"),
+  role: z.string().min(1, "Role cannot be empty"),
+});
 
-interface NotificationEmailRequest {
-  to: string;
-  type: 'workout_reminder' | 'progress_update' | 'welcome' | 'assignment' | 'invitation';
-  data: WorkoutReminderData | ProgressUpdateData | WelcomeData | AssignmentData | InvitationData;
-=======
-interface NotificationEmailRequest {
-  to: string;
-  type: 'workout_reminder' | 'progress_update' | 'welcome' | 'assignment';
-  data: WorkoutReminderData | ProgressUpdateData | WelcomeData | AssignmentData;
->>>>>>> Stashed changes
-}
+const AssignmentDataSchema = z.object({
+  workoutName: z.string().min(1, "Workout name cannot be empty"),
+  description: z.string().min(1, "Description cannot be empty"),
+});
+
+const InvitationDataSchema = z.object({
+  trainerName: z.string().min(1, "Trainer name cannot be empty"),
+});
+
+const NotificationEmailRequestSchema = z.object({
+  to: z.string().email("Invalid 'to' email address"),
+  type: z.union([
+    z.literal('workout_reminder'),
+    z.literal('progress_update'),
+    z.literal('welcome'),
+    z.literal('assignment'),
+    z.literal('invitation'),
+  ]),
+  data: z.union([
+    WorkoutReminderDataSchema,
+    ProgressUpdateDataSchema,
+    WelcomeDataSchema,
+    AssignmentDataSchema,
+    InvitationDataSchema,
+  ]),
+});
+
+type WorkoutReminderData = z.infer<typeof WorkoutReminderDataSchema>;
+type ProgressUpdateData = z.infer<typeof ProgressUpdateDataSchema>;
+type WelcomeData = z.infer<typeof WelcomeDataSchema>;
+type AssignmentData = z.infer<typeof AssignmentDataSchema>;
+type InvitationData = z.infer<typeof InvitationDataSchema>;
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -68,6 +105,7 @@ const handler = async (req: Request): Promise<Response> => {
     } = await supabaseClient.auth.getUser();
 
     if (!user) {
+      await logAudit(supabaseClient, undefined, 'Email Notification Failed', { reason: 'Unauthorized: No active session', ipAddress: req.headers.get('x-forwarded-for') });
       return new Response(
         JSON.stringify({ error: 'Unauthorized: No active session' }),
         {
@@ -77,7 +115,37 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { to, type, data }: NotificationEmailRequest = await req.json();
+    // Basic Rate Limiting
+    const userId = user.id;
+    const now = Date.now();
+    const userRequest = requestCounts.get(userId) || { count: 0, lastReset: now };
+
+    if (now - userRequest.lastReset > RATE_LIMIT_WINDOW_MS) {
+      userRequest.count = 1;
+      userRequest.lastReset = now;
+    } else {
+      userRequest.count++;
+    }
+    requestCounts.set(userId, userRequest);
+
+    if (userRequest.count > MAX_REQUESTS_PER_WINDOW) {
+      return new Response(
+        JSON.stringify({ error: 'Too Many Requests: Please try again later.' }),
+        {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    let to: string;
+    let type: 'workout_reminder' | 'progress_update' | 'welcome' | 'assignment' | 'invitation';
+    let data: WorkoutReminderData | ProgressUpdateData | WelcomeData | AssignmentData | InvitationData;
+
+    const parsedBody = await NotificationEmailRequestSchema.parseAsync(await req.json());
+    to = parsedBody.to;
+    type = parsedBody.type;
+    data = parsedBody.data;
 
     const { data: profileData, error: profileError } = await supabaseClient
       .from('profiles')
@@ -157,7 +225,6 @@ const handler = async (req: Request): Promise<Response> => {
           <p>Hi there!</p>
           <p>Don't forget about your scheduled workout: <strong>${data.workoutName}</strong></p>
           <p>Scheduled for: ${new Date(data.scheduledTime).toLocaleString()}</p>
-          <p>Keep up the great work!</p>
         `;
         break;
       case 'progress_update':
@@ -210,6 +277,7 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     console.log("Email sent successfully:", emailResponse);
+    await logAudit(supabaseClient, user.id, 'Email Notification Sent', { to: to, type: type, emailResponse: emailResponse });
 
     return new Response(JSON.stringify(emailResponse), {
       status: 200,
@@ -220,6 +288,7 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error) {
     console.error("Error in send-notification-email function:", error);
+    await logAudit(supabaseClient, user?.id, 'Email Notification Failed', { error: (error as Error).message, ipAddress: req.headers.get('x-forwarded-for') });
     return new Response(
       JSON.stringify({ error: (error as Error).message }),
       {

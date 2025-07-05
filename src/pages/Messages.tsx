@@ -1,13 +1,13 @@
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Send, MessageCircle, Users, Search } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuthHook";
 import { useMessages } from "@/hooks/useMessages";
 import { ChatWindow } from "@/components/messages/ChatWindow";
 import { useQuery } from '@tanstack/react-query';
@@ -15,7 +15,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from "@/components/ui/skeleton";
 
 const Messages = () => {
-  const { user, profile, isLoading: isLoadingAuth } = useAuth();
+  const { user, profile, loading: isLoadingAuth } = useAuth();
   const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null);
   const [selectedParticipantName, setSelectedParticipantName] = useState<string | null>(null);
 
@@ -124,6 +124,14 @@ const Messages = () => {
                       setSelectedParticipantId(conv.id);
                       setSelectedParticipantName(conv.full_name);
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        setSelectedParticipantId(conv.id);
+                        setSelectedParticipantName(conv.full_name);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
                     className={`p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 border-b transition-colors ${
                       selectedParticipantId === conv.id ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : ''
                     }`}

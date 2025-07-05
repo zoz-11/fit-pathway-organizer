@@ -43,7 +43,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
           <AlertTriangle className="h-12 w-12 text-red-500 mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Something went wrong</h3>
           <p className="text-gray-600 text-center mb-4">
-            {this.state.error?.message || 'An unexpected error occurred'}
+            {this.state.error?.message ?? 'An unexpected error occurred'}
           </p>
           <Button onClick={this.resetError} variant="outline">
             Try again

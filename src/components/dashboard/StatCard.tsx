@@ -33,7 +33,10 @@ const StatCard = ({
                 : "text-gray-500"
             }`}
           >
-            {trend.value > 0 ? "↑" : trend.value < 0 ? "↓" : "→"} {Math.abs(trend.value)}% {" "}
+            {(() => {
+              const trendArrow = trend.value > 0 ? "↑" : trend.value < 0 ? "↓" : "→";
+              return trendArrow;
+            })()} {Math.abs(trend.value)}% {" "}
             {trend.label}
           </span>
         )}

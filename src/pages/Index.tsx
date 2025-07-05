@@ -2,7 +2,7 @@
 import { AppLayout } from "@/components/layout/AppLayout";
 import { TrainerDashboard } from "@/components/dashboard/TrainerDashboard";
 import { AthleteDashboard } from "@/components/dashboard/AthleteDashboard";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuthHook";
 
 const Index = () => {
   const { profile, loading } = useAuth();

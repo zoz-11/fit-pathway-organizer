@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { CreditCard, Check, Crown, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { handleApiError } from "@/lib/utils";
 
 interface SubscriptionStatus {
   subscribed: boolean;
@@ -69,12 +70,15 @@ export const SubscriptionManager = () => {
   const checkSubscriptionStatus = async () => {
     try {
       const { data, error } = await supabase.functions.invoke('check-subscription');
-      if (error) throw error;
+      if (error) {
+        handleApiError(error, `Failed to check subscription status`);
+        throw error;
+      }
       
       setSubscriptionStatus(data);
     } catch (error) {
       console.error('Error checking subscription:', error);
-      toast.error('Failed to check subscription status');
+      handleApiError(error, `Failed to check subscription status`);
     } finally {
       setLoading(false);
     }
@@ -88,13 +92,16 @@ export const SubscriptionManager = () => {
         body: { planType }
       });
 
-      if (error) throw error;
+      if (error) {
+        handleApiError(error, `Failed to create subscription`);
+        throw error;
+      }
 
       // Open Stripe checkout in new tab
       window.open(data.url, '_blank');
     } catch (error) {
       console.error('Error creating subscription:', error);
-      toast.error('Failed to start subscription process');
+      handleApiError(error, `Failed to start subscription process`);
     } finally {
       setUpgrading(null);
     }
@@ -169,18 +176,21 @@ export const SubscriptionManager = () => {
                         </div>
                       ) : isCurrentPlan ? (
                         'Current'
-                      ) : (
-                        <>
-                          <CreditCard className="h-3 w-3 mr-1" />
-                          {subscriptionStatus.subscribed ? 'Upgrade' : 'Subscribe'}
-                        </>
-                      )}
+                      ) : (() => {
+                        const buttonText = subscriptionStatus.subscribed ? 'Upgrade' : 'Subscribe';
+                        return (
+                          <>
+                            <CreditCard className="h-3 w-3 mr-1" />
+                            {buttonText}
+                          </>
+                        );
+                      })()}
                     </Button>
                   </div>
                   
                   <ul className="space-y-1 text-sm">
-                    {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-start">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-start">
                         <Check className="h-3 w-3 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
                         <span>{feature}</span>
                       </li>

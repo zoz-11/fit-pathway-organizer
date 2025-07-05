@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuth';
+import { useAuth } from '@/hooks/useAuthHook';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { toast } from "sonner";
+import { handleApiError } from "@/lib/utils";
 
 const useInvitations = () => {
   const { user } = useAuth();
@@ -19,20 +21,26 @@ const useInvitations = () => {
         .eq('athlete_id', user.id)
         .eq('status', 'pending');
 
-      if (error) throw error;
+      if (error) {
+        handleApiError(error, `Failed to fetch invitations`);
+        throw error;
+      }
       return data;
     },
     enabled: !!user,
   });
 
   const updateInvitation = useMutation({
-    mutationFn: async ({ id, status }: { id: number; status: 'accepted' | 'declined' }) => {
+    mutationFn: async ({ id, status }: { id: string; status: 'accepted' | 'declined' }) => {
       const { error } = await supabase
         .from('trainer_athletes')
         .update({ status })
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        handleApiError(error, `Failed to update invitation`);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invitations', user?.id] });

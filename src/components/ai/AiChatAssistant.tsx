@@ -6,8 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, Send, Bot, User, RefreshCw, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuthHook";
 import { toast } from "sonner";
+import { handleApiError } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface Message {
@@ -79,7 +80,7 @@ export const AiChatAssistant = () => {
       console.error('Detailed error in sendMessage:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       setError(errorMessage);
-      toast.error(`AI Chat Error: ${errorMessage}`);
+      handleApiError(error, `AI Chat Error: ${errorMessage}`);
       
       const errorResponse: Message = {
         role: 'assistant',

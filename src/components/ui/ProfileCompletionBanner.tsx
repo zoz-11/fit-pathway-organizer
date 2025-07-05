@@ -1,4 +1,4 @@
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuthHook";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -8,7 +8,7 @@ export const ProfileCompletionBanner = () => {
 
   if (!profile) return null;
 
-  const isProfileIncomplete = !profile.phone || !profile.location || !profile.fitness_level;
+  const isProfileIncomplete = !profile.phone || !profile.date_of_birth || !profile.emergency_contact_name || !profile.emergency_contact_phone;
 
   if (!isProfileIncomplete) return null;
 

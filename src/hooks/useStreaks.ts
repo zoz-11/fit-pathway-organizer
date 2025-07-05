@@ -1,6 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuth';
+import { useAuth } from './useAuthHook';
+
+// Helper functions for date comparisons
+const isSameDay = (d1: Date, d2: Date) =>
+  d1.getFullYear() === d2.getFullYear() &&
+  d1.getMonth() === d2.getMonth() &&
+  d1.getDate() === d2.getDate();
+
+const isYesterday = (d1: Date, d2: Date) => {
+  const yesterday = new Date(d2);
+  yesterday.setDate(d2.getDate() - 1);
+  return isSameDay(d1, yesterday);
+};
 
 export const useStreaks = () => {
   const { user } = useAuth();
@@ -23,45 +35,46 @@ export const useStreaks = () => {
         return { currentStreak: 0, longestStreak: 0 };
       }
 
-      let currentStreak = 0;
-      let longestStreak = 0;
-      let lastDate: Date | null = null;
-
       // Filter out null completed_at and convert to Date objects
       const dates = completedWorkouts
         .filter(w => w.completed_at !== null)
-        .map(w => new Date(w.completed_at!))
+        .map(w => new Date(w.completed_at))
         .sort((a, b) => b.getTime() - a.getTime()); // Sort descending
 
-      for (const date of dates) {
-        const today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      let currentStreak = 0;
+      let longestStreak = 0;
+      let lastProcessedDate: Date | null = null;
+      const today = new Date(); // Get today's date once
 
-        if (lastDate === null) {
+      for (const date of dates) {
+        // Normalize date to start of day for accurate comparison
+        const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+        if (lastProcessedDate === null) {
+          // First date, start a streak
           currentStreak = 1;
         } else {
-          const diffTime = Math.abs(today.getTime() - lastDate.getTime());
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-          if (diffDays === 1) {
+          if (isSameDay(normalizedDate, lastProcessedDate)) {
+            // Same day, do nothing (already counted)
+            continue;
+          } else if (isYesterday(normalizedDate, lastProcessedDate)) {
+            // Consecutive day
             currentStreak++;
-          } else if (diffDays > 1) {
-            // Gap in streak, reset if not today or yesterday
-            if (today.toDateString() !== new Date().toDateString() && today.toDateString() !== new Date(Date.now() - 86400000).toDateString()) {
-              currentStreak = 1;
-            }
+          } else {
+            // Gap of more than one day, reset streak
+            currentStreak = 1;
           }
         }
         longestStreak = Math.max(longestStreak, currentStreak);
-        lastDate = today;
+        lastProcessedDate = normalizedDate;
       }
 
-      // Adjust current streak if the last workout was not today or yesterday
-      const now = new Date();
-      const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getUTCDate() - 1);
-      const mostRecentWorkoutDate = dates[0];
-
-      if (mostRecentWorkoutDate && mostRecentWorkoutDate.toDateString() !== now.toDateString() && mostRecentWorkoutDate.toDateString() !== yesterday.toDateString()) {
-        currentStreak = 0;
+      // Final adjustment for current streak based on today's date
+      if (dates.length > 0) {
+        const mostRecentWorkoutDate = new Date(dates[0].getFullYear(), dates[0].getMonth(), dates[0].getDate());
+        if (!isSameDay(mostRecentWorkoutDate, today) && !isYesterday(mostRecentWorkoutDate, today)) {
+          currentStreak = 0;
+        }
       }
 
       return { currentStreak, longestStreak };

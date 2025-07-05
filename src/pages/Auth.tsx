@@ -24,6 +24,33 @@ const Auth = () => {
     setError(null);
     setMessage(null);
 
+    // Client-side validation
+    if (!fullName.trim()) {
+      setError("Full Name cannot be empty.");
+      setLoading(false);
+      return;
+    }
+    if (!email.trim()) {
+      setError("Email cannot be empty.");
+      setLoading(false);
+      return;
+    }
+    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      setLoading(false);
+      return;
+    }
+    if (!role) {
+      setError("Please select a role.");
+      setLoading(false);
+      return;
+    }
+
     try {
       console.log("Starting signup process with:", { email, fullName, role });
       
@@ -43,7 +70,8 @@ const Auth = () => {
 
       if (error) {
         console.error("Supabase signup error:", error);
-        throw error;
+        setError((error as Error).message);
+        return;
       }
 
       if (data.user) {
@@ -106,15 +134,7 @@ const Auth = () => {
       }
     } catch (error) {
       console.error("Sign in error:", error);
-<<<<<<< Updated upstream
-      if (error.message.includes("Failed to fetch")) {
-        setError("Connection error. Please check your internet connection and try again.");
-      } else {
-        setError(error.message || "An error occurred during sign in");
-      }
-=======
       setError((error as Error).message || "An error occurred during sign in");
->>>>>>> Stashed changes
     } finally {
       setLoading(false);
     }

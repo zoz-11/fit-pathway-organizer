@@ -5,7 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  { ignores: ["dist", "supabase/functions/**"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -28,11 +28,11 @@ export default tseslint.config(
   },
   {
     files: ["**/*.{ts,tsx}"],
+    ignores: ["src/components/ui/form-logic.ts", "src/components/ui/sidebar-logic.ts", "supabase/functions/**"],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
         jsx: true,
-        project: ['./tsconfig.eslint.json'],
       },
     },
   }

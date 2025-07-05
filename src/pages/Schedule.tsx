@@ -1,11 +1,95 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuthHook";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Workout {
+  id: number;
+  name: string;
+  time: string;
+  date: string;
+  location: string;
+  trainer: string;
+  spots: string;
+  status: string;
+}
+
+// Add a type guard for google_refresh_token
+function hasGoogleRefreshToken(profile: unknown): profile is { google_refresh_token: string } {
+  return (
+    typeof profile === 'object' &&
+    profile !== null &&
+    'google_refresh_token' in profile &&
+    typeof (profile as Record<string, unknown>).google_refresh_token === 'string'
+  );
+}
 
 const Schedule = () => {
+  const { user, profile } = useAuth();
+
+  const handleAddToCalendar = async (workout: Workout) => {
+    if (!user) {
+      toast.error("Authentication Required", {
+        description: "Please log in to connect your Google Calendar."
+      });
+      return;
+    }
+
+    if (!hasGoogleRefreshToken(profile)) {
+      // Initiate OAuth flow
+      const googleClientId = process.env.VITE_GOOGLE_CLIENT_ID;
+      const redirectUri = process.env.VITE_GOOGLE_REDIRECT_URI;
+      const scope = "https://www.googleapis.com/auth/calendar.events";
+
+      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${googleClientId}` +
+        `&redirect_uri=${redirectUri}` +
+        `&response_type=code` +
+        `&scope=${scope}` +
+        `&access_type=offline` +
+        `&prompt=consent`;
+
+      window.location.href = authUrl;
+      return;
+    }
+
+    // If refresh token exists, create event
+    try {
+      const event = {
+        summary: workout.name,
+        description: `Trainer: ${workout.trainer}, Location: ${workout.location}`,
+        start: {
+          dateTime: new Date().toISOString(), // Placeholder, ideally use actual workout date/time
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+        end: {
+          dateTime: new Date(new Date().getTime() + 60 * 60 * 1000).toISOString(), // Placeholder, 1 hour after start
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+      };
+
+      const { data, error } = await supabase.functions.invoke('create-calendar-event', {
+        body: JSON.stringify(event),
+      });
+
+      if (error) {
+        console.error('Error creating calendar event:', error);
+        toast.error('Failed to add event to Google Calendar.');
+      } else if (data?.error) {
+        console.error('Server-side error creating calendar event:', data.error);
+        toast.error(`Failed to add event to Google Calendar: ${data.error}`);
+      } else {
+        toast.success('Workout added to Google Calendar!');
+      }
+    } catch (err) {
+      console.error('Unexpected error adding event to calendar:', err);
+      toast.error('An unexpected error occurred while adding to calendar.');
+    }
+  };
+
   const handleJoinWorkout = (workoutName: string) => {
     toast.success(`Joined ${workoutName}!`);
   };
@@ -122,6 +206,13 @@ const Schedule = () => {
                         Pending Approval
                       </Button>
                     )}
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleAddToCalendar(workout)}
+                    >
+                      Add to Calendar
+                    </Button>
                   </div>
                 </div>
               </CardContent>

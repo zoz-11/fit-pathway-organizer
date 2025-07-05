@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Play, Clock, Target, Flame, ExternalLink } from "lucide-react";
+import { Play, Clock, Target, Flame } from "lucide-react";
 import { toast } from "sonner";
 
 interface Exercise {
@@ -131,8 +131,8 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
           {/* Exercise List */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">Exercises</h3>
-            {exercises.map((exercise, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+            {exercises.map((exercise) => (
+              <div key={exercise.name} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-start space-x-4">
                   <div className="text-3xl flex-shrink-0">{exercise.image}</div>
                   <div className="flex-1 min-w-0">

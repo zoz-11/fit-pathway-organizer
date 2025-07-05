@@ -1,11 +1,11 @@
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, Trophy, Target, Flame, Dumbbell } from "lucide-react";
+import { Calendar, Target, Flame, Dumbbell } from "lucide-react";
+import { handleApiError } from "@/lib/utils";
 
 import { ChatWindow } from "@/components/messages/ChatWindow";
 
@@ -39,7 +39,10 @@ const AthleteProgress = () => {
         .select('*')
         .eq('id', athleteId)
         .single();
-      if (error) throw error;
+      if (error) {
+        handleApiError(error, `Failed to load athlete profile`);
+        throw error;
+      }
       return data;
     },
     enabled: !!athleteId,
@@ -102,13 +105,13 @@ const AthleteProgress = () => {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Workouts Completed"
-            value={assignedWorkouts?.filter(wa => wa.status === 'completed').length.toString() || "0"}
+            value={assignedWorkouts?.filter(wa => wa.status === 'completed').length.toString() ?? "0"}
             icon={Dumbbell}
             description="Total completed workouts"
           />
           <StatCard
             title="Pending Workouts"
-            value={assignedWorkouts?.filter(wa => wa.status === 'pending').length.toString() || "0"}
+            value={assignedWorkouts?.filter(wa => wa.status === 'pending').length.toString() ?? "0"}
             icon={Calendar}
             description="Workouts yet to be done"
           />
