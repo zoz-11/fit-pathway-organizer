@@ -1,4 +1,4 @@
-import { useAuth } from "@/hooks/useAuthHook";
+import { useAuth } from "@/hooks/useAuthProvider";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";

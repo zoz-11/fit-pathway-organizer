@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../integrations/supabase/client';
-import { useAuth } from './useAuthHook';
+import { useAuth } from './useAuthProvider';
 import { toast } from '../components/ui/use-toast';
 
 export const usePushNotifications = () => {

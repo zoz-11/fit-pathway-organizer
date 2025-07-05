@@ -6,7 +6,7 @@ import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
 import { WorkoutDetailsModal } from "@/components/workout/WorkoutDetailsModal";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
-import { useAuth } from "@/hooks/useAuthHook";
+import { useAuth } from "@/hooks/useAuthProvider";
 import { useStreaks } from "@/hooks/useStreaks";
 import { toast } from "sonner";
 import { useState } from "react";

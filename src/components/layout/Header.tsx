@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/hooks/useAuthHook";
+import { useAuth } from "@/hooks/useAuthProvider";
 import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {

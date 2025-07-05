@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuthHook';
+import { useAuth } from './useAuthProvider';
 import { useAchievements } from './useAchievements';
 
 export const useWorkoutAssignments = () => {

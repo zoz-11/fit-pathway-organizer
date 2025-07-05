@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Send, MessageCircle, Users, Search } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { useAuth } from "@/hooks/useAuthHook";
+import { useAuth } from "@/hooks/useAuthProvider";
 import { useMessages } from "@/hooks/useMessages";
 import { ChatWindow } from "@/components/messages/ChatWindow";
 import { useQuery } from '@tanstack/react-query';

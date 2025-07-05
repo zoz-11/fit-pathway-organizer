@@ -15,7 +15,7 @@ import {
   Trophy
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/useAuthHook";
+import { useAuth } from "@/hooks/useAuthProvider";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface SidebarProps {

@@ -5,7 +5,7 @@ import { Users, Calendar, Dumbbell, BarChart3, Plus, UserPlus, Send, PlusCircle 
 import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
-import { useAuth } from "@/hooks/useAuthHook";
+import { useAuth } from "@/hooks/useAuthProvider";
 import { toast } from "sonner";
 import { useState } from "react";
 
