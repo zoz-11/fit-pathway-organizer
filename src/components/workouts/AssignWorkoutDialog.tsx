@@ -51,9 +51,9 @@ export const AssignWorkoutDialog = () => {
               </SelectTrigger>
               <SelectContent>
                 {workouts?.map((workout) => (
-                  <SelectItem key={workout.id} value={workout.id}>
-                    {workout.name}
-                  </SelectItem>
+            <SelectItem key={workout.id} value={workout.id.toString()}>
+              {workout.title}
+            </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -66,7 +66,7 @@ export const AssignWorkoutDialog = () => {
               </SelectTrigger>
               <SelectContent>
                 {athletes?.map((athlete) => (
-                  <SelectItem key={athlete.id} value={athlete.id}>
+                  <SelectItem key={athlete.athlete_id} value={athlete.athlete_id}>
                     {athlete.full_name}
                   </SelectItem>
                 ))}
