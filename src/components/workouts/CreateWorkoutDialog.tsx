@@ -40,6 +40,17 @@ export const CreateWorkoutDialog = () => {
   });
 
   const onSubmit = (data: WorkoutFormValues) => {
+    // Validate form data before submission
+    if (!data.name || !data.exercises || data.exercises.length === 0) {
+      return; // Don't submit if validation fails
+    }
+    
+    // Ensure all exercises have required fields
+    const validExercises = data.exercises.every(ex => ex.name && ex.sets && ex.reps);
+    if (!validExercises) {
+      return; // Don't submit if exercises are invalid
+    }
+    
     createWorkout.mutate(data);
     setOpen(false);
   };

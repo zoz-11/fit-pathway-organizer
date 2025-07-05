@@ -14,8 +14,8 @@ export const useWorkoutAssignments = () => {
       if (!user) return [];
 
       const { data, error } = await supabase
-        .from('workout_assignments')
-        .select('*, workout:workouts(*), athlete:profiles!athlete_id(*)')
+        .from('workout_schedules')
+        .select('*, athlete:profiles!athlete_id(*)')
         .eq('trainer_id', user.id);
 
       if (error) throw error;
@@ -27,8 +27,8 @@ export const useWorkoutAssignments = () => {
   const assignWorkout = useMutation({
     mutationFn: async ({ workoutId, athleteId, dueDate }: { workoutId: number; athleteId: string; dueDate: string }) => {
       const { error } = await supabase
-        .from('workout_assignments')
-        .insert([{ workout_id: workoutId, athlete_id: athleteId, trainer_id: user.id, due_date: dueDate }]);
+        .from('workout_schedules')
+        .insert([{ athlete_id: athleteId, trainer_id: user.id, scheduled_date: dueDate, title: `Workout ${workoutId}` }]);
 
       if (error) throw error;
     },
@@ -38,24 +38,24 @@ export const useWorkoutAssignments = () => {
   });
 
   const markAsComplete = useMutation({
-    mutationFn: async (assignmentId: number) => {
+    mutationFn: async (assignmentId: string) => {
       const { error } = await supabase
-        .from('workout_assignments')
-        .update({ status: 'completed', completed_at: new Date().toISOString() })
+        .from('workout_schedules')
+        .update({ status: 'completed' })
         .eq('id', assignmentId);
 
       if (error) throw error;
 
       // Check for "First Workout Completed" achievement
       const { data: completedWorkoutsCount, error: countError } = await supabase
-        .from('workout_assignments')
+        .from('workout_schedules')
         .select('id', { count: 'exact' })
         .eq('athlete_id', user.id)
         .eq('status', 'completed');
 
       if (countError) {
         console.error("Error counting completed workouts:", countError);
-      } else if (completedWorkoutsCount.count === 1) {
+      } else if (completedWorkoutsCount && completedWorkoutsCount.length === 1) {
         awardAchievement.mutate('First Workout Completed');
       }
     },
