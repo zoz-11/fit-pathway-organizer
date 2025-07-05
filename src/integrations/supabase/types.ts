@@ -350,100 +350,6 @@ export type Database = {
           },
         ]
       }
-      workout_assignments: {
-        Row: {
-          id: string
-          workout_id: string
-          athlete_id: string
-          trainer_id: string
-          assigned_at: string | null
-          due_date: string | null
-          status: Database["public"]["Enums"]["workout_assignment_status"]
-          completed_at: string | null
-        }
-        Insert: {
-          id?: string
-          workout_id: string
-          athlete_id: string
-          trainer_id: string
-          assigned_at?: string | null
-          due_date?: string | null
-          status?: Database["public"]["Enums"]["workout_assignment_status"]
-          completed_at?: string | null
-        }
-        Update: {
-          id?: string
-          workout_id?: string
-          athlete_id?: string
-          trainer_id?: string
-          assigned_at?: string | null
-          due_date?: string | null
-          status?: Database["public"]["Enums"]["workout_assignment_status"]
-          completed_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "workout_assignments_athlete_id_fkey"
-            columns: ["athlete_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "workout_assignments_trainer_id_fkey"
-            columns: ["trainer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "workout_assignments_workout_id_fkey"
-            columns: ["workout_id"]
-            isOneToOne: false
-            referencedRelation: "workout_schedules"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      trainer_athletes: {
-        Row: {
-          id: string
-          trainer_id: string
-          athlete_id: string
-          status: Database["public"]["Enums"]["trainer_athlete_status"]
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          trainer_id: string
-          athlete_id: string
-          status?: Database["public"]["Enums"]["trainer_athlete_status"]
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          trainer_id?: string
-          athlete_id?: string
-          status?: Database["public"]["Enums"]["trainer_athlete_status"]
-          created_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "trainer_athletes_athlete_id_fkey"
-            columns: ["athlete_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "trainer_athletes_trainer_id_fkey"
-            columns: ["trainer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
     }
     Views: {
       [_ in never]: never
@@ -468,8 +374,6 @@ export type Database = {
       subscription_status: "active" | "expired" | "trial" | "cancelled"
       user_role: "trainer" | "athlete"
       workout_status: "scheduled" | "in_progress" | "completed" | "skipped"
-      trainer_athlete_status: "pending" | "accepted" | "declined"
-      workout_assignment_status: "pending" | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -575,7 +479,7 @@ export type CompositeTypes<
     schema: keyof Database
   }
     ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never,
+    : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
@@ -595,8 +499,6 @@ export const Constants = {
       subscription_status: ["active", "expired", "trial", "cancelled"],
       user_role: ["trainer", "athlete"],
       workout_status: ["scheduled", "in_progress", "completed", "skipped"],
-      trainer_athlete_status: ["pending", "accepted", "declined"],
-      workout_assignment_status: ["pending", "completed"],
     },
   },
 } as const
