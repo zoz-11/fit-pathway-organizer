@@ -85,7 +85,7 @@ serve(async (req) => {
           requestedUserId: requestedUserId, 
           ipAddress: req.headers.get('x-forwarded-for') 
         });
-        return new Response(JSON.stringify({ error: 'Forbidden: Not authorized to view other user's data' }), {
+        return new Response(JSON.stringify({ error: 'Forbidden: Not authorized to view other users data' }), {
           status: 403,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
