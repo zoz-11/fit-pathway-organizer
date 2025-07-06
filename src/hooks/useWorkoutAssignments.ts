@@ -77,7 +77,7 @@ export const useWorkoutAssignments = () => {
         completedWorkoutsCount &&
         completedWorkoutsCount.length === 1
       ) {
-        awardAchievement.mutate();
+        awardAchievement.mutate("First Workout Completed");
       }
     },
     onSuccess: () => {

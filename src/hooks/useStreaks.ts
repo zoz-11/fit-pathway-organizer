@@ -23,11 +23,11 @@ export const useStreaks = () => {
       if (!user) return { currentStreak: 0, longestStreak: 0 };
 
       const { data: completedWorkouts, error } = await supabase
-        .from('workout_assignments')
-        .select('completed_at')
+        .from('workout_schedules')
+        .select('updated_at')
         .eq('athlete_id', user.id)
         .eq('status', 'completed')
-        .order('completed_at', { ascending: false });
+        .order('updated_at', { ascending: false });
 
       if (error) throw error;
 
@@ -35,10 +35,10 @@ export const useStreaks = () => {
         return { currentStreak: 0, longestStreak: 0 };
       }
 
-      // Filter out null completed_at and convert to Date objects
+      // Filter out null updated_at and convert to Date objects
       const dates = completedWorkouts
-        .filter(w => w.completed_at !== null)
-        .map(w => new Date(w.completed_at))
+        .filter(w => w.updated_at !== null)
+        .map(w => new Date(w.updated_at))
         .sort((a, b) => b.getTime() - a.getTime()); // Sort descending
 
       let currentStreak = 0;

@@ -13,11 +13,14 @@ export const useTrainerAthletes = () => {
 
       const { data, error } = await supabase
         .from('trainer_athletes')
-        .select('status, profiles (*)')
+        .select(`
+          status,
+          profiles!trainer_athletes_athlete_id_fkey (*)
+        `)
         .eq('trainer_id', user.id);
 
       if (error) throw error;
-      return data.map(item => item.profiles);
+      return data?.map(item => item.profiles).filter(Boolean) || [];
     },
     enabled: !!user,
   });

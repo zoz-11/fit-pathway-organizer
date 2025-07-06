@@ -41,7 +41,7 @@ export const useWorkouts = () => {
       if (!user) return [];
 
       const { data, error } = await supabase
-        .from('workouts') // Assuming a 'workouts' table for templates
+        .from('workout_schedules')
         .select('*')
         .eq('trainer_id', user.id);
 
@@ -56,11 +56,13 @@ export const useWorkouts = () => {
       if (!user) throw new Error("User not authenticated");
 
       const { data: workout, error } = await supabase
-        .from('workouts')
+        .from('workout_schedules')
         .insert({
-          name: newWorkout.name,
+          title: newWorkout.name,
           description: newWorkout.description,
           trainer_id: user.id,
+          athlete_id: user.id, // Temporary - should be set when assigning
+          scheduled_date: new Date().toISOString().split('T')[0],
         })
         .select()
         .single();
@@ -68,18 +70,21 @@ export const useWorkouts = () => {
       if (error) throw error;
 
       // Insert exercises
-      const exercisesToInsert = newWorkout.exercises.map(ex => ({
-        workout_id: workout.id,
-        name: ex.name,
-        sets: ex.sets,
-        reps: ex.reps,
-      }));
+      if (newWorkout.exercises && newWorkout.exercises.length > 0) {
+        const exercisesToInsert = newWorkout.exercises.map((ex, index) => ({
+          workout_id: workout.id,
+          exercise_id: workout.id, // Temporary - should reference actual exercises
+          order_index: index,
+          sets: ex.sets,
+          reps: parseInt(ex.reps) || 0,
+        }));
 
-      const { error: exerciseError } = await supabase
-        .from('workout_exercises') // Assuming a 'workout_exercises' table
-        .insert(exercisesToInsert);
+        const { error: exerciseError } = await supabase
+          .from('workout_exercises')
+          .insert(exercisesToInsert);
 
-      if (exerciseError) throw exerciseError;
+        if (exerciseError) throw exerciseError;
+      }
 
       return workout;
     },
