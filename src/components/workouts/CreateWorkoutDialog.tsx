@@ -63,8 +63,11 @@ export const CreateWorkoutDialog = () => {
         sets: ex.sets,
         reps: ex.reps
       }))
+    }, {
+      onSuccess: () => {
+        setOpen(false);
+      }
     });
-    setOpen(false);
   };
 
   return (
