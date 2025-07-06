@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 
@@ -19,8 +18,6 @@ serve(async (req) => {
   );
 
   try {
-    console.log("Starting workout reminder job...");
-
     // Get workouts scheduled for the next hour
     const oneHourFromNow = new Date();
     oneHourFromNow.setHours(oneHourFromNow.getHours() + 1);
@@ -38,8 +35,6 @@ serve(async (req) => {
       console.error("Error fetching scheduled workouts:", error);
       throw error;
     }
-
-    console.log(`Found ${scheduledWorkouts?.length || 0} workouts to remind about`);
 
     // Send reminders for each workout
     for (const workout of scheduledWorkouts || []) {
@@ -60,9 +55,7 @@ serve(async (req) => {
           })
         });
 
-        if (emailResponse.ok) {
-          console.log(`Reminder sent to ${workout.profiles.email} for workout: ${workout.name}`);
-        } else {
+        if (!emailResponse.ok) {
           console.error(`Failed to send reminder to ${workout.profiles.email}`);
         }
       } catch (emailError) {

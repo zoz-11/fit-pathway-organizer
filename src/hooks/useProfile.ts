@@ -1,4 +1,3 @@
-
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -7,8 +6,6 @@ export const useProfile = (userId?: string) => {
     queryKey: ['profile', userId],
     queryFn: async () => {
       if (!userId) return null;
-      
-      console.log('Fetching profile for user:', userId);
       
       const { data, error } = await supabase
         .from('profiles')
@@ -21,7 +18,6 @@ export const useProfile = (userId?: string) => {
         throw error;
       }
 
-      console.log('Profile fetched successfully:', data);
       return data;
     },
     enabled: !!userId,

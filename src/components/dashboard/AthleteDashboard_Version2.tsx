@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Trophy, Target, Flame, Play, Clock, Dumbbell, BarChart, Activity, Heart } from "lucide-react";
 import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
-import { useAuth } from "@/hooks/useAuthHook";
+import { useAuth } from "@/hooks/useAuthProvider";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

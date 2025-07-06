@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuthHook';
+import { useAuth } from './useAuthProvider';
 
 // Helper functions for date comparisons
 const isSameDay = (d1: Date, d2: Date) =>

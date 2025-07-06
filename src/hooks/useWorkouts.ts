@@ -1,7 +1,6 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuthHook';
+import { useAuth } from './useAuthProvider';
 
 export const useScheduledWorkouts = (userId?: string) => {
   return useQuery({
@@ -9,7 +8,6 @@ export const useScheduledWorkouts = (userId?: string) => {
     queryFn: async () => {
       if (!userId) return [];
       
-      console.log('Fetching scheduled workouts for user:', userId);
       const { data, error } = await supabase
         .from('workout_schedules')
         .select(`
@@ -27,7 +25,6 @@ export const useScheduledWorkouts = (userId?: string) => {
         throw error;
       }
 
-      console.log('Fetched scheduled workouts:', data);
       return data ?? [];
     },
     enabled: !!userId,
@@ -101,7 +98,6 @@ export const useTodayWorkouts = (userId?: string) => {
       if (!userId) return [];
       
       const today = new Date().toISOString().split('T')[0];
-      console.log('Fetching today workouts for:', userId, 'date:', today);
       
       const { data, error } = await supabase
         .from('workout_schedules')
@@ -121,7 +117,6 @@ export const useTodayWorkouts = (userId?: string) => {
         throw error;
       }
 
-      console.log('Fetched today workouts:', data);
       return data ?? [];
     },
     enabled: !!userId,

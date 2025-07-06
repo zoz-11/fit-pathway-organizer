@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { toast } from "sonner";
-import { useAuth } from "@/hooks/useAuthHook";
+import { useAuth } from "@/hooks/useAuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Workout {

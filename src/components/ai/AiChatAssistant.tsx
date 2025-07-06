@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, Send, Bot, User, RefreshCw, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuthHook";
+import { useAuth } from "@/hooks/useAuthProvider";
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -46,8 +45,6 @@ export const AiChatAssistant = () => {
     setError(null);
 
     try {
-      console.log('Sending message to AI coach:', currentInput);
-      
       const { data, error } = await supabase.functions.invoke('ai-fitness-coach', {
         body: {
           message: currentInput,
@@ -55,8 +52,6 @@ export const AiChatAssistant = () => {
           workoutHistory: []
         }
       });
-
-      console.log('AI response received:', data, 'Error:', error);
 
       if (error) {
         console.error('Edge function error details:', error);

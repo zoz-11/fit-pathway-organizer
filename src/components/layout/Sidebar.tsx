@@ -15,7 +15,7 @@ import {
   Trophy
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/useAuthHook";
+import { useAuth } from "@/hooks/useAuthProvider";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface SidebarProps {
@@ -36,7 +36,6 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   const userRole = profile?.role ?? "athlete";
   
   const handleNavigation = (path: string) => {
-    console.log('Navigating to:', path);
     navigate(path);
     if (onClose) {
       onClose();

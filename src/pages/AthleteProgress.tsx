@@ -1,19 +1,42 @@
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParams } from "react-router-dom";
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, Target, Flame, Dumbbell } from "lucide-react";
 import { handleApiError } from "@/lib/utils";
-
 import { ChatWindow } from "@/components/messages/ChatWindow";
+import { Badge } from "@/components/ui/badge";
 
-const StatCard = ({ title, value, icon: Icon, description }: {
+// --- Type Definitions for API data ---
+type AthleteProfile = {
+  id: string;
+  full_name: string | null;
+  email: string | null;
+  // Add any other profile fields you expect
+};
+
+type Workout = {
+  id: string;
   title: string;
-  value: string;
+  status: "scheduled" | "in_progress" | "completed" | "skipped";
+  scheduled_date: string;
+};
+
+// --- Reusable Stat Card Component ---
+const StatCard = ({
+  title,
+  value,
+  icon: Icon,
+  description,
+  isLoading = false,
+}: {
+  title: string;
+  value: string | number;
   icon: React.ComponentType<{ className?: string }>;
   description: string;
+  isLoading?: boolean;
 }) => (
   <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -21,60 +44,83 @@ const StatCard = ({ title, value, icon: Icon, description }: {
       <Icon className="h-4 w-4 text-muted-foreground" />
     </CardHeader>
     <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
+      {isLoading ? (
+        <Skeleton className="h-8 w-1/3" />
+      ) : (
+        <div className="text-2xl font-bold">{value}</div>
+      )}
       <p className="text-xs text-muted-foreground">{description}</p>
     </CardContent>
   </Card>
 );
 
+// --- Main Athlete Progress Page Component ---
 const AthleteProgress = () => {
   const { athleteId } = useParams<{ athleteId: string }>();
 
-  const { data: athleteProfile, isLoading: isLoadingProfile } = useQuery({
-    queryKey: ['athleteProfile', athleteId],
-    queryFn: async () => {
-      if (!athleteId) return null;
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', athleteId)
-        .single();
-      if (error) {
-        handleApiError(error, `Failed to load athlete profile`);
-        throw error;
-      }
-      return data;
-    },
-    enabled: !!athleteId,
-  });
+  // Query for the athlete's profile information
+  const { data: athleteProfile, isLoading: isLoadingProfile } =
+    useQuery<AthleteProfile | null>({
+      queryKey: ["athleteProfile", athleteId],
+      queryFn: async () => {
+        if (!athleteId) return null;
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("id, full_name, email")
+          .eq("id", athleteId)
+          .single();
+        if (error) {
+          handleApiError(error, `Failed to load athlete profile`);
+          return null;
+        }
+        return data;
+      },
+      enabled: !!athleteId,
+    });
 
-  const { data: assignedWorkouts, isLoading: isLoadingWorkouts } = useQuery({
-    queryKey: ['assignedWorkouts', athleteId],
+  // Query for the athlete's assigned workouts from the correct table
+  const { data: assignedWorkouts, isLoading: isLoadingWorkouts } = useQuery<
+    Workout[]
+  >({
+    queryKey: ["assignedWorkoutsForAthlete", athleteId],
     queryFn: async () => {
       if (!athleteId) return [];
       const { data, error } = await supabase
-        .from('workout_assignments')
-        .select('*, workout:workouts(*)')
-        .eq('athlete_id', athleteId)
-        .order('due_date', { ascending: false });
-      if (error) throw error;
-      return data;
+        .from("workout_schedules") // Corrected table name
+        .select("id, title, status, scheduled_date")
+        .eq("athlete_id", athleteId)
+        .order("scheduled_date", { ascending: false });
+      if (error) {
+        handleApiError(error, `Failed to load assigned workouts`);
+        throw error;
+      }
+      return data || [];
     },
     enabled: !!athleteId,
   });
 
-  if (isLoadingProfile || isLoadingWorkouts) {
+  const isLoading = isLoadingProfile || isLoadingWorkouts;
+
+  // Calculate stats safely
+  const completedCount =
+    assignedWorkouts?.filter((w) => w.status === "completed").length ?? 0;
+  const scheduledCount =
+    assignedWorkouts?.filter(
+      (w) => w.status === "scheduled" || w.status === "in_progress",
+    ).length ?? 0;
+
+  if (isLoading) {
     return (
       <AppLayout>
         <div className="space-y-6 p-4 md:p-6">
           <Skeleton className="h-10 w-64 mb-4" />
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Skeleton className="h-24" />
-            <Skeleton className="h-24" />
-            <Skeleton className="h-24" />
-            <Skeleton className="h-24" />
+            <Skeleton className="h-28" />
+            <Skeleton className="h-28" />
+            <Skeleton className="h-28" />
+            <Skeleton className="h-28" />
           </div>
-          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-96 w-full" />
         </div>
       </AppLayout>
     );
@@ -83,7 +129,9 @@ const AthleteProgress = () => {
   if (!athleteProfile) {
     return (
       <AppLayout>
-        <div className="p-6 text-center">Athlete not found.</div>
+        <div className="p-6 text-center text-muted-foreground">
+          Athlete profile could not be loaded or was not found.
+        </div>
       </AppLayout>
     );
   }
@@ -91,27 +139,33 @@ const AthleteProgress = () => {
   return (
     <AppLayout>
       <div className="space-y-6 p-4 md:p-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{athleteProfile.full_name}'s Progress</h1>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+              {athleteProfile.full_name || "Athlete"}'s Progress
+            </h1>
             <p className="text-muted-foreground mt-1">
-              Overview of {athleteProfile.full_name}'s fitness journey.
+              An overview of their fitness journey and recent activity.
             </p>
           </div>
-          <ChatWindow participantId={athleteId} participantName={athleteProfile.full_name} />
+          {athleteId && athleteProfile.full_name && (
+            <ChatWindow
+              participantId={athleteId}
+              participantName={athleteProfile.full_name}
+            />
+          )}
         </div>
 
-        {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Workouts Completed"
-            value={assignedWorkouts?.filter(wa => wa.status === 'completed').length.toString() ?? "0"}
+            value={completedCount}
             icon={Dumbbell}
             description="Total completed workouts"
           />
           <StatCard
-            title="Pending Workouts"
-            value={assignedWorkouts?.filter(wa => wa.status === 'pending').length.toString() ?? "0"}
+            title="Upcoming Workouts"
+            value={scheduledCount}
             icon={Calendar}
             description="Workouts yet to be done"
           />
@@ -119,39 +173,56 @@ const AthleteProgress = () => {
             title="Goals Achieved"
             value="N/A"
             icon={Target}
-            description="(Feature coming soon)"
+            description="Feature coming soon"
           />
           <StatCard
             title="Current Streak"
             value="N/A"
             icon={Flame}
-            description="(Feature coming soon)"
+            description="Feature coming soon"
           />
         </div>
 
-        {/* Recent Workouts */}
         <Card>
           <CardHeader>
             <CardTitle>Recent Workout History</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {assignedWorkouts && assignedWorkouts.length > 0 ? (
-                assignedWorkouts.map((assignment) => (
-                  <div key={assignment.id} className="flex items-center justify-between p-3 rounded-lg border">
-                    <div>
-                      <p className="font-medium">{assignment.workout.name}</p>
-                      <p className="text-sm text-muted-foreground">Due: {new Date(assignment.due_date).toLocaleDateString()}</p>
+                assignedWorkouts.slice(0, 10).map(
+                  (
+                    assignment, // Show recent 10
+                  ) => (
+                    <div
+                      key={assignment.id}
+                      className="flex items-center justify-between p-3 rounded-lg border"
+                    >
+                      <div>
+                        <p className="font-medium">{assignment.title}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Scheduled:{" "}
+                          {new Date(
+                            assignment.scheduled_date,
+                          ).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <Badge
+                        variant={
+                          assignment.status === "completed"
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
+                        {assignment.status}
+                      </Badge>
                     </div>
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                      assignment.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {assignment.status}
-                    </span>
-                  </div>
-                ))
+                  ),
+                )
               ) : (
-                <p>No workout history available for this athlete.</p>
+                <p className="text-center text-muted-foreground py-4">
+                  No workout history available for this athlete yet.
+                </p>
               )}
             </div>
           </CardContent>

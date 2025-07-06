@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Trophy, Target, Flame, Play, Clock, Dumbbell } from "lucide-react";
@@ -6,7 +5,7 @@ import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
 import { WorkoutDetailsModal } from "@/components/workout/WorkoutDetailsModal";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
-import { useAuth } from "@/hooks/useAuthHook";
+import { useAuth } from "@/hooks/useAuthProvider";
 import { useStreaks } from "@/hooks/useStreaks";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -265,7 +264,6 @@ export const AthleteDashboard = () => {
           isOpen={showWorkoutModal}
           onClose={() => setShowWorkoutModal(false)}
           onStartWorkout={() => {
-            console.log("Starting workout from dashboard");
             setShowWorkoutModal(false);
           }}
         />

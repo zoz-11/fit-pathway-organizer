@@ -68,7 +68,6 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
   const handleStartWorkout = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Starting workout...');
     toast.success("Starting your workout session!");
     onStartWorkout();
     onClose();
@@ -77,14 +76,12 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
   const handleWatchDemo = (exerciseName: string, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Opening demo for:', exerciseName);
     toast.info(`Opening video demo for ${exerciseName}`);
     // In a real app, this would open a video modal or navigate to a demo page
   };
 
   const handleClose = (open: boolean) => {
     if (!open) {
-      console.log('Closing workout modal');
       onClose();
     }
   };
@@ -92,7 +89,6 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
   const handleCloseButton = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Closing workout modal via button');
     onClose();
   };
 

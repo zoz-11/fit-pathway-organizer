@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuthHook';
+import { useAuth } from './useAuthProvider';
 
 export const useAchievements = () => {
   const { user } = useAuth();
@@ -59,7 +59,6 @@ export const useAchievements = () => {
       }
 
       if (existingAward) {
-        console.log(`Achievement '${achievementName}' already awarded to user ${user.id}`);
         return; // Already awarded, do nothing
       }
 
