@@ -74,19 +74,19 @@ serve(async (req) => {
 
     const { limit, offset } = parsedRequest.data;
 
-    // Fetch recent completed workout assignments for the user
+    // Fetch recent completed workout schedules for the user
     const { data: completedWorkouts, error: workoutsError } = await supabaseClient
-      .from('workout_assignments')
+      .from('workout_schedules')
       .select(`
         id,
         status,
-        completed_at,
-        workout:workouts(name),
+        title,
+        scheduled_date,
         athlete:profiles!athlete_id(full_name)
       `)
       .eq('athlete_id', user.id)
       .eq('status', 'completed')
-      .order('completed_at', { ascending: false })
+      .order('updated_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
     if (workoutsError) {
@@ -98,8 +98,8 @@ serve(async (req) => {
     const activities = completedWorkouts.map(wa => ({
       type: 'workout_completed',
       id: wa.id,
-      description: `${wa.athlete.full_name} completed workout "${wa.workout.name}"`, // Assuming athlete is the current user
-      timestamp: wa.completed_at,
+      description: `${wa.athlete.full_name} completed workout "${wa.title}"`,
+      timestamp: wa.scheduled_date,
     }));
 
     await logAudit(supabaseClient, user.id, 'Fetch Activity Feed Success', { recordCount: activities.length, ipAddress: req.headers.get('x-forwarded-for') });
