@@ -29,7 +29,16 @@ export const AssignWorkoutDialog = () => {
   const { athletes } = useTrainerAthletes();
 
   const onSubmit = (data: AssignWorkoutFormValues) => {
-    assignWorkout.mutate(data);
+    // Validate form data before submission
+    if (!data.workoutId || !data.athleteId || !data.dueDate) {
+      return; // Don't submit if validation fails
+    }
+    
+    assignWorkout.mutate({
+      workoutId: data.workoutId,
+      athleteId: data.athleteId,
+      dueDate: data.dueDate
+    });
     setOpen(false);
   };
 
@@ -51,9 +60,9 @@ export const AssignWorkoutDialog = () => {
               </SelectTrigger>
               <SelectContent>
                 {workouts?.map((workout) => (
-                  <SelectItem key={workout.id} value={workout.id}>
-                    {workout.name}
-                  </SelectItem>
+            <SelectItem key={workout.id} value={workout.id.toString()}>
+              {workout.id}
+            </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -66,9 +75,9 @@ export const AssignWorkoutDialog = () => {
               </SelectTrigger>
               <SelectContent>
                 {athletes?.map((athlete) => (
-                  <SelectItem key={athlete.id} value={athlete.id}>
-                    {athlete.full_name}
-                  </SelectItem>
+                   <SelectItem key={athlete.id} value={athlete.id}>
+                     {athlete.full_name}
+                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>

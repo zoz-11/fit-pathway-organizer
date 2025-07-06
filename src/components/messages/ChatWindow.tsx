@@ -30,7 +30,7 @@ export const ChatWindow = ({ participantId, participantName }: ChatWindowProps) 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (newMessage.trim() && user) {
-      sendMessage.mutate({ receiverId: participantId, content: newMessage });
+      sendMessage.mutate({ recipientId: participantId, content: newMessage });
       setNewMessage("");
     }
   };

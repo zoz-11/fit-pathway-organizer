@@ -9,7 +9,27 @@ import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 
-import { StatCard } from "@/components/dashboard/StatCard";
+const StatCard = ({ title, value, icon: Icon, description, trend }: {
+  title: string;
+  value: string;
+  icon: React.ComponentType<{ className?: string }>;
+  description: string;
+  trend?: { value: number; label: string };
+}) => (
+  <Card>
+    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardTitle className="text-sm font-medium">{title}</CardTitle>
+      <Icon className="h-4 w-4 text-muted-foreground" />
+    </CardHeader>
+    <CardContent>
+      <div className="text-2xl font-bold">{value}</div>
+      <p className="text-xs text-muted-foreground">{description}</p>
+      {trend && (
+        <p className="text-xs text-green-600 mt-1">+{trend.value}% {trend.label}</p>
+      )}
+    </CardContent>
+  </Card>
+);
 
 export const AthleteDashboard_Version2 = () => {
   const { profile } = useAuth();
@@ -48,16 +68,12 @@ export const AthleteDashboard_Version2 = () => {
         setWorkoutTime(prev => prev + 1);
       }, 1000);
 
-      interface CustomWindow extends Window {
-        workoutTimer?: NodeJS.Timeout;
-      }
-
       // Store timer reference so we can clear it later
-      (window as CustomWindow).workoutTimer = timer;
+      (window as any).workoutTimer = timer;
     } else {
       // End workout
       setWorkoutInProgress(false);
-      clearInterval((window as CustomWindow).workoutTimer);
+      clearInterval((window as any).workoutTimer);
       const minutes = Math.floor(workoutTime / 60);
       const seconds = workoutTime % 60;
       toast.success(`Workout completed! Duration: ${minutes}m ${seconds}s`, {
@@ -287,23 +303,13 @@ export const AthleteDashboard_Version2 = () => {
                             <div className="flex items-center">
                               <p className="text-sm text-muted-foreground">{workout.time}</p>
                               <span className="mx-2 text-gray-300">•</span>
-                              const intensityClass = 
+                              <span className={`text-xs px-2 py-0.5 rounded-full ${
                                 workout.intensity === 'High' ? 'bg-red-100 text-red-700' :
                                 workout.intensity === 'Medium' ? 'bg-orange-100 text-orange-700' :
-                                'bg-green-100 text-green-700';
-                              
-                              return (
-                                const intensityClass = 
-                                workout.intensity === 'High' ? 'bg-red-100 text-red-700' :
-                                workout.intensity === 'Medium' ? 'bg-orange-100 text-orange-700' :
-                                'bg-green-100 text-green-700';
-                              
-                              return (
-                                <span className={`text-xs px-2 py-0.5 rounded-full ${intensityClass}`}>
-                                  {workout.intensity}
-                                </span>
-                              );
-                              );
+                                'bg-green-100 text-green-700'
+                              }`}>
+                                {workout.intensity}
+                              </span>
                             </div>
                           </div>
                         </div>
