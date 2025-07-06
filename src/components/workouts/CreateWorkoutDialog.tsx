@@ -55,7 +55,7 @@ export const CreateWorkoutDialog = () => {
   });
 
   const onSubmit = (data: WorkoutFormValues) => {
-    createWorkout.mutate(data);
+    createWorkout.mutate(data as WorkoutFormValues);
     setOpen(false);
   };
 
