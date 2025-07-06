@@ -124,7 +124,7 @@ const AssignedWorkouts = () => {
               </div>
               <p className="text-xs text-muted-foreground">
                 Workouts waiting for you to conquer.
-              p>
+              </p>
             </CardContent>
           </Card>
         </div>
