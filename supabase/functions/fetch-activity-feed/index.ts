@@ -74,33 +74,76 @@ serve(async (req) => {
 
     const { limit, offset } = parsedRequest.data;
 
-    // Fetch recent completed workout schedules for the user
-    const { data: completedWorkouts, error: workoutsError } = await supabaseClient
-      .from('workout_schedules')
-      .select(`
-        id,
-        status,
-        title,
-        scheduled_date,
-        athlete:profiles!athlete_id(full_name)
-      `)
-      .eq('athlete_id', user.id)
-      .eq('status', 'completed')
-      .order('updated_at', { ascending: false })
-      .range(offset, offset + limit - 1);
+    // Get user role to determine what activities to show
+    const { data: userProfile, error: profileError } = await supabaseClient
+      .from('profiles')
+      .select('role, full_name')
+      .eq('id', user.id)
+      .single();
 
-    if (workoutsError) {
-      await logAudit(supabaseClient, user.id, 'Fetch Activity Feed Failed', { reason: 'Database error fetching workouts', details: workoutsError.message, ipAddress: req.headers.get('x-forwarded-for') });
-      throw workoutsError;
+    if (profileError) {
+      await logAudit(supabaseClient, user.id, 'Fetch Activity Feed Failed', { reason: 'Database error fetching user profile', details: profileError.message, ipAddress: req.headers.get('x-forwarded-for') });
+      throw profileError;
     }
 
-    // Format activities
-    const activities = completedWorkouts.map(wa => ({
-      type: 'workout_completed',
-      id: wa.id,
-      description: `${wa.athlete.full_name} completed workout "${wa.title}"`,
-      timestamp: wa.scheduled_date,
-    }));
+    let activities = [];
+
+    if (userProfile.role === 'trainer') {
+      // For trainers: show completed workouts from all their athletes
+      const { data: completedWorkouts, error: workoutsError } = await supabaseClient
+        .from('workout_schedules')
+        .select(`
+          id,
+          status,
+          title,
+          scheduled_date,
+          updated_at,
+          athlete:profiles!athlete_id(full_name)
+        `)
+        .eq('trainer_id', user.id)
+        .eq('status', 'completed')
+        .order('updated_at', { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (workoutsError) {
+        await logAudit(supabaseClient, user.id, 'Fetch Activity Feed Failed', { reason: 'Database error fetching workouts', details: workoutsError.message, ipAddress: req.headers.get('x-forwarded-for') });
+        throw workoutsError;
+      }
+
+      activities = completedWorkouts.map(wa => ({
+        type: 'workout_completed',
+        id: wa.id,
+        description: `${wa.athlete?.full_name || 'Athlete'} completed "${wa.title}"`,
+        timestamp: wa.updated_at || wa.scheduled_date,
+      }));
+    } else {
+      // For athletes: show their own completed workouts
+      const { data: completedWorkouts, error: workoutsError } = await supabaseClient
+        .from('workout_schedules')
+        .select(`
+          id,
+          status,
+          title,
+          scheduled_date,
+          updated_at
+        `)
+        .eq('athlete_id', user.id)
+        .eq('status', 'completed')
+        .order('updated_at', { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (workoutsError) {
+        await logAudit(supabaseClient, user.id, 'Fetch Activity Feed Failed', { reason: 'Database error fetching workouts', details: workoutsError.message, ipAddress: req.headers.get('x-forwarded-for') });
+        throw workoutsError;
+      }
+
+      activities = completedWorkouts.map(wa => ({
+        type: 'workout_completed',
+        id: wa.id,
+        description: `You completed "${wa.title}"`,
+        timestamp: wa.updated_at || wa.scheduled_date,
+      }));
+    }
 
     await logAudit(supabaseClient, user.id, 'Fetch Activity Feed Success', { recordCount: activities.length, ipAddress: req.headers.get('x-forwarded-for') });
 
