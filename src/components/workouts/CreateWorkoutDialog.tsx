@@ -55,7 +55,15 @@ export const CreateWorkoutDialog = () => {
   });
 
   const onSubmit = (data: WorkoutFormValues) => {
-    createWorkout.mutate(data as WorkoutFormValues);
+    createWorkout.mutate({
+      name: data.name,
+      description: data.description,
+      exercises: data.exercises.map(ex => ({
+        name: ex.name,
+        sets: ex.sets,
+        reps: ex.reps
+      }))
+    });
     setOpen(false);
   };
 
