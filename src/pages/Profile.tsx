@@ -29,10 +29,10 @@ const Profile = () => {
         fullName: profile.full_name || '',
         email: profile.email || '',
         phone: profile.phone || '',
-        location: profile.location || '',
+        location: '',
         joinDate: profile.created_at ? new Date(profile.created_at).toLocaleDateString() : '',
-        fitnessLevel: profile.fitness_level || 'Intermediate',
-        goals: profile.goals || 'Weight Loss'
+        fitnessLevel: '',
+        goals: ''
       });
     }
   }, [profile]);

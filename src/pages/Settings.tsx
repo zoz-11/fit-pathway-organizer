@@ -63,7 +63,7 @@ const Settings = () => {
         const { data: factors, error: listError } = await supabase.auth.mfa.listFactors();
         if (listError) throw listError;
 
-        const totpFactor = factors.find(factor => factor.factorType === 'totp');
+        const totpFactor = factors?.totp?.find((factor: any) => factor.factorType === 'totp');
         if (totpFactor) {
           const { error } = await supabase.auth.mfa.unenroll({
             factorId: totpFactor.id,

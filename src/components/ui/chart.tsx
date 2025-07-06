@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
-import type { TooltipProps, LegendProps } from "recharts";
 
 import { cn } from "@/lib/utils";
 
@@ -103,21 +102,24 @@ const ChartTooltip = RechartsPrimitive.Tooltip;
 
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  TooltipProps<number, string> & {
+  React.ComponentProps<"div"> & {
+    active?: boolean;
+    payload?: any[];
+    label?: any;
     className?: string;
     indicator?: "dot" | "line" | "dashed";
     hideLabel?: boolean;
     hideIndicator?: boolean;
     labelFormatter?: (
       label: string | number,
-      payload?: TooltipProps<number, string>["payload"],
+      payload?: any[]
     ) => React.ReactNode;
     formatter?: (
       value: number,
       name: string,
-      item: TooltipProps<number, string>["payload"][number],
+      item: any,
       index: number,
-      payload: TooltipProps<number, string>["payload"],
+      payload: any[]
     ) => React.ReactNode;
     labelClassName?: string;
     nameKey?: string;
@@ -272,11 +274,12 @@ const ChartLegend = RechartsPrimitive.Legend;
 
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> &
-    Pick<LegendProps, "payload" | "verticalAlign"> & {
-      hideIcon?: boolean;
-      nameKey?: string;
-    }
+  React.ComponentProps<"div"> & {
+    payload?: any[];
+    verticalAlign?: string;
+    hideIcon?: boolean;
+    nameKey?: string;
+  }
 >(
   (
     { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },
@@ -284,7 +287,7 @@ const ChartLegendContent = React.forwardRef<
   ) => {
     const { config } = useChart();
 
-    if (!payload || !payload.length) {
+    if (!payload || !Array.isArray(payload) || !payload.length) {
       return null;
     }
 
@@ -297,7 +300,7 @@ const ChartLegendContent = React.forwardRef<
           className,
         )}
       >
-        {payload.map((item) => {
+        {payload.map((item: any, index: number) => {
           const key = `${nameKey || item.dataKey || "value"}`;
           const itemConfig = getPayloadConfigFromPayload(config, item, key);
 

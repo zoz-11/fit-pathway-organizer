@@ -45,10 +45,10 @@ const AssignedWorkouts = () => {
   }
 
   // Ensure assignments is an array before filtering
-  const validAssignments: WorkoutAssignment[] = Array.isArray(assignments)
-    ? (assignments.filter(
-        (a): a is WorkoutAssignment => a && typeof a === "object" && a.id
-      ) as WorkoutAssignment[])
+  const validAssignments: any[] = Array.isArray(assignments)
+    ? assignments.filter(
+        (a): a is any => a && typeof a === "object" && !!a.id
+      )
     : [];
 
   const scheduledWorkouts = validAssignments.filter(

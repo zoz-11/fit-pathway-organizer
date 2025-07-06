@@ -40,7 +40,7 @@ const WorkoutLibrary = () => {
             workouts.map((workout) => (
               <Card key={workout.id}>
                 <CardHeader>
-                  <CardTitle>{workout.name}</CardTitle>
+                  <CardTitle>{workout.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <p className="text-sm text-muted-foreground">{workout.description}</p>

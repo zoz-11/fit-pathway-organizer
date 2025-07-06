@@ -20,10 +20,10 @@ const AssignedWorkoutsTrainer = () => {
 
   // Filter out invalid or malformed assignment objects and assert the type
   const validAssignments = Array.isArray(assignments)
-    ? (assignments.filter(
-        (a): a is WorkoutAssignment =>
-          a && typeof a === "object" && a.id && a.status,
-      ) as WorkoutAssignment[])
+    ? assignments.filter(
+        (a): a is any =>
+          a && typeof a === "object" && !!a.id && !!a.status,
+      )
     : [];
 
   const renderSkeletons = () =>

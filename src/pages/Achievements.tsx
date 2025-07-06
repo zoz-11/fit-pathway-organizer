@@ -44,7 +44,7 @@ const Achievements = () => {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <p className="text-sm text-muted-foreground">{ua.achievement.description}</p>
-                  <p className="text-xs text-muted-foreground">Achieved on: {new Date(ua.achieved_at).toLocaleDateString()}</p>
+                  <p className="text-xs text-muted-foreground">Achieved on: {new Date(ua.awarded_at).toLocaleDateString()}</p>
                 </CardContent>
               </Card>
             ))
