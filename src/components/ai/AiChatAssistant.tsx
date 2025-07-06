@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,8 +45,6 @@ export const AiChatAssistant = () => {
     setError(null);
 
     try {
-      console.log('Sending message to AI coach:', currentInput);
-      
       const { data, error } = await supabase.functions.invoke('ai-fitness-coach', {
         body: {
           message: currentInput,
@@ -55,8 +52,6 @@ export const AiChatAssistant = () => {
           workoutHistory: []
         }
       });
-
-      console.log('AI response received:', data, 'Error:', error);
 
       if (error) {
         console.error('Edge function error details:', error);

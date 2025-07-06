@@ -39,8 +39,9 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => {
-  usePushNotifications(); // Initialize push notifications
+// Component that uses push notifications inside AuthProvider
+const AppContent = () => {
+  usePushNotifications(); // Initialize push notifications inside AuthProvider context
 
   useEffect(() => {
     // Initializes fixes for clickability issues, particularly relevant for mobile browsers.
@@ -48,136 +49,142 @@ const App = () => {
   }, []);
 
   return (
+    <TooltipProvider>
+      <SonnerToaster />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+          <Route path="/subscription-cancel" element={<SubscriptionCancel />} />
+          <Route 
+            path="/" 
+            element={
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/schedule" 
+            element={
+              <ProtectedRoute>
+                <Schedule />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/assigned-workouts" 
+            element={
+              <ProtectedRoute>
+                <AssignedWorkouts />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/achievements" 
+            element={
+              <ProtectedRoute>
+                <Achievements />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/assigned-workouts-trainer" 
+            element={
+              <ProtectedRoute>
+                <AssignedWorkoutsTrainer />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/workout-library" 
+            element={
+              <ProtectedRoute>
+                <WorkoutLibrary />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/athlete-progress/:athleteId" 
+            element={
+              <ProtectedRoute>
+                <AthleteProgress />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/diet-plan" 
+            element={
+              <ProtectedRoute>
+                <DietPlan />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/progress" 
+            element={
+              <ProtectedRoute>
+                <Progress />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/messages" 
+            element={
+              <ProtectedRoute>
+                <Messages />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/settings" 
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            } 
+          />
+          <Route
+            path="/members"
+            element={
+              <ProtectedRoute>
+                <Members />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/goals"
+            element={
+              <ProtectedRoute>
+                <Goals />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/oauth-callback" element={<OAuthCallback />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  );
+};
+
+const App = () => {
+  return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
         <AuthProvider>
-          <TooltipProvider>
-            <SonnerToaster />
-            <BrowserRouter>
-            <Routes>
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/subscription-success" element={<SubscriptionSuccess />} />
-              <Route path="/subscription-cancel" element={<SubscriptionCancel />} />
-              <Route 
-                path="/" 
-                element={
-                  <ProtectedRoute>
-                    <Index />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/schedule" 
-                element={
-                  <ProtectedRoute>
-                    <Schedule />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/assigned-workouts" 
-                element={
-                  <ProtectedRoute>
-                    <AssignedWorkouts />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/achievements" 
-                element={
-                  <ProtectedRoute>
-                    <Achievements />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/assigned-workouts-trainer" 
-                element={
-                  <ProtectedRoute>
-                    <AssignedWorkoutsTrainer />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/workout-library" 
-                element={
-                  <ProtectedRoute>
-                    <WorkoutLibrary />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/athlete-progress/:athleteId" 
-                element={
-                  <ProtectedRoute>
-                    <AthleteProgress />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/diet-plan" 
-                element={
-                  <ProtectedRoute>
-                    <DietPlan />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/progress" 
-                element={
-                  <ProtectedRoute>
-                    <Progress />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/messages" 
-                element={
-                  <ProtectedRoute>
-                    <Messages />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/profile" 
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/settings" 
-                element={
-                  <ProtectedRoute>
-                    <Settings />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route
-                path="/members"
-                element={
-                  <ProtectedRoute>
-                    <Members />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/goals"
-                element={
-                  <ProtectedRoute>
-                    <Goals />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/oauth-callback" element={<OAuthCallback />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 };
 

@@ -36,7 +36,6 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   const userRole = profile?.role ?? "athlete";
   
   const handleNavigation = (path: string) => {
-    console.log('Navigating to:', path);
     navigate(path);
     if (onClose) {
       onClose();

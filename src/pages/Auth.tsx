@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -52,8 +51,6 @@ const Auth = () => {
     }
 
     try {
-      console.log("Starting signup process with:", { email, fullName, role });
-      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -66,8 +63,6 @@ const Auth = () => {
         },
       });
 
-      console.log("Signup response:", { data, error });
-
       if (error) {
         console.error("Supabase signup error:", error);
         setError((error as Error).message);
@@ -75,7 +70,6 @@ const Auth = () => {
       }
 
       if (data.user) {
-        console.log("User created, now inserting into profiles table...");
         const { error: profileError } = await supabase
           .from("profiles")
           .insert([{ id: data.user.id, full_name: fullName, role: role, email: email }]);
@@ -92,7 +86,6 @@ const Auth = () => {
         if (!data.user.email_confirmed_at) {
           setMessage("Account created! Please check your email (including spam folder) and click the verification link before signing in.");
         } else {
-          console.log("Signup successful, redirecting...");
           // Force a page refresh to ensure clean auth state
           window.location.href = "/";
         }

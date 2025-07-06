@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
@@ -276,7 +275,6 @@ const handler = async (req: Request): Promise<Response> => {
       html,
     });
 
-    console.log("Email sent successfully:", emailResponse);
     await logAudit(supabaseClient, user.id, 'Email Notification Sent', { to: to, type: type, emailResponse: emailResponse });
 
     return new Response(JSON.stringify(emailResponse), {

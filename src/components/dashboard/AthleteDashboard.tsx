@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Trophy, Target, Flame, Play, Clock, Dumbbell } from "lucide-react";
@@ -265,7 +264,6 @@ export const AthleteDashboard = () => {
           isOpen={showWorkoutModal}
           onClose={() => setShowWorkoutModal(false)}
           onStartWorkout={() => {
-            console.log("Starting workout from dashboard");
             setShowWorkoutModal(false);
           }}
         />

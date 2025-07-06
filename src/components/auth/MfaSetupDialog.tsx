@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
   AlertDialog,
@@ -48,6 +47,7 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
       const { error } = await supabase.auth.mfa.verify({
         factorId,
         code,
+        challengeId: factorId,
       });
 
       if (error) {

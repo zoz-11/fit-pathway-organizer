@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.43.2";
@@ -158,8 +157,6 @@ serve(async (req) => {
     
     Provide encouraging, specific, and actionable fitness advice. Keep responses concise but helpful.`;
 
-    console.log('Making request to OpenRouter with model: meta-llama/llama-3.1-8b-instruct');
-
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -179,8 +176,6 @@ serve(async (req) => {
       }),
     });
 
-    console.log('OpenRouter response status:', response.status);
-
     if (!response.ok) {
       const errorData = await response.text();
       console.error('OpenRouter API error:', response.status, errorData);
@@ -194,7 +189,6 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('OpenRouter response received successfully');
     
     const aiResponse = data.choices[0].message.content;
 

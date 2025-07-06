@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { z } from "npm:zod@3.23.4";
@@ -103,7 +102,6 @@ serve(async (req) => {
     }
 
     if (!deviceTokens || deviceTokens.length === 0) {
-      console.log(`No device tokens found for user ${userId}. Skipping notification.`);
       await logAudit(supabaseClient, userId, 'Push Notification Skipped', { reason: 'No device tokens', targetUserId: userId, title: title, ipAddress: req.headers.get('x-forwarded-for') });
       return new Response(JSON.stringify({ message: 'No device tokens found for user, notification skipped' }), {
         status: 200,
@@ -128,7 +126,6 @@ serve(async (req) => {
     results.forEach((result, index) => {
       if (result.status === 'fulfilled') {
         successCount++;
-        console.log(`Successfully sent message to token ${tokens[index]}:`, result.value);
       } else {
         failureCount++;
         console.error(`Failed to send message to token ${tokens[index]}:`, result.reason);
