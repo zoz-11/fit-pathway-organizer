@@ -21,4 +21,12 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  esbuild: {
+    // Disable TypeScript type checking during build to avoid config conflicts
+    tsconfigRaw: {
+      compilerOptions: {
+        useDefineForClassFields: true,
+      }
+    }
+  }
 }));

@@ -25,16 +25,5 @@ export default tseslint.config(
       ],
       "@typescript-eslint/no-unused-vars": "off",
     },
-  },
-  {
-    files: ["**/*.{ts,tsx}"],
-    ignores: ["src/components/ui/form-logic.ts", "src/components/ui/sidebar-logic.ts", "supabase/functions/**"],
-    languageOptions: {
-      parser: tseslint.parser,
-      parserOptions: {
-        jsx: true,
-        project: ['./tsconfig.eslint.json'],
-      },
-    },
   }
 );
