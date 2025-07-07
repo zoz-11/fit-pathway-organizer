@@ -81,10 +81,10 @@ const Progress = () => {
         </div>
 
         {/* Progress Chart */}
-        <ProgressCharts />
+        <ProgressCharts userId="current-user-id" />
 
         {/* Advanced Analytics */}
-        <AdvancedAnalytics />
+        <AdvancedAnalytics userId="current-user-id" />
 
         {/* Achievements */}
         <Card>
