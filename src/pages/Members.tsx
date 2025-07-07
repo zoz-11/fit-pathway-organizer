@@ -103,10 +103,7 @@ const Members = () => {
                       <Mail className="mr-2 h-4 w-4" />
                       Send Message
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-600">
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      <RemoveAthleteDialog athleteId={athlete.id} athleteName={athlete.full_name} />
-                    </DropdownMenuItem>
+                    <RemoveAthleteDialog athleteId={athlete.id} athleteName={athlete.full_name || "Athlete"} />
                   </DropdownMenuContent>
                 </DropdownMenu>
               </CardHeader>

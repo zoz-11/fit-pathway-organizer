@@ -14,16 +14,10 @@ export const useAchievements = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Mock queries - replace with real database queries when tables exist
   const { data: allAchievements, isLoading: isLoadingAllAchievements } = useQuery({
     queryKey: ['allAchievements'],
     queryFn: async () => {
-      // TODO: Replace with real database query when achievements table exists
-      // const { data, error } = await supabase.from('achievements').select('*');
-      // if (error) throw error;
-      // return data;
-      
-      // For now, return mock data
+      // Return mock data for now since achievements system is not required
       return mockAchievements;
     },
   });
@@ -33,21 +27,13 @@ export const useAchievements = () => {
     queryFn: async () => {
       if (!user) return [];
       
-      // TODO: Replace with real database query when user_achievements table exists
-      // const { data, error } = await supabase
-      //   .from('user_achievements')
-      //   .select('*, achievement:achievements(*)')
-      //   .eq('user_id', user.id);
-      // if (error) throw error;
-      // return data;
-      
-      // For now, return mock data (first 2 achievements as "awarded")
+      // Return mock data - first 2 achievements as "awarded"
       return mockAchievements.slice(0, 2).map(achievement => ({
         id: `user_${achievement.id}`,
         user_id: user.id,
         achievement_id: achievement.id,
         awarded_at: new Date().toISOString(),
-        achievement: achievement,
+        achievement
       }));
     },
     enabled: !!user,
@@ -57,16 +43,8 @@ export const useAchievements = () => {
     mutationFn: async (achievementName: string) => {
       if (!user) throw new Error("User not authenticated");
 
-      // TODO: Replace with real database logic when tables exist
-      // Find the achievement ID
-      // const { data: achievement, error: fetchError } = await supabase
-      //   .from('achievements')
-      //   .select('id')
-      //   .eq('name', achievementName)
-      //   .single();
-      // if (fetchError || !achievement) {
-      //   throw new Error(`Achievement "${achievementName}" not found`);
-      // }
+      // Mock achievement awarding for now
+      console.log(`Achievement awarded: ${achievementName}`);
 
       // Check if already awarded
       // const { data: existingAward, error: existingError } = await supabase

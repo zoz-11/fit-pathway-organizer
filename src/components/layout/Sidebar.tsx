@@ -31,7 +31,7 @@ interface NavItem {
 }
 
 export const Sidebar = ({ onClose }: SidebarProps) => {
-  const { profile } = useAuth();
+  const { profile, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const userRole = profile?.role ?? "athlete";
@@ -72,8 +72,8 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   
   const navItems = userRole === "trainer" ? trainerNavItems : athleteNavItems;
 
-  const handleSignOut = () => {
-    // Implement sign out logic
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   return (
@@ -81,13 +81,11 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
       <div className="flex items-center justify-between p-4 lg:hidden">
         <span className="text-lg font-semibold dark:text-white">Menu</span>
         <Button 
-          size="default"
+          size="sm"
           variant="ghost" 
-          className="w-full justify-start"
           onClick={onClose}
         >
-          <X className="h-4 w-4 mr-2" />
-          Close
+          <X className="h-4 w-4" />
         </Button>
       </div>
 
@@ -103,8 +101,8 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
               className={cn(
                 "w-full justify-start space-x-3 py-3 px-4 cursor-pointer text-left",
                 isActive 
-                  ? "bg-gradient-to-r from-blue-500 to-green-500 text-white shadow-md" 
-                  : "hover:bg-blue-50 dark:hover:bg-gray-800 hover:text-blue-700 dark:hover:text-blue-400 text-gray-700 dark:text-gray-300"
+                  ? "bg-primary text-primary-foreground shadow-md" 
+                  : "hover:bg-accent hover:text-accent-foreground"
               )}
               onClick={(e) => {
                 e.preventDefault();
@@ -118,9 +116,8 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
           );
         })}
         <Button 
-          size="default"
           variant="ghost" 
-          className="w-full justify-start"
+          className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
           onClick={handleSignOut}
         >
           <LogOut className="h-4 w-4 mr-2" />

@@ -24,9 +24,10 @@ export const RemoveAthleteDialog = ({ athleteId, athleteName }: RemoveAthleteDia
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-red-500">
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        <span className="flex items-center text-red-600 cursor-pointer">
+          <Trash2 className="mr-2 h-4 w-4" />
+          Remove Athlete
+        </span>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

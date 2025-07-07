@@ -29,10 +29,12 @@ export const useWorkoutAssignments = () => {
       workoutId,
       athleteId,
       dueDate,
+      title,
     }: {
       workoutId: number;
       athleteId: string;
       dueDate: string;
+      title?: string;
     }) => {
       if (!user) throw new Error("User is not authenticated");
       const { error } = await supabase.from("workout_schedules").insert([
@@ -40,7 +42,8 @@ export const useWorkoutAssignments = () => {
           athlete_id: athleteId,
           trainer_id: user.id,
           scheduled_date: dueDate,
-          title: `Workout ${workoutId}`,
+          title: title || `Custom Workout`,
+          description: "Assigned workout",
         },
       ]);
 
