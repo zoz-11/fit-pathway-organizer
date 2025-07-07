@@ -26,7 +26,7 @@ export const useActivityFeed = () => {
               id,
               title,
               updated_at,
-              athlete:profiles!athlete_id(full_name)
+              athlete:profiles!workout_schedules_athlete_id_fkey(full_name)
             `)
             .eq('trainer_id', user.id)
             .eq('status', 'completed')

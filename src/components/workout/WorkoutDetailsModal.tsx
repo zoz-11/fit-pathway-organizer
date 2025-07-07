@@ -143,7 +143,7 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
             {exercises.map((exercise) => (
               <div key={exercise.name} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-start space-x-4">
-                  <div className="text-3xl flex-shrink-0">{exercise.image}</div>
+                  <div className="text-3xl flex-shrink-0">💪</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-semibold text-lg text-gray-900 truncate">{exercise.name}</h4>

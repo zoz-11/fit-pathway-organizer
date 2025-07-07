@@ -11,6 +11,19 @@ import { ChatWindow } from "@/components/messages/ChatWindow";
 import { Badge } from "@/components/ui/badge";
 import { StatCard } from "@/components/ui/StatCard";
 
+interface AthleteProfile {
+  id: string;
+  full_name: string;
+  email: string;
+}
+
+interface Workout {
+  id: string;
+  title: string;
+  status: string;
+  scheduled_date: string;
+}
+
 // --- Main Athlete Progress Page Component ---
 const AthleteProgress = () => {
   const { athleteId } = useParams<{ athleteId: string }>();
@@ -86,6 +99,9 @@ const AthleteProgress = () => {
     return (
       <AppLayout>
         <PageLayout title="Athlete Not Found" description="Athlete profile could not be loaded or was not found.">
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">The requested athlete could not be found.</p>
+          </div>
         </PageLayout>
       </AppLayout>
     );

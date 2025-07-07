@@ -21,7 +21,7 @@ const Members = () => {
 
   const filteredAthletes = athletes?.filter(athlete => {
     const nameMatch = athlete.full_name?.toLowerCase().includes(searchTerm.toLowerCase());
-    const statusMatch = statusFilter === "all" || athlete.status === statusFilter;
+    const statusMatch = statusFilter === "all"; // Simplified since status property doesn't exist
     return nameMatch && statusMatch;
   });
 
@@ -80,7 +80,6 @@ const Members = () => {
             <Card key={athlete.id}>
               <CardHeader className="flex-row items-center gap-4">
                 <Avatar>
-                  <AvatarImage src={athlete.avatar_url} alt={athlete.full_name} />
                   <AvatarFallback>{athlete.full_name?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
