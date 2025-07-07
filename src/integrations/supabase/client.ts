@@ -8,4 +8,26 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+// Custom fetch with longer timeout for Edge Functions
+const customFetch = (url: RequestInfo | URL, options?: RequestInit) => {
+  const timeout = 30000; // 30 seconds timeout
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Request timed out')), timeout)
+    ),
+  ]) as Promise<Response>;
+};
+
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+  global: {
+    fetch: customFetch,
+    headers: {
+      'X-Client-Info': 'fit-pathway-organizer',
+    },
+  },
+});

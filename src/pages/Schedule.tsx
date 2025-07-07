@@ -1,7 +1,9 @@
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuthProvider";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,17 +19,11 @@ interface Workout {
   status: string;
 }
 
-// Add a type guard for google_refresh_token
-function hasGoogleRefreshToken(profile: unknown): profile is { google_refresh_token: string } {
-  return (
-    typeof profile === 'object' &&
-    profile !== null &&
-    'google_refresh_token' in profile &&
-    typeof (profile as Record<string, unknown>).google_refresh_token === 'string'
-  );
-}
+const hasGoogleRefreshToken = (profile: any) => {
+  return profile?.google_refresh_token;
+};
 
-const Schedule = () => {
+const Schedule: React.FC = () => {
   const { user, profile } = useAuth();
 
   const handleAddToCalendar = async (workout: Workout) => {
@@ -133,14 +129,7 @@ const Schedule = () => {
 
   return (
     <AppLayout>
-      <div className="space-y-6 p-4 md:p-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">My Schedule</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your upcoming workouts and training sessions
-          </p>
-        </div>
-
+      <PageLayout title="My Schedule" description="Manage your upcoming workouts and training sessions">
         <div className="grid gap-6">
           {workouts.map((workout) => (
             <Card key={workout.id} className="w-full">
@@ -219,7 +208,7 @@ const Schedule = () => {
             </Card>
           ))}
         </div>
-      </div>
+      </PageLayout>
     </AppLayout>
   );
 };

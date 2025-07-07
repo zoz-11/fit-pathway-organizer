@@ -25,3 +25,5 @@ const Toaster = ({ ...props }: React.ComponentProps<typeof Sonner>) => {
 }
 
 export { Toaster as SonnerToaster }
+export { Toaster }
+export { toast } from "sonner"

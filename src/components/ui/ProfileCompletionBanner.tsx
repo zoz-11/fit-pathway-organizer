@@ -14,11 +14,11 @@ export const ProfileCompletionBanner = () => {
 
   return (
     <Alert className="mb-4 bg-yellow-50 border-yellow-200">
-      <AlertTitle>Complete Your Profile</AlertTitle>
-      <AlertDescription>
+      <AlertTitle className="mb-2">Complete Your Profile</AlertTitle>
+      <AlertDescription className="mb-3">
         Your profile is incomplete. Please update it to get the most out of FitPathway Organizer.
       </AlertDescription>
-      <Button asChild className="mt-2">
+      <Button asChild size="sm">
         <Link to="/profile">Complete Profile</Link>
       </Button>
     </Alert>

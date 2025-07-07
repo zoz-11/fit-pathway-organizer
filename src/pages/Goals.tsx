@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -242,15 +241,20 @@ const Goals = () => {
                 </div>
               )}
               <div className="flex space-x-2">
-                <Button type="submit" disabled={createGoalMutation.isPending || updateGoalMutation.isPending}>
-                  {editingGoal ? (
-                    updateGoalMutation.isPending ? "Updating..." : "Update Goal"
-                  ) : (
-                    createGoalMutation.isPending ? "Adding..." : "Add Goal"
-                  )}
+                <Button 
+                  type="submit" 
+                  size="default"
+                  disabled={createGoalMutation.isPending || updateGoalMutation.isPending}
+                >
+                  {createGoalMutation.isPending || updateGoalMutation.isPending ? 'Saving...' : 'Save Goal'}
                 </Button>
                 {editingGoal && (
-                  <Button type="button" variant="outline" onClick={handleCancelEdit}>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="default"
+                    onClick={handleCancelEdit}
+                  >
                     Cancel
                   </Button>
                 )}

@@ -1,4 +1,3 @@
-
 import { AppLayout } from "@/components/layout/AppLayout";
 import { TrainerDashboard } from "@/components/dashboard/TrainerDashboard";
 import { AthleteDashboard } from "@/components/dashboard/AthleteDashboard";

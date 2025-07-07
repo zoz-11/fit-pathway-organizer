@@ -1,4 +1,5 @@
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -8,51 +9,7 @@ import { Calendar, Target, Flame, Dumbbell } from "lucide-react";
 import { handleApiError } from "@/lib/utils";
 import { ChatWindow } from "@/components/messages/ChatWindow";
 import { Badge } from "@/components/ui/badge";
-
-// --- Type Definitions for API data ---
-type AthleteProfile = {
-  id: string;
-  full_name: string | null;
-  email: string | null;
-  // Add any other profile fields you expect
-};
-
-type Workout = {
-  id: string;
-  title: string;
-  status: "scheduled" | "in_progress" | "completed" | "skipped";
-  scheduled_date: string;
-};
-
-// --- Reusable Stat Card Component ---
-const StatCard = ({
-  title,
-  value,
-  icon: Icon,
-  description,
-  isLoading = false,
-}: {
-  title: string;
-  value: string | number;
-  icon: React.ComponentType<{ className?: string }>;
-  description: string;
-  isLoading?: boolean;
-}) => (
-  <Card>
-    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      <Icon className="h-4 w-4 text-muted-foreground" />
-    </CardHeader>
-    <CardContent>
-      {isLoading ? (
-        <Skeleton className="h-8 w-1/3" />
-      ) : (
-        <div className="text-2xl font-bold">{value}</div>
-      )}
-      <p className="text-xs text-muted-foreground">{description}</p>
-    </CardContent>
-  </Card>
-);
+import { StatCard } from "@/components/ui/StatCard";
 
 // --- Main Athlete Progress Page Component ---
 const AthleteProgress = () => {
@@ -112,8 +69,7 @@ const AthleteProgress = () => {
   if (isLoading) {
     return (
       <AppLayout>
-        <div className="space-y-6 p-4 md:p-6">
-          <Skeleton className="h-10 w-64 mb-4" />
+        <PageLayout title="Athlete's Progress" description="An overview of their fitness journey and recent activity.">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Skeleton className="h-28" />
             <Skeleton className="h-28" />
@@ -121,7 +77,7 @@ const AthleteProgress = () => {
             <Skeleton className="h-28" />
           </div>
           <Skeleton className="h-96 w-full" />
-        </div>
+        </PageLayout>
       </AppLayout>
     );
   }
@@ -129,33 +85,23 @@ const AthleteProgress = () => {
   if (!athleteProfile) {
     return (
       <AppLayout>
-        <div className="p-6 text-center text-muted-foreground">
-          Athlete profile could not be loaded or was not found.
-        </div>
+        <PageLayout title="Athlete Not Found" description="Athlete profile could not be loaded or was not found.">
+        </PageLayout>
       </AppLayout>
     );
   }
 
   return (
     <AppLayout>
-      <div className="space-y-6 p-4 md:p-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-              {athleteProfile.full_name || "Athlete"}'s Progress
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              An overview of their fitness journey and recent activity.
-            </p>
-          </div>
-          {athleteId && athleteProfile.full_name && (
+      <PageLayout title={`${athleteProfile.full_name || "Athlete"}'s Progress`} description="An overview of their fitness journey and recent activity.">
+        <div className="flex justify-end">
+        {athleteId && athleteProfile.full_name && (
             <ChatWindow
               participantId={athleteId}
               participantName={athleteProfile.full_name}
             />
           )}
         </div>
-
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Workouts Completed"
@@ -227,7 +173,7 @@ const AthleteProgress = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </PageLayout>
     </AppLayout>
   );
 };

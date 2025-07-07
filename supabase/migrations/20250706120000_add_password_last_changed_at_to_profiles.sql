@@ -1,0 +1,1 @@
+ALTER TABLE profiles ADD COLUMN password_last_changed_at TIMESTAMPTZ DEFAULT NOW();

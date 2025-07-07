@@ -1,4 +1,5 @@
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAchievements } from "@/hooks/useAchievements";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,28 +11,20 @@ const Achievements = () => {
   if (isLoadingUserAchievements) {
     return (
       <AppLayout>
-        <div className="p-6">
-          <Skeleton className="h-10 w-48 mb-4" />
+        <PageLayout title="My Achievements" description="Celebrate your fitness milestones!">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Skeleton className="h-32" />
             <Skeleton className="h-32" />
             <Skeleton className="h-32" />
           </div>
-        </div>
+        </PageLayout>
       </AppLayout>
     );
   }
 
   return (
     <AppLayout>
-      <div className="space-y-6 p-4 md:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">My Achievements</h1>
-            <p className="text-muted-foreground mt-1">Celebrate your fitness milestones!</p>
-          </div>
-        </div>
-
+      <PageLayout title="My Achievements" description="Celebrate your fitness milestones!">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {userAchievements && userAchievements.length > 0 ? (
             userAchievements.map((ua) => (
@@ -52,7 +45,7 @@ const Achievements = () => {
             <p>No achievements unlocked yet. Keep working out!</p>
           )}
         </div>
-      </div>
+      </PageLayout>
     </AppLayout>
   );
 };

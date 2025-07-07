@@ -21,8 +21,10 @@ export const FormFieldContext = React.createContext<FormFieldContextValue>(
   {} as FormFieldContextValue
 )
 
-/*
-function FormField<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>({
+function FormField<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+>({
   ...props
 }: ControllerProps<TFieldValues, TName>) {
   return (
@@ -33,7 +35,6 @@ function FormField<TFieldValues extends FieldValues, TName extends FieldPath<TFi
 }
 
 export { FormField };
-*/
 
 type FormItemContextValue = {
   id: string

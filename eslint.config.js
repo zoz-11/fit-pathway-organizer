@@ -33,6 +33,7 @@ export default tseslint.config(
       parser: tseslint.parser,
       parserOptions: {
         jsx: true,
+        project: ['./tsconfig.eslint.json'],
       },
     },
   }

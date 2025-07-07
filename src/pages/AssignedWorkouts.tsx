@@ -1,4 +1,5 @@
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWorkoutAssignments } from "@/hooks/useWorkoutAssignments";
@@ -39,7 +40,9 @@ const AssignedWorkouts = () => {
   if (isLoading) {
     return (
       <AppLayout>
-        <div className="p-6">Loading your workout assignments...</div>
+        <PageLayout title="My Assigned Workouts" description="View and manage your assigned workout plans.">
+          <div className="p-6">Loading your workout assignments...</div>
+        </PageLayout>
       </AppLayout>
     );
   }
@@ -84,16 +87,7 @@ const AssignedWorkouts = () => {
 
   return (
     <AppLayout>
-      <div className="space-y-6 p-4 md:p-6">
-        <header>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-            My Assigned Workouts
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            View and manage your assigned workout plans.
-          </p>
-        </header>
-
+      <PageLayout title="My Assigned Workouts" description="View and manage your assigned workout plans.">
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -221,7 +215,7 @@ const AssignedWorkouts = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </PageLayout>
     </AppLayout>
   );
 };

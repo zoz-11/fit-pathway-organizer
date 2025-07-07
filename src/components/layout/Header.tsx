@@ -7,9 +7,12 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuthProvider";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
   children?: React.ReactNode;
@@ -32,20 +35,17 @@ export const Header = ({ children }: HeaderProps) => {
   };
 
   return (
-    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+    <header className="sticky top-0 z-30 bg-card border-b shadow-sm">
+      <div className="container flex h-16 items-center px-4 sm:px-6">
+        <div className="flex gap-2 items-center">
           {children}
-          <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-              FitPathway
-            </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Organizer</p>
+          <div className="ml-2 text-lg font-medium hidden md:block">
+            FitPathway Organizer
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" className="relative">
+        <div className="flex items-center space-x-4 ml-auto">
+          <Button variant="ghost" size="sm-icon" className="relative" aria-label="Notifications">
             <Bell className="h-5 w-5" />
             <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
           </Button>
@@ -65,19 +65,35 @@ export const Header = ({ children }: HeaderProps) => {
                 </div>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-white dark:bg-gray-800 border dark:border-gray-700 shadow-lg z-50">
-              <DropdownMenuItem onClick={handleProfileClick} className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
-                <User className="mr-2 h-4 w-4" />
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleSettingsClick} className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
-              </DropdownMenuItem>
+            
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">Account</p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    {user?.email}
+                  </p>
+                </div>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20" onClick={handleSignOut}>
+              <DropdownMenuGroup>
+                <DropdownMenuItem asChild>
+                  <Link to="/profile">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/settings">
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleSignOut}>
                 <LogOut className="mr-2 h-4 w-4" />
-                Sign Out
+                <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

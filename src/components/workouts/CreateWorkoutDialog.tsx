@@ -165,7 +165,10 @@ export const CreateWorkoutDialog = () => {
             </Button>
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button size="default" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button type="submit" size="default" className="w-full">
             Create Workout
           </Button>
         </form>

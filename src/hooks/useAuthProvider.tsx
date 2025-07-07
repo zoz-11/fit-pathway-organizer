@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useProfile } from './useProfile';
@@ -6,7 +6,12 @@ import { toast } from "sonner";
 import { handleApiError } from "@/lib/utils";
 import type { Database } from '@/integrations/supabase/types';
 
-type Profile = Database['public']['Tables']['profiles']['Row'];
+type Profile = Database['public']['Tables']['profiles']['Row'] & {
+  avatar_url?: string | null;
+  fitness_level?: string | null;
+  goals?: string | null;
+  location?: string | null;
+};
 
 interface AuthContextType {
   user: User | null;
@@ -14,6 +19,7 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  refreshProfile: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loadingInitial, setLoadingInitial] = useState(true);
 
-  const { data: profile, isLoading: isLoadingProfile } = useProfile(user?.id);
+  const { data: profile, isLoading: isLoadingProfile, refetch } = useProfile(user?.id);
 
   useEffect(() => {
     // Set up auth state listener
@@ -66,10 +72,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const refreshProfile = () => {
+    refetch();
+  };
+
   const loading = loadingInitial || isLoadingProfile;
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signOut }}>
+    <AuthContext.Provider value={{ user, session, profile, loading, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

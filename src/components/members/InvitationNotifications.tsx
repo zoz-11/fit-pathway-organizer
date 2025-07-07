@@ -67,8 +67,8 @@ export const InvitationNotifications = () => {
           <div key={invitation.id} className="flex items-center justify-between">
             <p>You have an invitation from {invitation.trainer.full_name}</p>
             <div className="space-x-2">
-              <Button onClick={() => updateInvitation.mutate({ id: invitation.id, status: 'accepted' })}>Accept</Button>
-              <Button variant="outline" onClick={() => updateInvitation.mutate({ id: invitation.id, status: 'declined' })}>Decline</Button>
+              <Button size="default" onClick={() => updateInvitation.mutate({ id: invitation.id, status: 'accepted' })}>Accept</Button>
+              <Button variant="outline" size="default" onClick={() => updateInvitation.mutate({ id: invitation.id, status: 'declined' })}>Decline</Button>
             </div>
           </div>
         ))}

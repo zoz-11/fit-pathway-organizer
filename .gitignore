@@ -12,9 +12,25 @@ dist
 dist-ssr
 *.local
 
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env*.local
+
 # Sensitive files
 *.json
 sonner.tsx
+
+# Security files
+*.pem
+*.key
+*.crt
+secrets/
+private/
+certificates/
 
 # Editor directories and files
 .vscode/*

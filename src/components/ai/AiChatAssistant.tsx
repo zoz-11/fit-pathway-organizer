@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,6 +28,13 @@ export const AiChatAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { profile } = useAuth();
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
@@ -79,7 +86,7 @@ export const AiChatAssistant = () => {
       
       const errorResponse: Message = {
         role: 'assistant',
-        content: `I apologize, but I'm experiencing technical difficulties right now. The error was: ${errorMessage}. Please try again in a moment, and if the problem continues, contact support.`,
+        content: `I apologize, but I'm experiencing technical difficulties right now. Please check your network connection and ensure the Supabase Edge Functions are properly deployed. If the problem continues, contact support.`,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorResponse]);
@@ -119,7 +126,7 @@ export const AiChatAssistant = () => {
               <span>Connection Error</span>
             </div>
           )}
-          <Button variant="ghost" size="sm" onClick={clearChat}>
+          <Button variant="ghost" size="sm-icon" onClick={clearChat}>
             <RefreshCw className="h-4 w-4" />
           </Button>
         </div>
@@ -163,16 +170,18 @@ export const AiChatAssistant = () => {
                 <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
                   <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 </div>
-                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 flex items-center gap-2">
-                  <LoadingSpinner size="sm" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">AI is thinking...</span>
+                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 flex items-center gap-1">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">AI is thinking</span>
+                  <span className="animate-pulse text-sm text-gray-600 dark:text-gray-400">.</span>
+                  <span className="animate-pulse delay-100 text-sm text-gray-600 dark:text-gray-400">.</span>
+                  <span className="animate-pulse delay-200 text-sm text-gray-600 dark:text-gray-400">.</span>
                 </div>
               </div>
             )}
           </div>
         </ScrollArea>
         <div className="p-4 border-t bg-gray-50 dark:bg-gray-900/50 mt-4">
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -182,11 +191,12 @@ export const AiChatAssistant = () => {
               className="flex-1 bg-white dark:bg-gray-800"
             />
             <Button 
-              onClick={sendMessage} 
+              size="default"
+              type="submit" 
               disabled={isLoading || !input.trim()}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >
-              <Send className="h-4 w-4" />
+              {isLoading ? "Sending..." : "Send"}
             </Button>
           </div>
         </div>

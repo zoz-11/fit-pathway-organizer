@@ -1,4 +1,5 @@
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CreateWorkoutDialog } from "@/components/workouts/CreateWorkoutDialog";
@@ -12,29 +13,23 @@ const WorkoutLibrary = () => {
   if (isLoading) {
     return (
       <AppLayout>
-        <div className="p-6">
-          <Skeleton className="h-10 w-48 mb-4" />
+        <PageLayout title="Workout Library" description="Manage your custom workout plans.">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Skeleton className="h-32" />
             <Skeleton className="h-32" />
             <Skeleton className="h-32" />
           </div>
-        </div>
+        </PageLayout>
       </AppLayout>
     );
   }
 
   return (
     <AppLayout>
-      <div className="space-y-6 p-4 md:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Workout Library</h1>
-            <p className="text-muted-foreground mt-1">Manage your custom workout plans.</p>
-          </div>
+      <PageLayout title="Workout Library" description="Manage your custom workout plans.">
+        <div className="flex justify-end">
           <CreateWorkoutDialog />
         </div>
-
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {workouts && workouts.length > 0 ? (
             workouts.map((workout) => (
@@ -59,7 +54,7 @@ const WorkoutLibrary = () => {
             <p>No workouts created yet. Click "Create New Workout" to get started!</p>
           )}
         </div>
-      </div>
+      </PageLayout>
     </AppLayout>
   );
 };

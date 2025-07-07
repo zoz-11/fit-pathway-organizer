@@ -45,7 +45,6 @@ export function useSidebar() {
   return context
 }
 
-/*
 export const SidebarProvider = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
@@ -154,4 +153,3 @@ export const SidebarProvider = React.forwardRef<
   }
 )
 SidebarProvider.displayName = "SidebarProvider"
-*/

@@ -30,7 +30,7 @@ export const InviteAthleteDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button size="default">
           Invite Athlete
         </Button>
       </DialogTrigger>
@@ -48,7 +48,7 @@ export const InviteAthleteDialog = () => {
             />
             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           </div>
-          <Button type="submit" className="w-full">Send Invitation</Button>
+          <Button type="submit" size="default" className="w-full">Send Invitation</Button>
         </form>
       </DialogContent>
     </Dialog>

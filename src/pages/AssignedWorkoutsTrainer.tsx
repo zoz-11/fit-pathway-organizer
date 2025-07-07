@@ -1,4 +1,5 @@
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWorkoutAssignments } from "@/hooks/useWorkoutAssignments";
 import { Badge } from "@/components/ui/badge";
@@ -42,16 +43,7 @@ const AssignedWorkoutsTrainer = () => {
 
   return (
     <AppLayout>
-      <div className="space-y-6 p-4 md:p-6">
-        <header>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-            Assigned Workouts
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Overview of all assigned workout plans for your athletes.
-          </p>
-        </header>
-
+      <PageLayout title="Assigned Workouts" description="Overview of all assigned workout plans for your athletes.">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {isLoading ? (
             renderSkeletons()
@@ -100,7 +92,7 @@ const AssignedWorkoutsTrainer = () => {
             </div>
           )}
         </div>
-      </div>
+      </PageLayout>
     </AppLayout>
   );
 };

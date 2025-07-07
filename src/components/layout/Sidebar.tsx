@@ -12,7 +12,8 @@ import {
   BookOpen,
   Apple,
   Target,
-  Trophy
+  Trophy,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuthProvider";
@@ -71,23 +72,22 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   
   const navItems = userRole === "trainer" ? trainerNavItems : athleteNavItems;
 
+  const handleSignOut = () => {
+    // Implement sign out logic
+  };
+
   return (
     <div className="h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col">
       <div className="flex items-center justify-between p-4 lg:hidden">
         <span className="text-lg font-semibold dark:text-white">Menu</span>
         <Button 
+          size="default"
           variant="ghost" 
-          size="icon" 
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (onClose) {
-              onClose();
-            }
-          }}
-          className="hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="w-full justify-start"
+          onClick={onClose}
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4 mr-2" />
+          Close
         </Button>
       </div>
 
@@ -117,6 +117,15 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
             </Button>
           );
         })}
+        <Button 
+          size="default"
+          variant="ghost" 
+          className="w-full justify-start"
+          onClick={handleSignOut}
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          Sign Out
+        </Button>
       </nav>
 
       <div className="p-4 border-t border-gray-200 dark:border-gray-700">

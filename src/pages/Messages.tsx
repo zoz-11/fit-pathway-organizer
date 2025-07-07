@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,60 +7,35 @@ import { Badge } from "@/components/ui/badge";
 import { Send, MessageCircle, Users, Search } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useAuth } from "@/hooks/useAuthProvider";
-import { useMessages } from "@/hooks/useMessages";
 import { ChatWindow } from "@/components/messages/ChatWindow";
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from "@/components/ui/skeleton";
+import { useConversations } from "@/hooks/useMessages";
 
 const Messages = () => {
   const { user, profile, loading: isLoadingAuth } = useAuth();
   const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null);
   const [selectedParticipantName, setSelectedParticipantName] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: conversations, isLoading: isLoadingConversations } = useQuery({
-    queryKey: ['conversations', user?.id, profile?.role],
-    queryFn: async () => {
-      if (!user || !profile) return [];
+  // Use the new hook for conversations
+  const { conversations, isLoading: isLoadingConversations } = useConversations();
 
-      if (profile.role === 'athlete') {
-        // Fetch trainers associated with this athlete
-        const { data, error } = await supabase
-          .from('trainer_athletes')
-          .select('trainer:profiles!trainer_id(*)')
-          .eq('athlete_id', user.id)
-          .eq('status', 'accepted');
-
-        if (error) throw error;
-        return data.map(item => item.trainer);
-      } else if (profile.role === 'trainer') {
-        // Fetch athletes associated with this trainer
-        const { data, error } = await supabase
-          .from('trainer_athletes')
-          .select('athlete:profiles!athlete_id(*)')
-          .eq('trainer_id', user.id)
-          .eq('status', 'accepted');
-
-        if (error) throw error;
-        return data.map(item => item.athlete);
-      }
-      return [];
-    },
-    enabled: !!user && !!profile,
-  });
+  const filteredConversations = conversations?.filter(c => 
+    c.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
-    if (conversations && conversations.length > 0 && !selectedParticipantId) {
-      setSelectedParticipantId(conversations[0].id);
-      setSelectedParticipantName(conversations[0].full_name);
+    if (filteredConversations && filteredConversations.length > 0 && !selectedParticipantId) {
+      setSelectedParticipantId(filteredConversations[0].id);
+      setSelectedParticipantName(filteredConversations[0].full_name);
     }
-  }, [conversations, selectedParticipantId]);
+  }, [filteredConversations, selectedParticipantId]);
 
   if (isLoadingAuth || isLoadingConversations) {
     return (
       <AppLayout>
-        <div className="flex h-[calc(100vh-4rem)] gap-4 p-4">
-          <Card className="w-1/3 flex flex-col">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 h-full">
+          <Card className="md:col-span-1 flex flex-col">
             <CardHeader>
               <Skeleton className="h-8 w-full mb-2" />
               <Skeleton className="h-10 w-full" />
@@ -72,7 +46,7 @@ const Messages = () => {
               <Skeleton className="h-20 w-full" />
             </CardContent>
           </Card>
-          <Card className="flex-1 flex flex-col">
+          <Card className="md:col-span-2 flex flex-col">
             <CardHeader>
               <Skeleton className="h-10 w-full" />
             </CardHeader>
@@ -90,9 +64,8 @@ const Messages = () => {
 
   return (
     <AppLayout>
-      <div className="flex h-[calc(100vh-4rem)] gap-4 p-4">
-        {/* Conversations List */}
-        <Card className="w-1/3 flex flex-col">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 h-full">
+        <Card className="md:col-span-1 flex flex-col">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
@@ -104,20 +77,20 @@ const Messages = () => {
                 New Chat
               </Button>
             </div>
-            <div className="relative">
+            <div className="relative mt-4">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search conversations..."
-                // value={searchTerm}
-                // onChange={(e) => setSearchTerm(e.target.value)}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
           </CardHeader>
-          <CardContent className="flex-1 p-0">
+          <CardContent className="flex-1 p-0 overflow-y-auto">
             <div className="space-y-1">
-              {conversations && conversations.length > 0 ? (
-                conversations.map((conv) => (
+              {filteredConversations && filteredConversations.length > 0 ? (
+                filteredConversations.map((conv) => (
                   <div
                     key={conv.id}
                     onClick={() => {
@@ -132,8 +105,8 @@ const Messages = () => {
                     }}
                     tabIndex={0}
                     role="button"
-                    className={`p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 border-b transition-colors ${
-                      selectedParticipantId === conv.id ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : ''
+                    className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
+                      selectedParticipantId === conv.id ? 'bg-muted' : ''
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -152,35 +125,32 @@ const Messages = () => {
                               </Badge>
                             )}
                           </h3>
-                          {/* <span className="text-xs text-gray-500">{conversation.time}</span> */}
                         </div>
-                        {/* <p className="text-sm text-gray-600 dark:text-gray-400 truncate mt-1">
-                          {conversation.lastMessage}
-                        </p>
-                        {conversation.unread > 0 && (
-                          <Badge className="mt-2 bg-blue-600 text-white text-xs">
-                            {conversation.unread} new
-                          </Badge>
-                        )} */}
+                        {conv.messages && conv.messages.length > 0 && (
+                          <p className="text-xs text-muted-foreground truncate">
+                            {conv.messages[conv.messages.length - 1].content}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="p-4 text-muted-foreground text-center">No conversations yet.</div>
+                <div className="p-4 text-muted-foreground text-center">No conversations found.</div>
               )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Chat Area */}
-        {selectedParticipantId && selectedParticipantName ? (
-          <ChatWindow participantId={selectedParticipantId} participantName={selectedParticipantName} />
-        ) : (
-          <Card className="flex-1 flex items-center justify-center">
-            <p className="text-muted-foreground">Select a conversation to start chatting.</p>
-          </Card>
-        )}
+        <div className="md:col-span-2">
+          {selectedParticipantId && selectedParticipantName ? (
+            <ChatWindow participantId={selectedParticipantId} participantName={selectedParticipantName} />
+          ) : (
+            <Card className="flex-1 flex items-center justify-center h-full">
+              <p className="text-muted-foreground">Select a conversation to start chatting.</p>
+            </Card>
+          )}
+        </div>
       </div>
     </AppLayout>
   );

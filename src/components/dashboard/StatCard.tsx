@@ -1,5 +1,5 @@
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import * as React from "react";
 
 const StatCard = ({
   title,
@@ -33,10 +33,7 @@ const StatCard = ({
                 : "text-gray-500"
             }`}
           >
-            {(() => {
-              const trendArrow = trend.value > 0 ? "↑" : trend.value < 0 ? "↓" : "→";
-              return trendArrow;
-            })()} {Math.abs(trend.value)}% {" "}
+            {trend.value > 0 ? "↑" : trend.value < 0 ? "↓" : "→"} {Math.abs(trend.value)}% {" "}
             {trend.label}
           </span>
         )}
@@ -45,4 +42,5 @@ const StatCard = ({
   </Card>
 );
 
+export { StatCard };
 export default StatCard;

@@ -101,8 +101,8 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
-          <Button onClick={handleVerify} disabled={loading || code.length !== 6}>
-            {loading ? "Verifying..." : "Verify"}
+          <Button size="default" onClick={handleVerify} disabled={loading || code.length !== 6}>
+            {loading ? "Verifying..." : "Verify Code"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

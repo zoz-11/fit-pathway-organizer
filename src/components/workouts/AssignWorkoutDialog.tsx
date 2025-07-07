@@ -45,7 +45,7 @@ export const AssignWorkoutDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Assign Workout</Button>
+        <Button size="default">Assign Workout</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -86,7 +86,7 @@ export const AssignWorkoutDialog = () => {
             <Label htmlFor="dueDate">Due Date</Label>
             <Input id="dueDate" type="date" {...register("dueDate")} />
           </div>
-          <Button type="submit" className="w-full">Assign Workout</Button>
+          <Button type="submit" size="default" className="w-full">Assign Workout</Button>
         </form>
       </DialogContent>
     </Dialog>

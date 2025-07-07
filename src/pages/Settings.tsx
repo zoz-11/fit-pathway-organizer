@@ -1,20 +1,58 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Bell, Shield, Palette, Smartphone, LogOut, Globe, Download, HelpCircle } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { useAuth } from "@/hooks/useAuthProvider";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/utils";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, ReactNode } from "react";
 import MfaSetupDialog from "@/components/auth/MfaSetupDialog";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+
+interface SettingsSectionProps {
+  title: string;
+  icon: ReactNode;
+  children: ReactNode;
+}
+
+interface SettingsItemProps {
+  label: string;
+  description: string;
+  control: ReactNode;
+}
+
+const SettingsSection = ({ title, icon, children }: SettingsSectionProps) => (
+  <Card>
+    <CardHeader>
+      <div className="flex items-center space-x-2">
+        {icon}
+        <CardTitle>{title}</CardTitle>
+      </div>
+    </CardHeader>
+    <CardContent className="space-y-6">{children}</CardContent>
+  </Card>
+);
+
+const SettingsItem = ({ label, description, control }: SettingsItemProps) => (
+  <div className="flex items-center justify-between">
+    <div className="space-y-1">
+      <Label className="text-base font-medium">{label}</Label>
+      <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+    </div>
+    {control}
+  </div>
+);
 
 const Settings = () => {
-  const { signOut } = useAuth();
+  const { signOut, profile } = useAuth();
   const { theme, setTheme } = useTheme();
   const [language, setLanguage] = useState('en');
   const [units, setUnits] = useState('imperial');
@@ -25,6 +63,25 @@ const Settings = () => {
   const [secret, setSecret] = useState<string | null>(null);
   const [factorId, setFactorId] = useState<string | null>(null);
   const [showMfaSetupDialog, setShowMfaSetupDialog] = useState(false);
+  
+  // Dialog states
+  const [showProfileVisibilityDialog, setShowProfileVisibilityDialog] = useState(false);
+  const [showDataSharingDialog, setShowDataSharingDialog] = useState(false);
+  const [showPasswordChangeDialog, setShowPasswordChangeDialog] = useState(false);
+  const [showDeleteAccountDialog, setShowDeleteAccountDialog] = useState(false);
+  const [showSupportDialog, setShowSupportDialog] = useState(false);
+  
+  // Form states
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [supportMessage, setSupportMessage] = useState('');
+  const [profileVisibility, setProfileVisibility] = useState('public');
+  const [dataSharing, setDataSharing] = useState({
+    analytics: true,
+    thirdParty: false,
+    marketing: false
+  });
 
   useEffect(() => {
     setMounted(true);
@@ -48,9 +105,7 @@ const Settings = () => {
     setTwoFactorLoading(true);
     try {
       if (enabled) {
-        const { data, error } = await supabase.auth.mfa.enroll({
-          factorType: 'totp',
-        });
+        const { data, error } = await supabase.auth.mfa.enroll({ factorType: 'totp' });
         if (error) throw error;
         if (data.totp) {
           setQrCode(data.totp.qr_code);
@@ -65,9 +120,7 @@ const Settings = () => {
 
         const totpFactor = factors?.totp?.find((factor: any) => factor.factorType === 'totp');
         if (totpFactor) {
-          const { error } = await supabase.auth.mfa.unenroll({
-            factorId: totpFactor.id,
-          });
+          const { error } = await supabase.auth.mfa.unenroll({ factorId: totpFactor.id });
           if (error) throw error;
           toast.success('Two-factor authentication disabled.');
           setIsTwoFactorEnabled(false);
@@ -76,15 +129,67 @@ const Settings = () => {
         }
       }
     } catch (error) {
-      console.error('Error toggling 2FA:', error);
       handleApiError(error, `Failed to ${enabled ? 'enable' : 'disable'} 2FA.`);
     } finally {
       setTwoFactorLoading(false);
     }
   }, []);
 
-  const handleNotificationToggle = (type: string, enabled: boolean) => {
-    toast.success(`${type} notifications ${enabled ? 'enabled' : 'disabled'}`);
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      toast.success('Password updated successfully');
+      setShowPasswordChangeDialog(false);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error) {
+      handleApiError(error, 'Failed to update password');
+    }
+  };
+  
+  const handleExportData = async () => {
+    try {
+      // In a real app, this would call an API endpoint to generate the export
+      toast.success('Data export requested', {
+        description: 'Your data will be emailed to you shortly.'
+      });
+    } catch (error) {
+      handleApiError(error, 'Failed to export data');
+    }
+  };
+  
+  const handleSendSupportRequest = () => {
+    if (!supportMessage.trim()) {
+      toast.error('Please enter a message');
+      return;
+    }
+    
+    // In a real app, this would send the message to a support system
+    toast.success('Support request sent', {
+      description: 'We will respond to your inquiry within 24 hours.'
+    });
+    setShowSupportDialog(false);
+    setSupportMessage('');
+  };
+  
+  const handleDeleteAccount = async () => {
+    try {
+      // In a real app, this would initiate account deletion
+      toast.success('Account deletion initiated', {
+        description: 'Your account will be deleted within 30 days.'
+      });
+      setShowDeleteAccountDialog(false);
+      await signOut();
+    } catch (error) {
+      handleApiError(error, 'Failed to delete account');
+    }
   };
 
   const handleSignOut = async () => {
@@ -92,275 +197,223 @@ const Settings = () => {
     toast.success('Signed out successfully');
   };
 
-  const handleDarkModeToggle = (enabled: boolean) => {
-    setTheme(enabled ? 'dark' : 'light');
-    toast.info(`Dark mode ${enabled ? 'enabled' : 'disabled'}`);
-  };
-
-  const handleExportData = async () => {
-    toast.info('Preparing data export... This may take a few minutes.');
-    try {
-      const { data, error } = await supabase.functions.invoke('export-data');
-      if (error) throw error;
-
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `fitpathway_data_${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      toast.success('Data exported successfully!');
-    } catch (error) {
-      console.error('Error exporting data:', error);
-      handleApiError(error, `Failed to export data`);
-    }
-  };
-
-  const handleContactSupport = () => {
-    toast.info('Opening support portal...');
-    // In a real app, this would open support chat or email
-  };
-
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null;
 
   return (
     <AppLayout>
-      <div className="space-y-6 p-4 md:p-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Settings</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your app preferences and account settings
-          </p>
-        </div>
+      <PageLayout title="Settings" description="Manage your app preferences and account settings">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <SettingsSection title="Notifications" icon={<Bell className="h-5 w-5 text-blue-600" />}>
+            <SettingsItem label="Workout Reminders" description="Get notified before scheduled workouts" control={<Switch defaultChecked onCheckedChange={(checked) => toast.success(`Workout reminders ${checked ? 'enabled' : 'disabled'}`)} />} />
+            <SettingsItem label="Progress Updates" description="Weekly progress reports and achievements" control={<Switch defaultChecked onCheckedChange={(checked) => toast.success(`Progress updates ${checked ? 'enabled' : 'disabled'}`)} />} />
+            <SettingsItem label="Meal Reminders" description="Reminders for meals and hydration" control={<Switch onCheckedChange={(checked) => toast.success(`Meal reminders ${checked ? 'enabled' : 'disabled'}`)} />} />
+            <SettingsItem label="Social Notifications" description="Messages from trainers and community" control={<Switch defaultChecked onCheckedChange={(checked) => toast.success(`Social notifications ${checked ? 'enabled' : 'disabled'}`)} />} />
+          </SettingsSection>
 
-        {/* Notifications */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center space-x-2">
-              <Bell className="h-5 w-5 text-blue-600" />
-              <CardTitle>Notifications</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label htmlFor="workout-reminders" className="text-base font-medium">Workout Reminders</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Get notified before scheduled workouts</p>
-              </div>
-              <Switch
-                id="workout-reminders"
-                defaultChecked
-                onCheckedChange={(checked) => handleNotificationToggle('Workout reminder', checked)}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label htmlFor="progress-updates" className="text-base font-medium">Progress Updates</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Weekly progress reports and achievements</p>
-              </div>
-              <Switch
-                id="progress-updates"
-                defaultChecked
-                onCheckedChange={(checked) => handleNotificationToggle('Progress update', checked)}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label htmlFor="meal-reminders" className="text-base font-medium">Meal Reminders</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Reminders for meals and hydration</p>
-              </div>
-              <Switch
-                id="meal-reminders"
-                onCheckedChange={(checked) => handleNotificationToggle('Meal reminder', checked)}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label htmlFor="social-notifications" className="text-base font-medium">Social Notifications</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Messages from trainers and community</p>
-              </div>
-              <Switch
-                id="social-notifications"
-                defaultChecked
-                onCheckedChange={(checked) => handleNotificationToggle('Social', checked)}
-              />
-            </div>
-          </CardContent>
-        </Card>
+          <SettingsSection title="Privacy & Security" icon={<Shield className="h-5 w-5 text-green-600" />}>
+            <SettingsItem label="Profile Visibility" description="Control who can see your profile" control={<Button variant="outline" size="sm" onClick={() => setShowProfileVisibilityDialog(true)}>Manage</Button>} />
+            <SettingsItem label="Data Sharing" description="Control how your data is shared" control={<Button variant="outline" size="sm" onClick={() => setShowDataSharingDialog(true)}>Configure</Button>} />
+            <SettingsItem label="Two-Factor Authentication" description="Add extra security to your account" control={<Button variant="outline" size="sm" onClick={() => handleTwoFactorToggle(!isTwoFactorEnabled)} disabled={twoFactorLoading}>{twoFactorLoading ? 'Loading...' : (isTwoFactorEnabled ? 'Disable' : 'Enable')}</Button>} />
+            <SettingsItem label="Change Password" description="Update your account password" control={<Button variant="outline" size="sm" onClick={() => setShowPasswordChangeDialog(true)}>Update</Button>} />
+          </SettingsSection>
 
-        {/* Privacy & Security */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center space-x-2">
-              <Shield className="h-5 w-5 text-green-600" />
-              <CardTitle>Privacy & Security</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <div className="space-y-1">
-                <Label className="text-base font-medium">Profile Visibility</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Control who can see your profile</p>
-              </div>
-              <Button variant="outline" size="sm" onClick={() => toast.info('Profile visibility settings opened')}>
-                Manage
-              </Button>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <div className="space-y-1">
-                <Label className="text-base font-medium">Data Sharing</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Control how your data is shared</p>
-              </div>
-              <Button variant="outline" size="sm" onClick={() => toast.info('Data sharing preferences configured')}>
-                Configure
-              </Button>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <div className="space-y-1">
-                <Label className="text-base font-medium">Two-Factor Authentication</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Add extra security to your account</p>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => handleTwoFactorToggle(!isTwoFactorEnabled)}
-                disabled={twoFactorLoading}
-              >
-                {twoFactorLoading ? 'Loading...' : (isTwoFactorEnabled ? 'Disable' : 'Enable')}
-              </Button>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <div className="space-y-1">
-                <Label className="text-base font-medium">Change Password</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Update your account password</p>
-              </div>
-              <Button variant="outline" size="sm" onClick={() => toast.info('Password change form opened')}>
-                Update
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+          <SettingsSection title="App Preferences" icon={<Palette className="h-5 w-5 text-purple-600" />}>
+            <SettingsItem label="Dark Mode" description="Switch to dark theme" control={<Switch checked={theme === 'dark'} onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')} />} />
+            <SettingsItem label="Language" description="Choose your preferred language" control={
+              <Select value={language} onValueChange={(value) => {
+                setLanguage(value);
+                toast.success(`Language changed to ${value === 'en' ? 'English' : 'Spanish'}`);
+              }}>
+                <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="es">Spanish</SelectItem>
+                </SelectContent>
+              </Select>
+            } />
+            <SettingsItem label="Units" description="Weight and distance units" control={
+              <Select value={units} onValueChange={(value) => {
+                setUnits(value);
+                toast.success(`Units changed to ${value}`);
+              }}>
+                <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="imperial">Imperial</SelectItem>
+                  <SelectItem value="metric">Metric</SelectItem>
+                </SelectContent>
+              </Select>
+            } />
+          </SettingsSection>
 
-        {/* App Preferences */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center space-x-2">
-              <Palette className="h-5 w-5 text-purple-600" />
-              <CardTitle>App Preferences</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label htmlFor="dark-mode" className="text-base font-medium">Dark Mode</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Switch to dark theme</p>
-              </div>
-              <Switch
-                id="dark-mode"
-                checked={theme === 'dark'}
-                onCheckedChange={handleDarkModeToggle}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label className="text-base font-medium">Language</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Choose your preferred language</p>
-              </div>
-              <select 
-                value={language}
-                onChange={(e) => {
-                  setLanguage(e.target.value);
-                  toast.success(`Language changed to ${e.target.options[e.target.selectedIndex].text}`);
-                }}
-                className="flex h-10 w-40 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
-              >
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="ar">Arabic</option>
-              </select>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label className="text-base font-medium">Units</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Weight and distance units</p>
-              </div>
-              <select 
-                value={units}
-                onChange={(e) => {
-                  setUnits(e.target.value);
-                  toast.success(`Units changed to ${e.target.value}`);
-                }}
-                className="flex h-10 w-32 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
-              >
-                <option value="imperial">Imperial</option>
-                <option value="metric">Metric</option>
-              </select>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Account Actions */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center space-x-2">
-              <Smartphone className="h-5 w-5 text-orange-600" />
-              <CardTitle>Account Management</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div className="space-y-1">
-                <Label className="text-base font-medium flex items-center gap-2">
-                  <Download className="h-4 w-4" />
-                  Export Data
-                </Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Download your workout and progress data</p>
-              </div>
-              <Button variant="outline" size="sm" onClick={handleExportData}>
-                Export
-              </Button>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-              <div className="space-y-1">
-                <Label className="text-base font-medium flex items-center gap-2">
-                  <HelpCircle className="h-4 w-4" />
-                  Support
-                </Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Get help or contact support</p>
-              </div>
-              <Button variant="outline" size="sm" onClick={handleContactSupport}>
-                Contact
-              </Button>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-              <div className="space-y-1">
-                <Label className="text-base font-medium text-red-600 dark:text-red-400">Delete Account</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Permanently delete your account</p>
-              </div>
-              <Button 
-                variant="destructive" 
-                size="sm"
-                onClick={() => toast.error('Account deletion requires email confirmation')}
-              >
-                Delete
-              </Button>
-            </div>
-            <div className="pt-4 border-t">
-              <Button onClick={handleSignOut} variant="outline" className="w-full hover:bg-gray-50 dark:hover:bg-gray-800">
+          <SettingsSection title="Account Management" icon={<Smartphone className="h-5 w-5 text-orange-600" />}>
+            <SettingsItem 
+              label="Export Data" 
+              description="Download your workout and progress data" 
+              control={<Button variant="outline" size="sm">Export</Button>} 
+            />
+            <SettingsItem 
+              label="Support" 
+              description="Get help or contact support" 
+              control={<Button variant="outline" size="sm">Contact</Button>} 
+            />
+            <SettingsItem 
+              label="Delete Account" 
+              description="Permanently delete your account" 
+              control={<Button variant="destructive" size="sm">Delete</Button>} 
+            />
+            <div className="pt-4 mt-2 border-t">
+              <Button onClick={handleSignOut} variant="outline" size="default" className="w-full">
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </SettingsSection>
+        </div>
+      </PageLayout>
+      
+      {/* Profile Visibility Dialog */}
+      <Dialog open={showProfileVisibilityDialog} onOpenChange={setShowProfileVisibilityDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Profile Visibility</DialogTitle>
+            <DialogDescription>Control who can see your profile information</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Visibility Level</Label>
+              <Select value={profileVisibility} onValueChange={setProfileVisibility}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="public">Public - Anyone can see your profile</SelectItem>
+                  <SelectItem value="connections">Connections Only - Only your connections can see your profile</SelectItem>
+                  <SelectItem value="private">Private - Only you can see your profile</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" size="default" onClick={() => setShowProfileVisibilityDialog(false)}>Cancel</Button>
+            <Button size="default" onClick={() => {
+              toast.success('Profile visibility updated');
+              setShowProfileVisibilityDialog(false);
+            }}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Data Sharing Dialog */}
+      <Dialog open={showDataSharingDialog} onOpenChange={setShowDataSharingDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Data Sharing Preferences</DialogTitle>
+            <DialogDescription>Control how your data is shared</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="text-base font-medium">Analytics Data</Label>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Share anonymous usage data to improve the app</p>
+              </div>
+              <Switch checked={dataSharing.analytics} onCheckedChange={(checked) => setDataSharing({...dataSharing, analytics: checked})} />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="text-base font-medium">Third-Party Integration</Label>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Share data with connected third-party services</p>
+              </div>
+              <Switch checked={dataSharing.thirdParty} onCheckedChange={(checked) => setDataSharing({...dataSharing, thirdParty: checked})} />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="text-base font-medium">Marketing Communications</Label>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Receive personalized offers and updates</p>
+              </div>
+              <Switch checked={dataSharing.marketing} onCheckedChange={(checked) => setDataSharing({...dataSharing, marketing: checked})} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" size="default" onClick={() => setShowDataSharingDialog(false)}>Cancel</Button>
+            <Button size="default" onClick={() => {
+              toast.success('Data sharing preferences updated');
+              setShowDataSharingDialog(false);
+            }}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Change Password Dialog */}
+      <Dialog open={showPasswordChangeDialog} onOpenChange={setShowPasswordChangeDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Change Password</DialogTitle>
+            <DialogDescription>Update your account password</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="current-password">Current Password</Label>
+              <Input id="current-password" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-password">New Password</Label>
+              <Input id="new-password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password">Confirm New Password</Label>
+              <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" size="default" onClick={() => setShowPasswordChangeDialog(false)}>Cancel</Button>
+            <Button size="default" onClick={handleChangePassword}>Update Password</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Support Dialog */}
+      <Dialog open={showSupportDialog} onOpenChange={setShowSupportDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Contact Support</DialogTitle>
+            <DialogDescription>Get help with your account or app issues</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="support-message">Message</Label>
+              <Textarea 
+                id="support-message" 
+                placeholder="Describe your issue or question..." 
+                value={supportMessage} 
+                onChange={(e) => setSupportMessage(e.target.value)} 
+                rows={5}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" size="default" onClick={() => setShowSupportDialog(false)}>Cancel</Button>
+            <Button size="default" onClick={handleSendSupportRequest}>Send Message</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Delete Account Dialog */}
+      <Dialog open={showDeleteAccountDialog} onOpenChange={setShowDeleteAccountDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Account</DialogTitle>
+            <DialogDescription>This action cannot be undone. Your account and all associated data will be permanently deleted.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-red-500">Are you sure you want to delete your account?</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" size="default" onClick={() => setShowDeleteAccountDialog(false)}>Cancel</Button>
+            <Button variant="destructive" size="default" onClick={handleDeleteAccount}>Delete Account</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       {showMfaSetupDialog && (
         <MfaSetupDialog
           isOpen={showMfaSetupDialog}

@@ -9,7 +9,8 @@ interface Exercise {
   sets: number;
   reps: string;
   duration?: string;
-  image: string;
+  thumbnailUrl: string;
+  videoUrl?: string;
   description: string;
 }
 
@@ -25,42 +26,48 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
       name: "Push-ups",
       sets: 3,
       reps: "10-15",
-      image: "💪",
+      thumbnailUrl: "https://example.com/pushup_thumbnail.jpg",
+      videoUrl: "https://example.com/pushup_demo.mp4",
       description: "Classic bodyweight exercise targeting chest, shoulders, and triceps"
     },
     {
       name: "Pull-ups",
       sets: 3,
       reps: "5-10",
-      image: "🏃",
+      thumbnailUrl: "https://example.com/pullup_thumbnail.jpg",
+      videoUrl: "https://example.com/pullup_demo.mp4",
       description: "Upper body strength exercise focusing on back and biceps"
     },
     {
       name: "Bench Press",
       sets: 4,
       reps: "8-12",
-      image: "🏋️",
+      thumbnailUrl: "https://example.com/benchpress_thumbnail.jpg",
+      videoUrl: "https://example.com/benchpress_demo.mp4",
       description: "Compound exercise for chest, shoulders, and triceps development"
     },
     {
       name: "Shoulder Press",
       sets: 3,
       reps: "10-12",
-      image: "💪",
+      thumbnailUrl: "https://example.com/shoulderpress_thumbnail.jpg",
+      videoUrl: "https://example.com/shoulderpress_demo.mp4",
       description: "Overhead pressing movement for shoulder and arm strength"
     },
     {
       name: "Bicep Curls",
       sets: 3,
       reps: "12-15",
-      image: "💪",
+      thumbnailUrl: "https://example.com/bicepcurl_thumbnail.jpg",
+      videoUrl: "https://example.com/bicepcurl_demo.mp4",
       description: "Isolation exercise targeting the biceps muscles"
     },
     {
       name: "Tricep Dips",
       sets: 3,
       reps: "8-12",
-      image: "🏃",
+      thumbnailUrl: "https://example.com/tricepdip_thumbnail.jpg",
+      videoUrl: "https://example.com/tricepdip_demo.mp4",
       description: "Bodyweight exercise focusing on triceps and chest"
     }
   ];
@@ -73,11 +80,17 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
     onClose();
   };
 
-  const handleWatchDemo = (exerciseName: string, e: React.MouseEvent) => {
+  const handleWatchDemo = (exercise: Exercise, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toast.info(`Opening video demo for ${exerciseName}`);
-    // In a real app, this would open a video modal or navigate to a demo page
+    if (exercise.videoUrl) {
+      toast.info(`Opening video demo for ${exercise.name}`);
+      console.log(`Simulating video playback for: ${exercise.videoUrl}`);
+      // In a real app, this would open a video modal or navigate to a demo page
+      // For now, we'll just log the URL and show a toast.
+    } else {
+      toast.error(`No video demo available for ${exercise.name}`);
+    }
   };
 
   const handleClose = (open: boolean) => {
@@ -144,7 +157,7 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={(e) => handleWatchDemo(exercise.name, e)}
+                        onClick={(e) => handleWatchDemo(exercise, e)}
                         className="hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-900"
                       >
                         <Play className="h-4 w-4 mr-1" />
@@ -168,6 +181,7 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
             </Button>
             <Button 
               variant="outline" 
+              size="default"
               onClick={handleCloseButton}
               className="hover:bg-gray-50"
             >

@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Calendar, Dumbbell, BarChart3, Plus, UserPlus, Send, PlusCircle } from "lucide-react";
@@ -8,6 +7,7 @@ import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { useAuth } from "@/hooks/useAuthProvider";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Activity {
   id: number;
@@ -37,6 +37,7 @@ const StatCard = ({ title, value, icon: Icon, description }: {
 export const TrainerDashboard = () => {
   const { profile } = useAuth();
   const [activities, setActivities] = useState<Activity[]>([]);
+  const navigate = useNavigate();
   
 
   const handleAddAthlete = () => {
@@ -150,9 +151,9 @@ export const TrainerDashboard = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Button 
-                  variant="outline" 
-                  className="justify-start h-auto p-4"
+                  size="default"
                   onClick={handleScheduleWorkout}
+                  className="justify-start h-auto p-4"
                 >
                   <div className="flex items-center space-x-3">
                     <Calendar className="h-5 w-5 text-blue-600" />
@@ -163,9 +164,9 @@ export const TrainerDashboard = () => {
                   </div>
                 </Button>
                 <Button 
-                  variant="outline" 
-                  className="justify-start h-auto p-4"
+                  size="default"
                   onClick={handleAddAthlete}
+                  className="justify-start h-auto p-4"
                 >
                   <div className="flex items-center space-x-3">
                     <UserPlus className="h-5 w-5 text-green-600" />
@@ -176,9 +177,9 @@ export const TrainerDashboard = () => {
                   </div>
                 </Button>
                 <Button 
-                  variant="outline" 
-                  className="justify-start h-auto p-4"
+                  size="default"
                   onClick={handleSendMessage}
+                  className="justify-start h-auto p-4"
                 >
                   <div className="flex items-center space-x-3">
                     <Send className="h-5 w-5 text-purple-600" />
@@ -189,9 +190,9 @@ export const TrainerDashboard = () => {
                   </div>
                 </Button>
                 <Button 
-                  variant="outline" 
-                  className="justify-start h-auto p-4"
+                  size="default"
                   onClick={handleCreateExercise}
+                  className="justify-start h-auto p-4"
                 >
                   <div className="flex items-center space-x-3">
                     <PlusCircle className="h-5 w-5 text-orange-600" />
