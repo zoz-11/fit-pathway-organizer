@@ -200,61 +200,55 @@ export type Database = {
       }
       profiles: {
         Row: {
+          created_at: string | null
+          date_of_birth: string | null
+          email: string
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          full_name: string
           id: string
-          created_at?: string
-          updated_at?: string
-          full_name?: string
-          email?: string
-          phone?: string
-          role?: 'trainer' | 'athlete'
-          subscription_status?: 'active' | 'trial' | 'expired' | 'cancelled'
-          subscription_expiry?: string
-          trainer_id?: string
-          date_of_birth?: string
-          emergency_contact_name?: string
-          emergency_contact_phone?: string
-          avatar_url?: string | null
-          fitness_level?: string | null
-          goals?: string | null
-          location?: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          subscription_expiry: string | null
+          subscription_status:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          trainer_id: string | null
+          updated_at: string | null
         }
         Insert: {
+          created_at?: string | null
+          date_of_birth?: string | null
+          email: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          full_name: string
           id: string
-          created_at?: string
-          updated_at?: string
-          full_name?: string
-          email?: string
-          phone?: string
-          role?: 'trainer' | 'athlete'
-          subscription_status?: 'active' | 'trial' | 'expired' | 'cancelled'
-          subscription_expiry?: string
-          trainer_id?: string
-          date_of_birth?: string
-          emergency_contact_name?: string
-          emergency_contact_phone?: string
-          avatar_url?: string | null
-          fitness_level?: string | null
-          goals?: string | null
-          location?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          subscription_expiry?: string | null
+          subscription_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          trainer_id?: string | null
+          updated_at?: string | null
         }
         Update: {
-          id?: string
-          created_at?: string
-          updated_at?: string
-          full_name?: string
+          created_at?: string | null
+          date_of_birth?: string | null
           email?: string
-          phone?: string
-          role?: 'trainer' | 'athlete'
-          subscription_status?: 'active' | 'trial' | 'expired' | 'cancelled'
-          subscription_expiry?: string
-          trainer_id?: string
-          date_of_birth?: string
-          emergency_contact_name?: string
-          emergency_contact_phone?: string
-          avatar_url?: string | null
-          fitness_level?: string | null
-          goals?: string | null
-          location?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          full_name?: string
+          id?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          subscription_expiry?: string | null
+          subscription_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+          trainer_id?: string | null
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -263,7 +257,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       trainer_athletes: {
