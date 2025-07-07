@@ -4,8 +4,10 @@ import { TrendingUp, Target, Calendar, Award } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ProgressCharts } from "@/components/dashboard/ProgressCharts";
 import { AdvancedAnalytics } from "@/components/dashboard/AdvancedAnalytics";
+import { useAuth } from "@/hooks/useAuthProvider";
 
 const Progress = () => {
+  const { user } = useAuth();
   const progressData = [
     { month: "Jan", workouts: 12, weight: 180 },
     { month: "Feb", workouts: 16, weight: 178 },
@@ -81,10 +83,10 @@ const Progress = () => {
         </div>
 
         {/* Progress Chart */}
-        <ProgressCharts userId="current-user-id" />
+        <ProgressCharts userId={user?.id || ''} />
 
         {/* Advanced Analytics */}
-        <AdvancedAnalytics userId="current-user-id" />
+        <AdvancedAnalytics userId={user?.id || ''} />
 
         {/* Achievements */}
         <Card>
