@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Apple, Coffee, Utensils, Moon } from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { toast } from "sonner";
+import { MealCompletion } from "@/components/diet/MealCompletion";
 
 const DietPlan = () => {
   const handleMealComplete = (meal: string) => {
@@ -98,48 +99,15 @@ const DietPlan = () => {
 
         {/* Meal Plans */}
         <div className="grid gap-6">
-          {meals.map((meal, index) => {
-            const Icon = meal.icon;
-            return (
-              <Card key={index}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <Icon className={`h-6 w-6 ${meal.color}`} />
-                      <CardTitle className="text-xl">{meal.time}</CardTitle>
-                    </div>
-                    <Button 
-                      size="sm"
-                      onClick={() => handleMealComplete(meal.time)}
-                    >
-                      Mark Complete
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {meal.foods.map((food, foodIndex) => (
-                      <div key={foodIndex} className="flex items-center justify-between p-3 bg-white dark:bg-card rounded-lg">
-                        <div>
-                          <p className="font-medium">{food.name}</p>
-                          <p className="text-sm text-gray-600">{food.calories} cal • {food.protein} protein</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-4 pt-3 border-t">
-                    <div className="flex justify-between text-sm">
-                      <span className="font-medium">Meal Total:</span>
-                      <span>
-                        {meal.foods.reduce((total, food) => total + food.calories, 0)} calories • 
-                        {meal.foods.reduce((total, food) => total + parseInt(food.protein), 0)}g protein
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+          {meals.map((meal, index) => (
+            <MealCompletion
+              key={index}
+              mealName={meal.time}
+              foods={meal.foods}
+              icon={meal.icon}
+              color={meal.color}
+            />
+          ))}
         </div>
       </div>
     </AppLayout>

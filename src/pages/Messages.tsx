@@ -72,7 +72,14 @@ const Messages = () => {
                 <MessageCircle className="h-5 w-5" />
                 Messages
               </CardTitle>
-              <Button size="sm" variant="outline">
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => {
+                  // TODO: Implement new chat functionality
+                  console.log('New chat clicked');
+                }}
+              >
                 <Users className="h-4 w-4 mr-2" />
                 New Chat
               </Button>

@@ -222,12 +222,13 @@ const Settings = () => {
             <SettingsItem label="Language" description="Choose your preferred language" control={
               <Select value={language} onValueChange={(value) => {
                 setLanguage(value);
-                toast.success(`Language changed to ${value === 'en' ? 'English' : 'Spanish'}`);
+                toast.success(`Language changed to ${value === 'en' ? 'English' : value === 'es' ? 'Spanish' : 'Arabic'}`);
               }}>
                 <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="en">English</SelectItem>
                   <SelectItem value="es">Spanish</SelectItem>
+                  <SelectItem value="ar">Arabic</SelectItem>
                 </SelectContent>
               </Select>
             } />

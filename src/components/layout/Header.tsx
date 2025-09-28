@@ -45,7 +45,13 @@ export const Header = ({ children }: HeaderProps) => {
         </div>
 
         <div className="flex items-center space-x-4 ml-auto">
-          <Button variant="ghost" size="sm-icon" className="relative" aria-label="Notifications">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="relative" 
+            aria-label="Notifications"
+            onClick={() => navigate('/settings')}
+          >
             <Bell className="h-5 w-5" />
             <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
           </Button>

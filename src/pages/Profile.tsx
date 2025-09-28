@@ -36,7 +36,7 @@ const Profile = () => {
         email: profile.email || '',
         phone: profile.phone || '',
         location: profile.location || '',
-        joinDate: profile.created_at ? new Date(profile.created_at).toLocaleDateString() : '',
+        joinDate: profile.join_date ? new Date(profile.join_date).toISOString().split('T')[0] : '',
         fitnessLevel: profile.fitness_level || '',
         goals: profile.goals || ''
       });
@@ -111,10 +111,12 @@ const Profile = () => {
         .from('profiles')
         .update({
           full_name: formData.fullName,
+          email: formData.email,
           phone: formData.phone,
           location: formData.location,
           fitness_level: formData.fitnessLevel,
           goals: formData.goals,
+          join_date: formData.joinDate ? new Date(formData.joinDate).toISOString().split('T')[0] : null,
           updated_at: new Date().toISOString()
         })
         .eq('id', profile.id);
@@ -139,7 +141,7 @@ const Profile = () => {
         email: profile.email || '',
         phone: profile.phone || '',
         location: profile.location || '',
-        joinDate: profile.created_at ? new Date(profile.created_at).toLocaleDateString() : '',
+        joinDate: profile.join_date ? new Date(profile.join_date).toISOString().split('T')[0] : '',
         fitnessLevel: profile.fitness_level || '',
         goals: profile.goals || ''
       });
@@ -264,8 +266,11 @@ const Profile = () => {
                   <Label htmlFor="email">Email</Label>
                   <Input 
                     id="email" 
+                    type="email"
                     value={formData.email} 
-                    disabled 
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                    className={!isEditing ? "bg-muted" : ""}
                     aria-label="Email"
                   />
                 </div>
