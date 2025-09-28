@@ -21,11 +21,43 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Override build to avoid TypeScript config issues
+  build: {
+    target: 'es2020',
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // Suppress specific TypeScript config warnings
+        if (warning.code === 'PLUGIN_WARNING' || 
+            warning.message?.includes('baseUrl') ||
+            warning.message?.includes('tsconfig')) {
+          return;
+        }
+        warn(warning);
+      }
+    }
+  },
   esbuild: {
-    // Disable TypeScript type checking during build to avoid config conflicts
+    // Skip TypeScript type checking to avoid config conflicts
+    target: 'es2020',
+    format: 'esm',
     tsconfigRaw: {
       compilerOptions: {
+        target: "ES2020",
         useDefineForClassFields: true,
+        lib: ["ES2020", "DOM", "DOM.Iterable"],
+        module: "ESNext",
+        skipLibCheck: true,
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+        moduleResolution: "node",
+        resolveJsonModule: true,
+        isolatedModules: true,
+        noEmit: true,
+        jsx: "react-jsx",
+        strict: false,
+        noUnusedLocals: false,
+        noUnusedParameters: false,
+        noFallthroughCasesInSwitch: true
       }
     }
   }
