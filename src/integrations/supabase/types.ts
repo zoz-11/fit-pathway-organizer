@@ -165,6 +165,7 @@ export type Database = {
         Row: {
           content: string
           created_at: string | null
+          encrypted_metadata: Json | null
           id: string
           is_read: boolean | null
           recipient_id: string
@@ -173,6 +174,7 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string | null
+          encrypted_metadata?: Json | null
           id?: string
           is_read?: boolean | null
           recipient_id: string
@@ -181,6 +183,7 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string | null
+          encrypted_metadata?: Json | null
           id?: string
           is_read?: boolean | null
           recipient_id?: string
@@ -432,6 +435,10 @@ export type Database = {
       get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      is_admin: {
+        Args: { user_id?: string }
+        Returns: boolean
       }
       user_owns_profile: {
         Args: { profile_id: string }
