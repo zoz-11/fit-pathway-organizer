@@ -115,7 +115,7 @@ interface RateLimitConfig {
 }
 
 export class RateLimiter {
-  private requests = new Map<string, { count: number; resetTime: number }>();
+  private requests = new Map<string, { count: number; resetTime: number; violations: number }>();
   private config: RateLimitConfig;
 
   constructor(config: RateLimitConfig) {
@@ -127,15 +127,24 @@ export class RateLimiter {
     const userRequests = this.requests.get(identifier);
 
     if (!userRequests || now > userRequests.resetTime) {
-      // Reset or initialize
+      // Reset or initialize, but maintain violation history
+      const violations = userRequests?.violations || 0;
       this.requests.set(identifier, {
         count: 1,
-        resetTime: now + this.config.windowMs
+        resetTime: now + this.config.windowMs,
+        violations
       });
       return true;
     }
 
     if (userRequests.count >= this.config.maxRequests) {
+      // Track violations for progressive penalties
+      userRequests.violations = (userRequests.violations || 0) + 1;
+      
+      // Apply progressive penalties (exponential backoff)
+      const penaltyMultiplier = Math.min(Math.pow(2, userRequests.violations), 8);
+      userRequests.resetTime = now + (this.config.windowMs * penaltyMultiplier);
+      
       return false;
     }
 

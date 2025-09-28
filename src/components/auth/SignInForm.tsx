@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { sanitizeEmail, checkAccountLockout, recordLoginAttempt, RateLimiter } from "@/lib/security";
+import { sanitizeEmail, checkAccountLockout, recordLoginAttempt, RateLimiter, validatePassword } from "@/lib/security";
 
 const signInLimiter = new RateLimiter({ windowMs: 15 * 60 * 1000, maxRequests: 5 });
 
@@ -36,6 +36,14 @@ export const SignInForm = () => {
     if (lockoutStatus.isLocked) {
       const remainingMinutes = Math.ceil((lockoutStatus.remainingTime || 0) / (1000 * 60));
       setError(`Account temporarily locked. Please try again in ${remainingMinutes} minutes.`);
+      setLoading(false);
+      return;
+    }
+
+    // Additional password validation
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      setError("Password does not meet security requirements.");
       setLoading(false);
       return;
     }
