@@ -37,9 +37,8 @@ export default defineConfig(({ mode }) => ({
     }
   },
   esbuild: {
-    // Skip TypeScript type checking to avoid config conflicts
+    // Completely override TypeScript config to avoid corrupted tsconfig.json
     target: 'es2020',
-    format: 'esm',
     tsconfigRaw: {
       compilerOptions: {
         target: "ES2020",
@@ -49,7 +48,8 @@ export default defineConfig(({ mode }) => ({
         skipLibCheck: true,
         esModuleInterop: true,
         allowSyntheticDefaultImports: true,
-        moduleResolution: "node",
+        moduleResolution: "bundler",
+        allowImportingTsExtensions: true,
         resolveJsonModule: true,
         isolatedModules: true,
         noEmit: true,
@@ -57,7 +57,10 @@ export default defineConfig(({ mode }) => ({
         strict: false,
         noUnusedLocals: false,
         noUnusedParameters: false,
-        noFallthroughCasesInSwitch: true
+        noFallthroughCasesInSwitch: true,
+        paths: {
+          "@/*": ["./src/*"]
+        }
       }
     }
   }
