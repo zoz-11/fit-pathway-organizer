@@ -1,9 +1,12 @@
-const { defineConfig } = require('vite');
-const react = require('@vitejs/plugin-react-swc');
-const path = require('path');
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
-module.exports = defineConfig(({ mode }) => ({
+export default defineConfig({
   server: {
     host: '::',
     port: 8080,
@@ -16,12 +19,10 @@ module.exports = defineConfig(({ mode }) => ({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  // Override build to avoid TypeScript config issues
   build: {
     target: 'es2020',
     rollupOptions: {
       onwarn(warning, warn) {
-        // Suppress specific TypeScript config warnings
         if (
           warning.code === 'PLUGIN_WARNING' ||
           warning.message?.includes('baseUrl') ||
@@ -33,11 +34,10 @@ module.exports = defineConfig(({ mode }) => ({
       },
     },
   },
-  // Ensure esbuild never reads the corrupted root tsconfig.json during pre-bundling
   optimizeDeps: {
-    disabled: true,
     esbuildOptions: {
       target: 'es2020',
+      tsconfig: false,
       tsconfigRaw: {
         compilerOptions: {
           target: 'ES2020',
@@ -48,15 +48,10 @@ module.exports = defineConfig(({ mode }) => ({
           esModuleInterop: true,
           allowSyntheticDefaultImports: true,
           moduleResolution: 'bundler',
-          allowImportingTsExtensions: true,
           resolveJsonModule: true,
           isolatedModules: true,
           noEmit: true,
           jsx: 'react-jsx',
-          strict: false,
-          noUnusedLocals: false,
-          noUnusedParameters: false,
-          noFallthroughCasesInSwitch: true,
           paths: {
             '@/*': ['./src/*'],
           },
@@ -64,40 +59,9 @@ module.exports = defineConfig(({ mode }) => ({
       },
     },
   },
-  ssr: {
-    optimizeDeps: {
-      esbuildOptions: {
-        target: 'es2020',
-        tsconfigRaw: {
-          compilerOptions: {
-            target: 'ES2020',
-            useDefineForClassFields: true,
-            lib: ['ES2020', 'DOM', 'DOM.Iterable'],
-            module: 'ESNext',
-            skipLibCheck: true,
-            esModuleInterop: true,
-            allowSyntheticDefaultImports: true,
-            moduleResolution: 'bundler',
-            allowImportingTsExtensions: true,
-            resolveJsonModule: true,
-            isolatedModules: true,
-            noEmit: true,
-            jsx: 'react-jsx',
-            strict: false,
-            noUnusedLocals: false,
-            noUnusedParameters: false,
-            noFallthroughCasesInSwitch: true,
-            paths: {
-              '@/*': ['./src/*'],
-            },
-          },
-        },
-      },
-    },
-  },
   esbuild: {
-    // Completely override TypeScript config to avoid corrupted tsconfig.json
     target: 'es2020',
+    tsconfig: false,
     tsconfigRaw: {
       compilerOptions: {
         target: 'ES2020',
@@ -108,19 +72,14 @@ module.exports = defineConfig(({ mode }) => ({
         esModuleInterop: true,
         allowSyntheticDefaultImports: true,
         moduleResolution: 'bundler',
-        allowImportingTsExtensions: true,
         resolveJsonModule: true,
         isolatedModules: true,
         noEmit: true,
         jsx: 'react-jsx',
-        strict: false,
-        noUnusedLocals: false,
-        noUnusedParameters: false,
-        noFallthroughCasesInSwitch: true,
         paths: {
           '@/*': ['./src/*'],
         },
       },
     },
   },
-}));
+});
