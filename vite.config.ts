@@ -37,11 +37,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    noDiscovery: true,
-    include: [],
-    esbuildOptions: {
-      target: 'es2020',
-    },
+    exclude: ['lucide-react'],
   },
   esbuild: {
     target: 'es2020',
