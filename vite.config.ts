@@ -13,55 +13,26 @@ export default defineConfig(({ mode }) => ({
     react({
       jsxImportSource: 'react'
     }),
-    mode === 'development' &&
-    componentTagger(),
+    mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Override build to avoid TypeScript config issues
   build: {
     target: 'es2020',
+    sourcemap: true,
     rollupOptions: {
-      onwarn(warning, warn) {
-        // Suppress specific TypeScript config warnings
-        if (warning.code === 'PLUGIN_WARNING' || 
-            warning.message?.includes('baseUrl') ||
-            warning.message?.includes('tsconfig')) {
-          return;
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu']
         }
-        warn(warning);
       }
     }
   },
-  esbuild: {
-    // Completely override TypeScript config to avoid corrupted tsconfig.json
-    target: 'es2020',
-    tsconfigRaw: {
-      compilerOptions: {
-        target: "ES2020",
-        useDefineForClassFields: true,
-        lib: ["ES2020", "DOM", "DOM.Iterable"],
-        module: "ESNext",
-        skipLibCheck: true,
-        esModuleInterop: true,
-        allowSyntheticDefaultImports: true,
-        moduleResolution: "bundler",
-        allowImportingTsExtensions: true,
-        resolveJsonModule: true,
-        isolatedModules: true,
-        noEmit: true,
-        jsx: "react-jsx",
-        strict: false,
-        noUnusedLocals: false,
-        noUnusedParameters: false,
-        noFallthroughCasesInSwitch: true,
-        paths: {
-          "@/*": ["./src/*"]
-        }
-      }
-    }
+  optimizeDeps: {
+    include: ['react', 'react-dom']
   }
 }));
