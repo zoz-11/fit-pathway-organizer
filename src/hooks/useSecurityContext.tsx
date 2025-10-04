@@ -28,11 +28,13 @@ export const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (session) {
       // Check if session is secure (has proper tokens, not expired, etc.)
       const now = Date.now();
-      const sessionAge = now - (session.created_at ? new Date(session.created_at).getTime() : now);
+      // Use expires_at instead of created_at for session age calculation
+      const expiresAt = session.expires_at ? session.expires_at * 1000 : now + sessionTimeout;
+      const sessionAge = now - (expiresAt - sessionTimeout);
       const isExpiringSoon = sessionAge > (sessionTimeout - 5 * 60 * 1000); // 5 minutes before timeout
-      
+
       setIsSecureSession(!!session.access_token && !isExpiringSoon);
-      
+
       // Log session start
       if (user) {
         auditLogger.logSecurityEvent('session_active', {
@@ -53,7 +55,9 @@ export const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const refreshSecurityStatus = () => {
     if (session) {
       const now = Date.now();
-      const sessionAge = now - (session.created_at ? new Date(session.created_at).getTime() : now);
+      // Use expires_at instead of created_at for session age calculation
+      const expiresAt = session.expires_at ? session.expires_at * 1000 : now + sessionTimeout;
+      const sessionAge = now - (expiresAt - sessionTimeout);
       const isExpiringSoon = sessionAge > (sessionTimeout - 5 * 60 * 1000);
       setIsSecureSession(!!session.access_token && !isExpiringSoon);
     }
