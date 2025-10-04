@@ -78,15 +78,7 @@ export const SignUpForm = () => {
       }
 
       if (data.user) {
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .insert([{ id: data.user.id, full_name: sanitizedFullName, role: role, email: sanitizedEmail }]);
-
-        if (profileError) {
-          setError("Failed to create your profile. Please try again.");
-          return;
-        }
-
+        // Profile is automatically created by the handle_new_user database trigger
         if (!data.user.email_confirmed_at) {
           setMessage("Account created! Please check your email (including spam folder) and click the verification link before signing in.");
         } else {
