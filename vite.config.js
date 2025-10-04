@@ -6,8 +6,6 @@ import { componentTagger } from 'lovable-tagger';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const customTsconfigPath = path.resolve(__dirname, 'tsconfig.custom.json');
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
@@ -39,79 +37,13 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    disabled: true,
+    noDiscovery: true,
+    include: [],
     esbuildOptions: {
       target: 'es2020',
-      tsconfig: customTsconfigPath,
-      tsconfigRaw: {
-        compilerOptions: {
-          target: 'ES2020',
-          useDefineForClassFields: true,
-          lib: ['ES2020', 'DOM', 'DOM.Iterable'],
-          module: 'ESNext',
-          skipLibCheck: true,
-          esModuleInterop: true,
-          allowSyntheticDefaultImports: true,
-          moduleResolution: 'bundler',
-          resolveJsonModule: true,
-          isolatedModules: true,
-          noEmit: true,
-          jsx: 'react-jsx',
-          paths: {
-            '@/*': ['./src/*'],
-          },
-        },
-      },
-    },
-  },
-  ssr: {
-    optimizeDeps: {
-      esbuildOptions: {
-        target: 'es2020',
-        tsconfig: customTsconfigPath,
-        tsconfigRaw: {
-          compilerOptions: {
-            target: 'ES2020',
-            useDefineForClassFields: true,
-            lib: ['ES2020', 'DOM', 'DOM.Iterable'],
-            module: 'ESNext',
-            skipLibCheck: true,
-            esModuleInterop: true,
-            allowSyntheticDefaultImports: true,
-            moduleResolution: 'bundler',
-            resolveJsonModule: true,
-            isolatedModules: true,
-            noEmit: true,
-            jsx: 'react-jsx',
-            paths: {
-              '@/*': ['./src/*'],
-            },
-          },
-        },
-      },
     },
   },
   esbuild: {
     target: 'es2020',
-    tsconfig: customTsconfigPath,
-    tsconfigRaw: {
-      compilerOptions: {
-        target: 'ES2020',
-        useDefineForClassFields: true,
-        lib: ['ES2020', 'DOM', 'DOM.Iterable'],
-        module: 'ESNext',
-        skipLibCheck: true,
-        esModuleInterop: true,
-        allowSyntheticDefaultImports: true,
-        moduleResolution: 'bundler',
-        resolveJsonModule: true,
-        isolatedModules: true,
-        noEmit: true,
-        jsx: 'react-jsx',
-        paths: {
-          '@/*': ['./src/*'],
-        },
-      },
-    },
   },
 }));
