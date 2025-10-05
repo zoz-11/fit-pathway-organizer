@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -5,11 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuthProvider";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { ThemeProvider } from "next-themes";
-import { useEffect } from "react";
-import { initializeClickabilityFixes } from "./fix-app-issues.js";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { initializeClickabilityFixes } from "./fix-app-issues";
 import { usePushNotifications } from "./hooks/usePushNotifications";
-import { toast } from "./components/ui/use-toast";
 import "./apple-hig-styles.css";
+
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Schedule from "./pages/Schedule";
@@ -39,12 +40,12 @@ const queryClient = new QueryClient({
   },
 });
 
-// Component that uses push notifications inside AuthProvider
-const AppContent = () => {
-  usePushNotifications(); // Initialize push notifications inside AuthProvider context
+const AppContent: React.FC = () => {
+  // Initialize push notifications while inside AuthProvider
+  usePushNotifications();
 
   useEffect(() => {
-    // Initializes fixes for clickability issues, particularly relevant for mobile browsers.
+    // Fixes for clickability issues on some browsers/devices
     initializeClickabilityFixes();
   }, []);
 
@@ -81,14 +82,6 @@ const AppContent = () => {
             } 
           />
           <Route 
-            path="/achievements" 
-            element={
-              <ProtectedRoute>
-                <Achievements />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
             path="/assigned-workouts-trainer" 
             element={
               <ProtectedRoute>
@@ -101,6 +94,14 @@ const AppContent = () => {
             element={
               <ProtectedRoute>
                 <WorkoutLibrary />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/achievements" 
+            element={
+              <ProtectedRoute>
+                <Achievements />
               </ProtectedRoute>
             } 
           />
@@ -152,21 +153,21 @@ const AppContent = () => {
               </ProtectedRoute>
             } 
           />
-          <Route
-            path="/members"
+          <Route 
+            path="/members" 
             element={
               <ProtectedRoute>
                 <Members />
               </ProtectedRoute>
-            }
+            } 
           />
-          <Route
-            path="/goals"
+          <Route 
+            path="/goals" 
             element={
               <ProtectedRoute>
                 <Goals />
               </ProtectedRoute>
-            }
+            } 
           />
           <Route path="/oauth-callback" element={<OAuthCallback />} />
           <Route path="*" element={<NotFound />} />
@@ -176,13 +177,15 @@ const AppContent = () => {
   );
 };
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </LanguageProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

@@ -78,7 +78,9 @@ export const SignUpForm = () => {
       }
 
       if (data.user) {
-        // Profile is automatically created by the handle_new_user database trigger
+        // The profile is automatically created by the database trigger
+        // We don't need to manually create it here
+
         if (!data.user.email_confirmed_at) {
           setMessage("Account created! Please check your email (including spam folder) and click the verification link before signing in.");
         } else {
@@ -92,89 +94,78 @@ export const SignUpForm = () => {
     }
   };
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newPassword = e.target.value;
-    setPassword(newPassword);
-    
-    if (newPassword.length > 0) {
-      const validation = validatePassword(newPassword);
-      setPasswordErrors(validation.errors);
-    } else {
-      setPasswordErrors([]);
-    }
-  };
-
   return (
     <form onSubmit={handleSignUp} className="space-y-4">
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      {message && (
+        <Alert>
+          <AlertDescription>{message}</AlertDescription>
+        </Alert>
+      )}
+      
       <div className="space-y-2">
-        <Label htmlFor="signup-name">Full Name</Label>
+        <Label htmlFor="fullName">Full Name</Label>
         <Input
-          id="signup-name"
+          id="fullName"
           type="text"
+          placeholder="Enter your full name"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           required
-          placeholder="Enter your full name"
         />
       </div>
+
       <div className="space-y-2">
-        <Label htmlFor="signup-email">Email</Label>
+        <Label htmlFor="email">Email</Label>
         <Input
-          id="signup-email"
+          id="email"
           type="email"
+          placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          placeholder="Enter your email"
         />
       </div>
+
       <div className="space-y-2">
-        <Label htmlFor="signup-password">Password</Label>
+        <Label htmlFor="password">Password</Label>
         <Input
-          id="signup-password"
+          id="password"
           type="password"
-          value={password}
-          onChange={handlePasswordChange}
-          required
           placeholder="Create a password"
-          minLength={8}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
         />
         {passwordErrors.length > 0 && (
-          <div className="text-sm text-red-600 space-y-1">
-            <p className="font-medium">Password requirements:</p>
-            <ul className="list-disc list-inside space-y-1">
-              {passwordErrors.map((error, index) => (
-                <li key={index} className="text-xs">{error}</li>
-              ))}
-            </ul>
+          <div className="text-sm text-red-500">
+            {passwordErrors.map((err, index) => (
+              <div key={index}>• {err}</div>
+            ))}
           </div>
         )}
       </div>
+
       <div className="space-y-2">
-        <Label htmlFor="role">Role</Label>
-        <Select value={role} onValueChange={(value: "trainer" | "athlete") => setRole(value)}>
+        <Label htmlFor="role">I am a</Label>
+        <Select value={role} onValueChange={(value) => setRole(value as "trainer" | "athlete")}>
           <SelectTrigger>
             <SelectValue placeholder="Select your role" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="athlete">Athlete/Member</SelectItem>
-            <SelectItem value="trainer">Trainer/Coach</SelectItem>
+            <SelectItem value="athlete">Athlete</SelectItem>
+            <SelectItem value="trainer">Trainer</SelectItem>
           </SelectContent>
         </Select>
       </div>
-      <Button type="submit" size="default" className="w-full" disabled={loading}>
-        {loading ? "Creating account..." : "Create Account"}
+
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading ? "Creating Account..." : "Sign Up"}
       </Button>
-      {error && (
-        <Alert className="mt-4 border-red-200 bg-red-50">
-          <AlertDescription className="text-red-700">{error}</AlertDescription>
-        </Alert>
-      )}
-      {message && (
-        <Alert className="mt-4 border-green-200 bg-green-50">
-          <AlertDescription className="text-green-700">{message}</AlertDescription>
-        </Alert>
-      )}
     </form>
   );
 };

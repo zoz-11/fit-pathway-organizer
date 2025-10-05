@@ -1,4 +1,3 @@
-
 // Clickability fixes for fitness app
 export const initializeClickabilityFixes = () => {
   // Fix button click events
@@ -24,46 +23,44 @@ export const initializeClickabilityFixes = () => {
         button.addEventListener('mouseup', (e) => {
           e.currentTarget.style.opacity = '1';
         });
+        
+        button.addEventListener('mouseleave', (e) => {
+          e.currentTarget.style.opacity = '1';
+        });
       }
     });
   };
-
-  // Fix navigation links
+  
+  // Fix navigation link issues
   const fixNavigationLinks = () => {
-    document.querySelectorAll('a, [data-nav]').forEach(link => {
-      if (!link.getAttribute('data-nav-fixed')) {
+    document.querySelectorAll('a[href]').forEach(link => {
+      if (!link.getAttribute('data-click-fixed')) {
+        link.setAttribute('data-click-fixed', 'true');
         link.style.cursor = 'pointer';
-        link.setAttribute('data-nav-fixed', 'true');
-        
-        link.addEventListener('click', (e) => {
-          if (link.getAttribute('href') === '#' || !link.getAttribute('href')) {
-            e.preventDefault();
-          }
-        });
       }
     });
   };
-
-  // Fix card interactions
+  
+  // Fix card click issues
   const fixCardClicks = () => {
-    document.querySelectorAll('[class*="card"], .workout-card, .diet-card').forEach(card => {
-      if (!card.getAttribute('data-card-fixed')) {
+    document.querySelectorAll('[data-clickable="true"]').forEach(card => {
+      if (!card.getAttribute('data-click-fixed')) {
+        card.setAttribute('data-click-fixed', 'true');
         card.style.cursor = 'pointer';
-        card.setAttribute('data-card-fixed', 'true');
         
-        card.addEventListener('click', (e) => {
-          if (!e.target.closest('button')) {
-            card.style.transform = 'scale(0.98)';
-            setTimeout(() => {
-              card.style.transform = 'scale(1)';
-            }, 150);
-          }
+        // Add touch effects
+        card.addEventListener('touchstart', (e) => {
+          e.currentTarget.style.opacity = '0.8';
+        });
+        
+        card.addEventListener('touchend', (e) => {
+          e.currentTarget.style.opacity = '1';
         });
       }
     });
   };
-
-  // Initialize all fixes
+  
+  // Run all fixes
   fixButtonClicks();
   fixNavigationLinks();
   fixCardClicks();
