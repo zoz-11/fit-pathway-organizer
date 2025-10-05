@@ -19,10 +19,10 @@ export const useSecurityContext = () => {
   return context;
 };
 
-export const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SecurityProvider: React.FC = ({ children }) => {
   const { user, session } = useAuth();
   const [isSecureSession, setIsSecureSession] = useState(false);
-  const [sessionTimeout, setSessionTimeout] = useState(30 * 60 * 1000); // 30 minutes
+  const [sessionTimeout] = useState(30 * 60 * 1000); // 30 minutes
 
   useEffect(() => {
     if (session) {
@@ -74,7 +74,7 @@ export const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }, warningTime);
 
     return () => clearTimeout(timer);
-  }, [session, user, sessionTimeout]);
+  }, [session, user, sessionTimeout, logSecurityEvent]);
 
   return (
     <SecurityContext.Provider value={{

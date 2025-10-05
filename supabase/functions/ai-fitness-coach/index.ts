@@ -7,7 +7,7 @@ import { z } from "npm:zod@3.23.4";
 const aiProviders = {
   // Primary: Lovable AI (free tier until Oct 6)
   lovable: {
-    apiKey: Deno.env.get('LOVABLE_API_KEY'),
+    apiKey: (typeof Deno !== 'undefined' ? (Deno.env.get?.('LOVABLE_API_KEY') ?? '') : ''),
     endpoint: 'https://api.lovable.dev/v1/chat/completions',
     model: 'google/gemini-2.0-flash-exp',
     maxTokens: 800
@@ -25,7 +25,6 @@ const aiProviders = {
     endpoint: 'https://openrouter.ai/api/v1/chat/completions',
     model: 'meta-llama/llama-3.2-3b-instruct:free', // Free model
     maxTokens: 500
-  }
   }
 };
 
@@ -198,6 +197,7 @@ serve(async (req) => {
           const aiResponse = data.choices[0].message.content;
           usedProvider = providerName;
 
+          let usedProvider: string | null = null;
           await logAudit(supabaseClient, userId, 'ai_coach_interaction', {
             message_length: message.length,
             response_length: aiResponse.length,
