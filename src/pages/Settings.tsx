@@ -71,13 +71,6 @@ const Settings = () => {
   const [showDeleteAccountDialog, setShowDeleteAccountDialog] = useState(false);
   const [showSupportDialog, setShowSupportDialog] = useState(false);
   
-  // Dialog states
-  const [showProfileVisibilityDialog, setShowProfileVisibilityDialog] = useState(false);
-  const [showDataSharingDialog, setShowDataSharingDialog] = useState(false);
-  const [showPasswordChangeDialog, setShowPasswordChangeDialog] = useState(false);
-  const [showDeleteAccountDialog, setShowDeleteAccountDialog] = useState(false);
-  const [showSupportDialog, setShowSupportDialog] = useState(false);
-  
   // Form states
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -166,16 +159,6 @@ const Settings = () => {
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
-      const handleExportData = async () => {
-        try {
-          // In a real app, this would call an API endpoint to generate the export
-          toast.success(t('data.export.requested'), {
-            description: t('data.export.description')
-          });
-        } catch (error) {
-          handleApiError(error, t('data.export.error'));
-        }
-      };
       toast.success('Password updated successfully');
       setShowPasswordChangeDialog(false);
       setCurrentPassword('');
@@ -186,13 +169,22 @@ const Settings = () => {
     }
   };
 
+  const handleExportData = async () => {
+    try {
+      toast.success(t('data.export.requested'), {
+        description: t('data.export.description')
+      });
+    } catch (error) {
+      handleApiError(error, t('data.export.error'));
+    }
+  };
+
   const handleSendSupportRequest = () => {
     if (!supportMessage.trim()) {
       toast.error(t('support.message.required'));
       return;
     }
 
-    // In a real app, this would send the message to a support system
     toast.success(t('support.request.sent'), {
       description: t('support.request.description')
     });
@@ -202,7 +194,6 @@ const Settings = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      // In a real app, this would initiate account deletion
       toast.success(t('account.deletion.initiated'), {
         description: t('account.deletion.description')
       });
@@ -210,44 +201,6 @@ const Settings = () => {
       await signOut();
     } catch (error) {
       handleApiError(error, t('account.deletion.error'));
-    }
-  };
-
-  const handleExportData = async () => {
-    try {
-      // In a real app, this would call an API endpoint to generate the export
-      toast.success(t('data.export.requested'), {
-        description: t('data.export.description')
-      });
-    } catch (error) {
-      handleApiError(error, t('data.export.error'));
-    }
-  };
-  
-  const handleSendSupportRequest = () => {
-    if (!supportMessage.trim()) {
-      toast.error('Please enter a message');
-      return;
-    }
-    
-    // In a real app, this would send the message to a support system
-    toast.success('Support request sent', {
-      description: 'We will respond to your inquiry within 24 hours.'
-    });
-    setShowSupportDialog(false);
-    setSupportMessage('');
-  };
-  
-  const handleDeleteAccount = async () => {
-    try {
-      // In a real app, this would initiate account deletion
-      toast.success('Account deletion initiated', {
-        description: 'Your account will be deleted within 30 days.'
-      });
-      setShowDeleteAccountDialog(false);
-      await signOut();
-    } catch (error) {
-      handleApiError(error, 'Failed to delete account');
     }
   };
 
@@ -433,7 +386,6 @@ const Settings = () => {
       </Dialog>
         <DialogContent>
           <DialogHeader>
-{/* Support Dialog */}
       <Dialog open={showSupportDialog} onOpenChange={setShowSupportDialog}>
         <DialogContent>
           <DialogHeader>
@@ -458,6 +410,12 @@ const Settings = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Account Dialog */}
+      <Dialog open={showDeleteAccountDialog} onOpenChange={setShowDeleteAccountDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('account.delete.title')}</DialogTitle>
             <DialogDescription>This action cannot be undone. Your account and all associated data will be permanently deleted.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
