@@ -305,23 +305,6 @@ const Settings = () => {
               </Select>
             } />
           </SettingsSection>
-                toast.success(`Units changed to ${value}`);
-            <SettingsItem label={t('settings.preferences.units')} description={t('settings.preferences.units.description')} control={
-              <Select value={units} onValueChange={(value) => {
-                setUnits(value);
-                toast.success(`${t('units.changed')} ${t(value)}`);
-              }}>
-                <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="imperial">{t('imperial')}</SelectItem>
-                  <SelectItem value="metric">{t('metric')}</SelectItem>
-                </SelectContent>
-
-          <SettingsSection title={t('settings.account')} icon={<Smartphone className="h-5 w-5 text-orange-600" />}>
-            <SettingsItem
-              label={t('export.data')}
-              description={t('settings.account.description')}
-              control={<Button variant="outline" size="sm" onClick={handleExportData}>{t('export')}</Button>}
 
           <SettingsSection title={t('settings.account')} icon={<Smartphone className="h-5 w-5 text-orange-600" />}>
             <SettingsItem
@@ -344,7 +327,6 @@ const Settings = () => {
               description={t('sign.out.description') || "Sign out of your account"}
               control={<Button variant="outline" size="sm" onClick={handleSignOut} className="text-red-600 hover:text-red-700 border-red-600 hover:bg-red-50">{t('sign.out')}</Button>}
             />
-          </SettingsSection>
           </SettingsSection>
         </div>
       </PageLayout>

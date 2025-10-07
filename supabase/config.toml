@@ -3,3 +3,7 @@ project_id = "yfgenblmkkxisidvdbkc"
 [functions.ai-fitness-coach]
 enabled = true
 verify_jwt = false
+
+[functions.send-notification-email]
+enabled = true
+verify_jwt = true

@@ -373,7 +373,7 @@ const translations: Record<string, Record<string, string>> = {
     'metric': 'متري',
     // Add more translations here
   },
-  es: {>>>>>>> REPLACE
+  es: {
     'settings.language': 'Idioma',
     'settings.language.description': 'Elige tu idioma preferido',
     'language.english': 'Inglés',

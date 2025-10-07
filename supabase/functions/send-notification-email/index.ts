@@ -30,7 +30,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-<<<<<<< Updated upstream
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const MAX_REQUESTS_PER_WINDOW = 5; // 5 requests per minute
 
@@ -83,33 +82,6 @@ type ProgressUpdateData = z.infer<typeof ProgressUpdateDataSchema>;
 type WelcomeData = z.infer<typeof WelcomeDataSchema>;
 type AssignmentData = z.infer<typeof AssignmentDataSchema>;
 type InvitationData = z.infer<typeof InvitationDataSchema>;
-=======
-interface WorkoutReminderData {
-  workoutName: string;
-  scheduledTime: string;
-}
-
-interface ProgressUpdateData {
-  workoutsCompleted: number;
-  totalTime: number;
-}
-
-interface WelcomeData {
-  name: string;
-  role: string;
-}
-
-interface AssignmentData {
-  workoutName: string;
-  description: string;
-}
-
-interface NotificationEmailRequest {
-  to: string;
-  type: 'workout_reminder' | 'progress_update' | 'welcome' | 'assignment';
-  data: WorkoutReminderData | ProgressUpdateData | WelcomeData | AssignmentData;
-}
->>>>>>> Stashed changes
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -314,7 +286,6 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error) {
     console.error("Error in send-notification-email function:", error);
-    await logAudit(supabaseClient, user?.id, 'Email Notification Failed', { error: (error as Error).message, ipAddress: req.headers.get('x-forwarded-for') });
     return new Response(
       JSON.stringify({ error: (error as Error).message }),
       {
