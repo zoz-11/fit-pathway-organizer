@@ -383,6 +383,7 @@ const Settings = () => {
             <Button size="default" onClick={handleChangePassword}>{t('update')}</Button>
           </DialogFooter>
         </DialogContent>
+      </Dialog>
 
       {/* Support Dialog */}
       <Dialog open={showSupportDialog} onOpenChange={setShowSupportDialog}>
