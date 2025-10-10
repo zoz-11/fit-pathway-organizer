@@ -15,16 +15,10 @@
     "jsx": "react-jsx",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
@@ -35,12 +29,7 @@
     },
     "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": [
-    "src/**/*",
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.d.ts"
-  ],
+  "include": ["src"],
   "exclude": [
     "node_modules",
     "dist",
