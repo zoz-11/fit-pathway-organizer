@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { validatePassword, sanitizeString, sanitizeEmail, RateLimiter } from "@/lib/security";
+import { ResendConfirmation } from "./ResendConfirmation";
 
 const signUpLimiter = new RateLimiter({ windowMs: 60 * 60 * 1000, maxRequests: 10 });
 
@@ -18,6 +19,8 @@ export const SignUpForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [showResend, setShowResend] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +85,9 @@ export const SignUpForm = () => {
         // We don't need to manually create it here
 
         if (!data.user.email_confirmed_at) {
-          setMessage("Account created! Please check your email (including spam folder) and click the verification link before signing in.");
+          setRegisteredEmail(sanitizedEmail);
+          setShowResend(true);
+          setMessage("Account created! Please check your email (including spam folder) and click the verification link.");
         } else {
           window.location.href = "/";
         }
@@ -93,6 +98,10 @@ export const SignUpForm = () => {
       setLoading(false);
     }
   };
+
+  if (showResend && registeredEmail) {
+    return <ResendConfirmation email={registeredEmail} />;
+  }
 
   return (
     <form onSubmit={handleSignUp} className="space-y-4">

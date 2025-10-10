@@ -30,6 +30,7 @@ import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCancel from "./pages/SubscriptionCancel";
 import Goals from "./pages/Goals";
 import OAuthCallback from "./pages/OAuthCallback";
+import EmailConfirmed from "./pages/EmailConfirmed";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,6 +56,7 @@ const AppContent: React.FC = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/auth" element={<Auth />} />
+          <Route path="/email-confirmed" element={<EmailConfirmed />} />
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />
           <Route path="/subscription-cancel" element={<SubscriptionCancel />} />
           <Route 
