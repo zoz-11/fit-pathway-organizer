@@ -2,21 +2,18 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useProfile } from './useProfile';
+import { useUserRole, UserRole } from './useUserRole';
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/utils";
 import type { Database } from '@/integrations/supabase/types';
 
-type Profile = Database['public']['Tables']['profiles']['Row'] & {
-  avatar_url?: string | null;
-  fitness_level?: string | null;
-  goals?: string | null;
-  location?: string | null;
-};
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
+  role: UserRole | null;
   loading: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => void;
@@ -38,6 +35,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loadingInitial, setLoadingInitial] = useState(true);
 
   const { data: profile, isLoading: isLoadingProfile, refetch } = useProfile(user?.id);
+  const { data: role, isLoading: isLoadingRole } = useUserRole(user?.id);
 
   useEffect(() => {
     // Set up auth state listener
@@ -76,10 +74,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     refetch();
   };
 
-  const loading = loadingInitial || isLoadingProfile;
+  const loading = loadingInitial || isLoadingProfile || isLoadingRole;
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signOut, refreshProfile }}>
+    <AuthContext.Provider value={{ user, session, profile, role, loading, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );

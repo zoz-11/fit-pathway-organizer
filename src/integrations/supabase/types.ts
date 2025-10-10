@@ -208,14 +208,18 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
           date_of_birth: string | null
           email: string
           emergency_contact_name: string | null
           emergency_contact_phone: string | null
+          fitness_level: string | null
           full_name: string
+          goals: string | null
           id: string
           join_date: string | null
+          location: string | null
           phone: string | null
           role: Database["public"]["Enums"]["user_role"]
           subscription_expiry: string | null
@@ -226,14 +230,18 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
           date_of_birth?: string | null
           email: string
           emergency_contact_name?: string | null
           emergency_contact_phone?: string | null
+          fitness_level?: string | null
           full_name: string
+          goals?: string | null
           id: string
           join_date?: string | null
+          location?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           subscription_expiry?: string | null
@@ -244,14 +252,18 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
           date_of_birth?: string | null
           email?: string
           emergency_contact_name?: string | null
           emergency_contact_phone?: string | null
+          fitness_level?: string | null
           full_name?: string
+          goals?: string | null
           id?: string
           join_date?: string | null
+          location?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           subscription_expiry?: string | null

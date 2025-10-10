@@ -14,7 +14,7 @@ import { handleApiError } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Profile = () => {
-  const { profile, loading, refreshProfile } = useAuth();
+  const { profile, role, loading, refreshProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
@@ -234,7 +234,7 @@ const Profile = () => {
               </div>
               <div>
                 <h3 className="text-xl font-semibold">{formData.fullName}</h3>
-                <p className="text-muted-foreground">{profile?.role}</p>
+                <p className="text-muted-foreground capitalize">{role || 'athlete'}</p>
               </div>
             </CardContent>
           </Card>
