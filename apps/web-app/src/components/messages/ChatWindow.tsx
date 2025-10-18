@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 import { useMessages } from "@/hooks/useMessages";
 import { useAuth } from "@/hooks/useAuthProvider";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -13,7 +19,10 @@ interface ChatWindowProps {
   participantName: string;
 }
 
-export const ChatWindow = ({ participantId, participantName }: ChatWindowProps) => {
+export const ChatWindow = ({
+  participantId,
+  participantName,
+}: ChatWindowProps) => {
   const { user } = useAuth();
   const { messages, isLoading, sendMessage } = useMessages(participantId);
   const [newMessage, setNewMessage] = useState("");
@@ -71,19 +80,27 @@ export const ChatWindow = ({ participantId, participantName }: ChatWindowProps) 
                   className={`flex ${msg.sender_id === user?.id ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[70%] p-3 rounded-lg ${msg.sender_id === user?.id
-                        ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}
+                    className={`max-w-[70%] p-3 rounded-lg ${
+                      msg.sender_id === user?.id
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-800"
+                    }
                     `}
                   >
                     <p className="text-sm">{msg.content}</p>
                     <span className="text-xs opacity-75 mt-1 block">
-                      {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(msg.created_at).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="text-center text-muted-foreground">Start a conversation!</div>
+              <div className="text-center text-muted-foreground">
+                Start a conversation!
+              </div>
             )}
             <div ref={messagesEndRef} />
           </div>

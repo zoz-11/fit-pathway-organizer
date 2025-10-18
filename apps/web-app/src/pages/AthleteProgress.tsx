@@ -84,7 +84,10 @@ const AthleteProgress = () => {
   if (isLoading) {
     return (
       <AppLayout>
-        <PageLayout title="Athlete's Progress" description="An overview of their fitness journey and recent activity.">
+        <PageLayout
+          title="Athlete's Progress"
+          description="An overview of their fitness journey and recent activity."
+        >
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Skeleton className="h-28" />
             <Skeleton className="h-28" />
@@ -100,9 +103,14 @@ const AthleteProgress = () => {
   if (!athleteProfile) {
     return (
       <AppLayout>
-        <PageLayout title="Athlete Not Found" description="Athlete profile could not be loaded or was not found.">
+        <PageLayout
+          title="Athlete Not Found"
+          description="Athlete profile could not be loaded or was not found."
+        >
           <div className="text-center py-8">
-            <p className="text-muted-foreground">The requested athlete could not be found.</p>
+            <p className="text-muted-foreground">
+              The requested athlete could not be found.
+            </p>
           </div>
         </PageLayout>
       </AppLayout>
@@ -111,9 +119,12 @@ const AthleteProgress = () => {
 
   return (
     <AppLayout>
-      <PageLayout title={`${athleteProfile.full_name || "Athlete"}'s Progress`} description="An overview of their fitness journey and recent activity.">
+      <PageLayout
+        title={`${athleteProfile.full_name || "Athlete"}'s Progress`}
+        description="An overview of their fitness journey and recent activity."
+      >
         <div className="flex justify-end">
-        {athleteId && athleteProfile.full_name && (
+          {athleteId && athleteProfile.full_name && (
             <ChatWindow
               participantId={athleteId}
               participantName={athleteProfile.full_name}
@@ -149,7 +160,7 @@ const AthleteProgress = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>{t('athleteProgress.workoutHistory.title')}</CardTitle>
+            <CardTitle>{t("athleteProgress.workoutHistory.title")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -165,7 +176,7 @@ const AthleteProgress = () => {
                       <div>
                         <p className="font-medium">{assignment.title}</p>
                         <p className="text-sm text-muted-foreground">
-                          {t('athleteProgress.workoutHistory.scheduled')}:{" "}
+                          {t("athleteProgress.workoutHistory.scheduled")}:{" "}
                           {new Date(
                             assignment.scheduled_date,
                           ).toLocaleDateString()}
@@ -185,7 +196,7 @@ const AthleteProgress = () => {
                 )
               ) : (
                 <p className="text-center text-muted-foreground py-4">
-                  {t('athleteProgress.workoutHistory.noHistory')}
+                  {t("athleteProgress.workoutHistory.noHistory")}
                 </p>
               )}
             </div>

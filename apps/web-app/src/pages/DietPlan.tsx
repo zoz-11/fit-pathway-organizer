@@ -18,8 +18,8 @@ const DietPlan = () => {
       foods: [
         { name: "Oatmeal with berries", calories: 320, protein: "12g" },
         { name: "Greek yogurt", calories: 150, protein: "15g" },
-        { name: "Banana", calories: 105, protein: "1g" }
-      ]
+        { name: "Banana", calories: 105, protein: "1g" },
+      ],
     },
     {
       time: "Lunch",
@@ -28,8 +28,8 @@ const DietPlan = () => {
       foods: [
         { name: "Grilled chicken breast", calories: 250, protein: "46g" },
         { name: "Quinoa salad", calories: 180, protein: "6g" },
-        { name: "Mixed vegetables", calories: 50, protein: "2g" }
-      ]
+        { name: "Mixed vegetables", calories: 50, protein: "2g" },
+      ],
     },
     {
       time: "Snack",
@@ -37,8 +37,8 @@ const DietPlan = () => {
       color: "text-red-600",
       foods: [
         { name: "Protein shake", calories: 200, protein: "25g" },
-        { name: "Almonds (handful)", calories: 160, protein: "6g" }
-      ]
+        { name: "Almonds (handful)", calories: 160, protein: "6g" },
+      ],
     },
     {
       time: "Dinner",
@@ -47,24 +47,35 @@ const DietPlan = () => {
       foods: [
         { name: "Baked salmon", calories: 280, protein: "39g" },
         { name: "Sweet potato", calories: 112, protein: "2g" },
-        { name: "Steamed broccoli", calories: 30, protein: "3g" }
-      ]
-    }
+        { name: "Steamed broccoli", calories: 30, protein: "3g" },
+      ],
+    },
   ];
 
-  const totalCalories = meals.reduce((total, meal) => 
-    total + meal.foods.reduce((mealTotal, food) => mealTotal + food.calories, 0), 0
+  const totalCalories = meals.reduce(
+    (total, meal) =>
+      total +
+      meal.foods.reduce((mealTotal, food) => mealTotal + food.calories, 0),
+    0,
   );
 
-  const totalProtein = meals.reduce((total, meal) => 
-    total + meal.foods.reduce((mealTotal, food) => mealTotal + parseInt(food.protein), 0), 0
+  const totalProtein = meals.reduce(
+    (total, meal) =>
+      total +
+      meal.foods.reduce(
+        (mealTotal, food) => mealTotal + parseInt(food.protein),
+        0,
+      ),
+    0,
   );
 
   return (
     <AppLayout>
       <div className="space-y-6 p-4 md:p-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">My Diet Plan</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+            My Diet Plan
+          </h1>
           <p className="text-muted-foreground mt-1">
             Your personalized nutrition plan for optimal fitness results
           </p>
@@ -78,11 +89,15 @@ const DietPlan = () => {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-blue-600">{totalCalories}</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {totalCalories}
+                </p>
                 <p className="text-sm text-gray-600">Total Calories</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-green-600">{totalProtein}g</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {totalProtein}g
+                </p>
                 <p className="text-sm text-gray-600">Protein</p>
               </div>
               <div className="text-center">

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { MessageInputSchema } from '@/lib/security';
-import { MessageEncryption } from '@/lib/encryption';
-import { SecurityAlert } from '@/components/ui/SecurityAlert';
-import { Send, Shield } from 'lucide-react';
-import { z } from 'zod';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { MessageInputSchema } from "@/lib/security";
+import { MessageEncryption } from "@/lib/encryption";
+import { SecurityAlert } from "@/components/ui/SecurityAlert";
+import { Send, Shield } from "lucide-react";
+import { z } from "zod";
 
 interface SecureMessageInputProps {
   recipientId: string;
@@ -16,21 +16,21 @@ interface SecureMessageInputProps {
 export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
   recipientId,
   onSendMessage,
-  disabled = false
+  disabled = false,
 }) => {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const [isEncrypting, setIsEncrypting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [useEncryption, setUseEncryption] = useState(true);
 
   const handleSend = async () => {
     setError(null);
-    
+
     try {
       // Validate input
       const validatedData = MessageInputSchema.parse({
         content,
-        recipient: recipientId
+        recipient: recipientId,
       });
 
       setIsEncrypting(true);
@@ -39,18 +39,20 @@ export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
       let encryptedMetadata = {};
 
       if (useEncryption) {
-        const encrypted = await MessageEncryption.encryptMessage(validatedData.content);
+        const encrypted = await MessageEncryption.encryptMessage(
+          validatedData.content,
+        );
         finalContent = encrypted.encryptedContent;
         encryptedMetadata = encrypted.metadata;
       }
 
       await onSendMessage(finalContent, encryptedMetadata);
-      setContent('');
+      setContent("");
     } catch (error) {
       if (error instanceof z.ZodError) {
         setError(error.errors[0].message);
       } else {
-        setError('Failed to send message. Please try again.');
+        setError("Failed to send message. Please try again.");
       }
     } finally {
       setIsEncrypting(false);
@@ -58,7 +60,7 @@ export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (content.trim() && !disabled && !isEncrypting) {
         handleSend();
@@ -96,9 +98,7 @@ export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
         </div>
       </div>
 
-      {error && (
-        <SecurityAlert level="error" message={error} />
-      )}
+      {error && <SecurityAlert level="error" message={error} />}
 
       <Button
         onClick={handleSend}
@@ -108,7 +108,7 @@ export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
         {isEncrypting ? (
           <div className="flex items-center gap-2">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current" />
-            {useEncryption ? 'Encrypting...' : 'Sending...'}
+            {useEncryption ? "Encrypting..." : "Sending..."}
           </div>
         ) : (
           <div className="flex items-center gap-2">

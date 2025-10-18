@@ -24,8 +24,8 @@ export const CreateWorkoutDialog = () => {
       exercises: data.exercises.map((ex: any) => ({
         name: ex.name,
         sets: ex.sets,
-        reps: ex.reps
-      }))
+        reps: ex.reps,
+      })),
     });
     setOpen(false);
   };
@@ -35,12 +35,12 @@ export const CreateWorkoutDialog = () => {
       <DialogTrigger asChild>
         <Button>
           <PlusCircle className="h-4 w-4 mr-2" />
-          {t('createWorkoutDialog.createWorkout')}
+          {t("createWorkoutDialog.createWorkout")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{t('createWorkoutDialog.title')}</DialogTitle>
+          <DialogTitle>{t("createWorkoutDialog.title")}</DialogTitle>
         </DialogHeader>
         <CreateWorkoutForm
           onSubmit={handleSubmit}

@@ -14,7 +14,10 @@ const WorkoutLibrary = () => {
   if (isLoading) {
     return (
       <AppLayout>
-        <PageLayout title={t('workoutLibrary.title')} description={t('workoutLibrary.description')}>
+        <PageLayout
+          title={t("workoutLibrary.title")}
+          description={t("workoutLibrary.description")}
+        >
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Skeleton className="h-32" />
             <Skeleton className="h-32" />
@@ -27,7 +30,10 @@ const WorkoutLibrary = () => {
 
   return (
     <AppLayout>
-      <PageLayout title={t('workoutLibrary.title')} description={t('workoutLibrary.description')}>
+      <PageLayout
+        title={t("workoutLibrary.title")}
+        description={t("workoutLibrary.description")}
+      >
         <div className="flex justify-end">
           <CreateWorkoutDialog />
         </div>
@@ -39,7 +45,9 @@ const WorkoutLibrary = () => {
                   <CardTitle>{workout.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <p className="text-sm text-muted-foreground">{workout.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {workout.description}
+                  </p>
                   <div className="flex justify-end space-x-2 mt-4">
                     <Button variant="outline" size="sm">
                       <Edit className="h-4 w-4" />
@@ -52,7 +60,10 @@ const WorkoutLibrary = () => {
               </Card>
             ))
           ) : (
-            <p>No workouts created yet. Click "Create New Workout" to get started!</p>
+            <p>
+              No workouts created yet. Click "Create New Workout" to get
+              started!
+            </p>
           )}
         </div>
       </PageLayout>

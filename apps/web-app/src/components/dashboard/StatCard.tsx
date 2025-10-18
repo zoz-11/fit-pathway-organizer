@@ -29,12 +29,12 @@ const StatCard = ({
               trend.value > 0
                 ? "text-green-500"
                 : trend.value < 0
-                ? "text-red-500"
-                : "text-gray-500"
+                  ? "text-red-500"
+                  : "text-gray-500"
             }`}
           >
-            {trend.value > 0 ? "↑" : trend.value < 0 ? "↓" : "→"} {Math.abs(trend.value)}% {" "}
-            {trend.label}
+            {trend.value > 0 ? "↑" : trend.value < 0 ? "↓" : "→"}{" "}
+            {Math.abs(trend.value)}% {trend.label}
           </span>
         )}
       </div>

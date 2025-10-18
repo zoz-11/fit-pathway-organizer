@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
@@ -18,7 +24,11 @@ type InviteFormValues = z.infer<typeof inviteSchema>;
 export const InviteAthleteDialog = () => {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm<InviteFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<InviteFormValues>({
     resolver: zodResolver(inviteSchema),
   });
   const { inviteAthlete } = useTrainerAthletes();
@@ -31,42 +41,25 @@ export const InviteAthleteDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="default">
-          {t('inviteAthleteDialog.trigger')}
-        </Button>
+        <Button size="default">{t("inviteAthleteDialog.trigger")}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('inviteAthleteDialog.title')}</DialogTitle>
+          <DialogTitle>{t("inviteAthleteDialog.title")}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">{t('inviteAthleteDialog.form.email.label')}</Label>
-            <Input
-              id="email"
-              type="email"
-              {...register("email")}
-            />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+            <Label htmlFor="email">
+              {t("inviteAthleteDialog.form.email.label")}
+            </Label>
+            <Input id="email" type="email" {...register("email")} />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
+            )}
           </div>
-          <Button type="submit" size="default" className="w-full">{t('inviteAthleteDialog.form.submit')}</Button>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-};
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Athlete's Email</Label>
-            <Input
-              id="email"
-              type="email"
-              {...register("email")}
-            />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-          </div>
-          <Button type="submit" size="default" className="w-full">Send Invitation</Button>
+          <Button type="submit" size="default" className="w-full">
+            {t("inviteAthleteDialog.form.submit")}
+          </Button>
         </form>
       </DialogContent>
     </Dialog>

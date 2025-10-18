@@ -1,43 +1,65 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuthProvider';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "./useAuthProvider";
 
 // Temporary mock data until achievement tables are created
 const mockAchievements = [
-  { id: '1', name: 'First Workout', description: 'Complete your first workout', icon: '🏋️' },
-  { id: '2', name: 'Week Warrior', description: 'Complete 7 workouts in a week', icon: '🔥' },
-  { id: '3', name: 'Strength Builder', description: 'Complete 10 strength workouts', icon: '💪' },
-  { id: '4', name: 'Consistency King', description: 'Work out for 30 days straight', icon: '👑' },
+  {
+    id: "1",
+    name: "First Workout",
+    description: "Complete your first workout",
+    icon: "🏋️",
+  },
+  {
+    id: "2",
+    name: "Week Warrior",
+    description: "Complete 7 workouts in a week",
+    icon: "🔥",
+  },
+  {
+    id: "3",
+    name: "Strength Builder",
+    description: "Complete 10 strength workouts",
+    icon: "💪",
+  },
+  {
+    id: "4",
+    name: "Consistency King",
+    description: "Work out for 30 days straight",
+    icon: "👑",
+  },
 ];
 
 export const useAchievements = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const { data: allAchievements, isLoading: isLoadingAllAchievements } = useQuery({
-    queryKey: ['allAchievements'],
-    queryFn: async () => {
-      // Return mock data for now since achievements system is not required
-      return mockAchievements;
-    },
-  });
+  const { data: allAchievements, isLoading: isLoadingAllAchievements } =
+    useQuery({
+      queryKey: ["allAchievements"],
+      queryFn: async () => {
+        // Return mock data for now since achievements system is not required
+        return mockAchievements;
+      },
+    });
 
-  const { data: userAchievements, isLoading: isLoadingUserAchievements } = useQuery({
-    queryKey: ['userAchievements', user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      
-      // Return mock data - first 2 achievements as "awarded"
-      return mockAchievements.slice(0, 2).map(achievement => ({
-        id: `user_${achievement.id}`,
-        user_id: user.id,
-        achievement_id: achievement.id,
-        awarded_at: new Date().toISOString(),
-        achievement
-      }));
-    },
-    enabled: !!user,
-  });
+  const { data: userAchievements, isLoading: isLoadingUserAchievements } =
+    useQuery({
+      queryKey: ["userAchievements", user?.id],
+      queryFn: async () => {
+        if (!user) return [];
+
+        // Return mock data - first 2 achievements as "awarded"
+        return mockAchievements.slice(0, 2).map((achievement) => ({
+          id: `user_${achievement.id}`,
+          user_id: user.id,
+          achievement_id: achievement.id,
+          awarded_at: new Date().toISOString(),
+          achievement,
+        }));
+      },
+      enabled: !!user,
+    });
 
   const awardAchievement = useMutation({
     mutationFn: async (achievementName: string) => {
@@ -71,10 +93,14 @@ export const useAchievements = () => {
       // if (awardError) throw awardError;
 
       // For now, just log the achievement
-      console.log(`Achievement "${achievementName}" would be awarded to user ${user.id}`);
+      console.log(
+        `Achievement "${achievementName}" would be awarded to user ${user.id}`,
+      );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userAchievements', user?.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["userAchievements", user?.id],
+      });
     },
   });
 

@@ -1,4 +1,4 @@
-@import './apple-hig-styles.css';
+@import "./apple-hig-styles.css";
 
 @tailwind base;
 @tailwind components;
@@ -102,9 +102,13 @@
   body {
     @apply bg-background text-foreground;
   }
-  
+
   .dark body {
-    background: linear-gradient(135deg, hsl(222, 28%, 12%) 0%, hsl(224, 24%, 8%) 100%) !important;
+    background: linear-gradient(
+      135deg,
+      hsl(222, 28%, 12%) 0%,
+      hsl(224, 24%, 8%) 100%
+    ) !important;
   }
 }
 
@@ -116,25 +120,25 @@
     touch-action: manipulation;
     user-select: none;
   }
-  
+
   .clickable-enhanced:hover {
     @apply transform -translate-y-0.5 shadow-lg;
   }
-  
+
   .clickable-enhanced:active {
     @apply transform translate-y-0 shadow-md;
   }
-  
+
   .btn-apple {
     @apply bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:shadow-sm;
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   .card-apple {
     @apply bg-white dark:bg-card rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border border-gray-100;
   }
-  
+
   .card-apple:hover {
     @apply transform -translate-y-1;
   }

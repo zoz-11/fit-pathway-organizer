@@ -4,11 +4,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { validatePassword, sanitizeString, sanitizeEmail, RateLimiter } from "@/lib/security";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  validatePassword,
+  sanitizeString,
+  sanitizeEmail,
+  RateLimiter,
+} from "@/lib/security";
 import { ResendConfirmation } from "./ResendConfirmation";
 
-const signUpLimiter = new RateLimiter({ windowMs: 60 * 60 * 1000, maxRequests: 10 });
+const signUpLimiter = new RateLimiter({
+  windowMs: 60 * 60 * 1000,
+  maxRequests: 10,
+});
 
 export const SignUpForm = () => {
   const [email, setEmail] = useState("");
@@ -87,7 +101,9 @@ export const SignUpForm = () => {
         if (!data.user.email_confirmed_at) {
           setRegisteredEmail(sanitizedEmail);
           setShowResend(true);
-          setMessage("Account created! Please check your email (including spam folder) and click the verification link.");
+          setMessage(
+            "Account created! Please check your email (including spam folder) and click the verification link.",
+          );
         } else {
           window.location.href = "/";
         }
@@ -115,7 +131,7 @@ export const SignUpForm = () => {
           <AlertDescription>{message}</AlertDescription>
         </Alert>
       )}
-      
+
       <div className="space-y-2">
         <Label htmlFor="fullName">Full Name</Label>
         <Input
@@ -161,7 +177,10 @@ export const SignUpForm = () => {
 
       <div className="space-y-2">
         <Label htmlFor="role">I am a</Label>
-        <Select value={role} onValueChange={(value) => setRole(value as "trainer" | "athlete")}>
+        <Select
+          value={role}
+          onValueChange={(value) => setRole(value as "trainer" | "athlete")}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select your role" />
           </SelectTrigger>

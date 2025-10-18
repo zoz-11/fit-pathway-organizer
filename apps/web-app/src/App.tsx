@@ -57,119 +57,122 @@ const AppContent: React.FC = () => {
         <Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/email-confirmed" element={<EmailConfirmed />} />
-          <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+          <Route
+            path="/subscription-success"
+            element={<SubscriptionSuccess />}
+          />
           <Route path="/subscription-cancel" element={<SubscriptionCancel />} />
-          <Route 
-            path="/" 
+          <Route
+            path="/"
             element={
               <ProtectedRoute>
                 <Index />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/schedule" 
+          <Route
+            path="/schedule"
             element={
               <ProtectedRoute>
                 <Schedule />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/assigned-workouts" 
+          <Route
+            path="/assigned-workouts"
             element={
               <ProtectedRoute>
                 <AssignedWorkouts />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/assigned-workouts-trainer" 
+          <Route
+            path="/assigned-workouts-trainer"
             element={
               <ProtectedRoute>
                 <AssignedWorkoutsTrainer />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/workout-library" 
+          <Route
+            path="/workout-library"
             element={
               <ProtectedRoute>
                 <WorkoutLibrary />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/achievements" 
+          <Route
+            path="/achievements"
             element={
               <ProtectedRoute>
                 <Achievements />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/athlete-progress/:athleteId" 
+          <Route
+            path="/athlete-progress/:athleteId"
             element={
               <ProtectedRoute>
                 <AthleteProgress />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/diet-plan" 
+          <Route
+            path="/diet-plan"
             element={
               <ProtectedRoute>
                 <DietPlan />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/progress" 
+          <Route
+            path="/progress"
             element={
               <ProtectedRoute>
                 <Progress />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/messages" 
+          <Route
+            path="/messages"
             element={
               <ProtectedRoute>
                 <Messages />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/profile" 
+          <Route
+            path="/profile"
             element={
               <ProtectedRoute>
                 <Profile />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/settings" 
+          <Route
+            path="/settings"
             element={
               <ProtectedRoute>
                 <Settings />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/members" 
+          <Route
+            path="/members"
             element={
               <ProtectedRoute>
                 <Members />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/goals" 
+          <Route
+            path="/goals"
             element={
               <ProtectedRoute>
                 <Goals />
               </ProtectedRoute>
-            } 
+            }
           />
           <Route path="/oauth-callback" element={<OAuthCallback />} />
           <Route path="*" element={<NotFound />} />

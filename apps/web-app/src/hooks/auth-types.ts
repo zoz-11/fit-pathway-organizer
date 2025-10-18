@@ -1,12 +1,12 @@
-import { User, Session } from '@supabase/supabase-js';
-import { createContext, useContext } from 'react';
+import { User, Session } from "@supabase/supabase-js";
+import { createContext, useContext } from "react";
 
 interface Profile {
   id: string;
   full_name: string;
   email: string;
-  role?: 'trainer' | 'athlete';
-  subscription_status?: 'active' | 'expired' | 'trial' | 'cancelled';
+  role?: "trainer" | "athlete";
+  subscription_status?: "active" | "expired" | "trial" | "cancelled";
   subscription_expiry?: string | null;
   trainer_id?: string | null;
   date_of_birth?: string | null;
@@ -25,12 +25,14 @@ export interface AuthContextType {
   signOut: () => Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined,
+);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

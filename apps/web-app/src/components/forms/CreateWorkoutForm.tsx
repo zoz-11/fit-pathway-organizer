@@ -21,7 +21,9 @@ const exerciseSchema = z.object({
 const workoutSchema = z.object({
   title: z.string().min(1, "Workout title is required"),
   description: z.string().optional(),
-  exercises: z.array(exerciseSchema).min(1, "At least one exercise is required"),
+  exercises: z
+    .array(exerciseSchema)
+    .min(1, "At least one exercise is required"),
 });
 
 type WorkoutFormValues = z.infer<typeof workoutSchema>;
@@ -31,7 +33,10 @@ interface CreateWorkoutFormProps {
   isLoading?: boolean;
 }
 
-export const CreateWorkoutForm = ({ onSubmit, isLoading }: CreateWorkoutFormProps) => {
+export const CreateWorkoutForm = ({
+  onSubmit,
+  isLoading,
+}: CreateWorkoutFormProps) => {
   const { t } = useLanguage();
   const {
     register,
@@ -57,9 +62,9 @@ export const CreateWorkoutForm = ({ onSubmit, isLoading }: CreateWorkoutFormProp
     try {
       await onSubmit(data);
       reset();
-      toast.success(t('createWorkoutForm.toasts.success'));
+      toast.success(t("createWorkoutForm.toasts.success"));
     } catch (error) {
-      toast.error(t('createWorkoutForm.toasts.error'));
+      toast.error(t("createWorkoutForm.toasts.error"));
     }
   };
 
@@ -94,15 +99,19 @@ export const CreateWorkoutForm = ({ onSubmit, isLoading }: CreateWorkoutFormProp
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">{t('createWorkoutForm.exercises.title')}</h3>
+          <h3 className="text-lg font-semibold">
+            {t("createWorkoutForm.exercises.title")}
+          </h3>
           <Button
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => append({ name: "", sets: 3, reps: "10-12", rest: 60 })}
+            onClick={() =>
+              append({ name: "", sets: 3, reps: "10-12", rest: 60 })
+            }
           >
             <PlusCircle className="h-4 w-4 mr-2" />
-            {t('createWorkoutForm.exercises.add')}
+            {t("createWorkoutForm.exercises.add")}
           </Button>
         </div>
 
@@ -110,7 +119,11 @@ export const CreateWorkoutForm = ({ onSubmit, isLoading }: CreateWorkoutFormProp
           <Card key={field.id}>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base">{t('createWorkoutForm.exercises.exerciseNumber', { number: index + 1 })}</CardTitle>
+                <CardTitle className="text-base">
+                  {t("createWorkoutForm.exercises.exerciseNumber", {
+                    number: index + 1,
+                  })}
+                </CardTitle>
                 {fields.length > 1 && (
                   <Button
                     type="button"
@@ -127,12 +140,14 @@ export const CreateWorkoutForm = ({ onSubmit, isLoading }: CreateWorkoutFormProp
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2 space-y-2">
                   <Label htmlFor={`exercises.${index}.name`}>
-                    {t('createWorkoutForm.exercises.name.label')}
+                    {t("createWorkoutForm.exercises.name.label")}
                   </Label>
                   <Input
                     id={`exercises.${index}.name`}
                     {...register(`exercises.${index}.name`)}
-                    placeholder={t('createWorkoutForm.exercises.name.placeholder')}
+                    placeholder={t(
+                      "createWorkoutForm.exercises.name.placeholder",
+                    )}
                   />
                   {errors.exercises?.[index]?.name && (
                     <p className="text-sm text-red-600">
@@ -142,14 +157,18 @@ export const CreateWorkoutForm = ({ onSubmit, isLoading }: CreateWorkoutFormProp
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor={`exercises.${index}.sets`}>{t('createWorkoutForm.exercises.sets.label')}</Label>
+                  <Label htmlFor={`exercises.${index}.sets`}>
+                    {t("createWorkoutForm.exercises.sets.label")}
+                  </Label>
                   <Input
                     id={`exercises.${index}.sets`}
                     type="number"
                     {...register(`exercises.${index}.sets`, {
                       valueAsNumber: true,
                     })}
-                    placeholder={t('createWorkoutForm.exercises.sets.placeholder')}
+                    placeholder={t(
+                      "createWorkoutForm.exercises.sets.placeholder",
+                    )}
                   />
                   {errors.exercises?.[index]?.sets && (
                     <p className="text-sm text-red-600">
@@ -159,11 +178,15 @@ export const CreateWorkoutForm = ({ onSubmit, isLoading }: CreateWorkoutFormProp
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor={`exercises.${index}.reps`}>{t('createWorkoutForm.exercises.reps.label')}</Label>
+                  <Label htmlFor={`exercises.${index}.reps`}>
+                    {t("createWorkoutForm.exercises.reps.label")}
+                  </Label>
                   <Input
                     id={`exercises.${index}.reps`}
                     {...register(`exercises.${index}.reps`)}
-                    placeholder={t('createWorkoutForm.exercises.reps.placeholder')}
+                    placeholder={t(
+                      "createWorkoutForm.exercises.reps.placeholder",
+                    )}
                   />
                   {errors.exercises?.[index]?.reps && (
                     <p className="text-sm text-red-600">
@@ -173,43 +196,18 @@ export const CreateWorkoutForm = ({ onSubmit, isLoading }: CreateWorkoutFormProp
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor={`exercises.${index}.rest`}>{t('createWorkoutForm.exercises.rest.label')}</Label>
+                  <Label htmlFor={`exercises.${index}.rest`}>
+                    {t("createWorkoutForm.exercises.rest.label")}
+                  </Label>
                   <Input
                     id={`exercises.${index}.rest`}
                     type="number"
                     {...register(`exercises.${index}.rest`, {
                       valueAsNumber: true,
                     })}
-                    placeholder={t('createWorkoutForm.exercises.rest.placeholder')}
-                  />
-                  {errors.exercises?.[index]?.rest && (
-                    <p className="text-sm text-red-600">
-                      {errors.exercises[index]?.rest?.message}
-                    </p>
-                  )}
-                </div>
-                  <Label htmlFor={`exercises.${index}.reps`}>Reps</Label>
-                  <Input
-                    id={`exercises.${index}.reps`}
-                    {...register(`exercises.${index}.reps`)}
-                    placeholder="10-12 or 30 seconds"
-                  />
-                  {errors.exercises?.[index]?.reps && (
-                    <p className="text-sm text-red-600">
-                      {errors.exercises[index]?.reps?.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor={`exercises.${index}.rest`}>Rest (seconds)</Label>
-                  <Input
-                    id={`exercises.${index}.rest`}
-                    type="number"
-                    {...register(`exercises.${index}.rest`, {
-                      valueAsNumber: true,
-                    })}
-                    placeholder="60"
+                    placeholder={t(
+                      "createWorkoutForm.exercises.rest.placeholder",
+                    )}
                   />
                   {errors.exercises?.[index]?.rest && (
                     <p className="text-sm text-red-600">
@@ -227,7 +225,12 @@ export const CreateWorkoutForm = ({ onSubmit, isLoading }: CreateWorkoutFormProp
         )}
       </div>
 
-      <Button type="submit" size="default" className="w-full" disabled={isLoading}>
+      <Button
+        type="submit"
+        size="default"
+        className="w-full"
+        disabled={isLoading}
+      >
         {isLoading ? "Creating..." : "Create Workout"}
       </Button>
     </form>

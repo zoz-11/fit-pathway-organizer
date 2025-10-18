@@ -4,11 +4,14 @@ import { z } from "npm:zod@3.23.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 // Helper function to refresh Google access token
-async function refreshGoogleAccessToken(refreshToken: string): Promise<{ accessToken: string; expiresIn: number; } | null> {
+async function refreshGoogleAccessToken(
+  refreshToken: string,
+): Promise<{ accessToken: string; expiresIn: number } | null> {
   const googleClientId = Deno.env.get("GOOGLE_CLIENT_ID");
   const googleClientSecret = Deno.env.get("GOOGLE_CLIENT_SECRET");
 
@@ -33,7 +36,10 @@ async function refreshGoogleAccessToken(refreshToken: string): Promise<{ accessT
   const data = await response.json();
 
   if (data.error) {
-    console.error("Error refreshing access token:", data.error_description || data.error);
+    console.error(
+      "Error refreshing access token:",
+      data.error_description || data.error,
+    );
     return null;
   }
 
@@ -62,81 +68,116 @@ serve(async (req) => {
   const supabaseClient = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-    { auth: { persistSession: false } }
+    { auth: { persistSession: false } },
   );
 
   try {
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseClient.auth.getUser();
 
     if (userError || !user) {
-      return new Response(JSON.stringify({ error: "User not authenticated." }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
+      return new Response(
+        JSON.stringify({ error: "User not authenticated." }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        },
+      );
     }
 
     const { data: profile, error: profileError } = await supabaseClient
-      .from('profiles')
-      .select('google_refresh_token')
-      .eq('id', user.id)
+      .from("profiles")
+      .select("google_refresh_token")
+      .eq("id", user.id)
       .single();
 
     if (profileError || !profile?.google_refresh_token) {
-      return new Response(JSON.stringify({ error: "Google refresh token not found for user." }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
+      return new Response(
+        JSON.stringify({ error: "Google refresh token not found for user." }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        },
+      );
     }
 
-    const { accessToken } = await refreshGoogleAccessToken(profile.google_refresh_token);
+    const { accessToken } = await refreshGoogleAccessToken(
+      profile.google_refresh_token,
+    );
 
     if (!accessToken) {
-      return new Response(JSON.stringify({ error: "Failed to obtain Google access token." }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
+      return new Response(
+        JSON.stringify({ error: "Failed to obtain Google access token." }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        },
+      );
     }
 
     const requestBody = await req.json();
     const parsedEvent = CreateCalendarEventSchema.safeParse(requestBody);
 
     if (!parsedEvent.success) {
-      return new Response(JSON.stringify({ error: 'Invalid event data', details: parsedEvent.error.issues }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
+      return new Response(
+        JSON.stringify({
+          error: "Invalid event data",
+          details: parsedEvent.error.issues,
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        },
+      );
     }
 
     const event = parsedEvent.data;
 
-    const calendarResponse = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+    const calendarResponse = await fetch(
+      "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(event),
       },
-      body: JSON.stringify(event),
-    });
+    );
 
     const calendarData = await calendarResponse.json();
 
     if (calendarData.error) {
       console.error("Error creating calendar event:", calendarData.error);
-      return new Response(JSON.stringify({ error: calendarData.error.message || "Failed to create calendar event." }), {
-        status: calendarData.error.code || 500,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
+      return new Response(
+        JSON.stringify({
+          error:
+            calendarData.error.message || "Failed to create calendar event.",
+        }),
+        {
+          status: calendarData.error.code || 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        },
+      );
     }
 
-    return new Response(JSON.stringify({ message: "Calendar event created successfully", event: calendarData }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
+    return new Response(
+      JSON.stringify({
+        message: "Calendar event created successfully",
+        event: calendarData,
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      },
+    );
   } catch (error) {
     console.error("Error in create-calendar-event function:", error);
     return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   }
 });

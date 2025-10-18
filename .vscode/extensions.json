@@ -1,6 +1,3 @@
 {
-    "recommendations": [
-        "coderabbit.coderabbit-vscode",
-        "kilocode.kilo-code"
-    ]
+  "recommendations": ["coderabbit.coderabbit-vscode", "kilocode.kilo-code"]
 }

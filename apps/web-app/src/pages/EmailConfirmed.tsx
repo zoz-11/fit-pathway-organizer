@@ -6,15 +6,20 @@ import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 const EmailConfirmed = () => {
   const navigate = useNavigate();
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "success" | "error">(
+    "loading",
+  );
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     const verifyEmail = async () => {
       try {
         // Check if user is authenticated after email confirmation
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+
         if (error) {
           setStatus("error");
           setMessage(error.message || "Failed to verify email");
@@ -23,8 +28,10 @@ const EmailConfirmed = () => {
 
         if (session) {
           setStatus("success");
-          setMessage("Email confirmed successfully! Redirecting to dashboard...");
-          
+          setMessage(
+            "Email confirmed successfully! Redirecting to dashboard...",
+          );
+
           // Redirect after 3 seconds
           setTimeout(() => {
             navigate("/");
@@ -60,7 +67,7 @@ const EmailConfirmed = () => {
               </p>
             </>
           )}
-          
+
           {status === "success" && (
             <>
               <CheckCircle2 className="h-16 w-16 text-green-600" />
@@ -69,7 +76,7 @@ const EmailConfirmed = () => {
               </p>
             </>
           )}
-          
+
           {status === "error" && (
             <>
               <XCircle className="h-16 w-16 text-destructive" />

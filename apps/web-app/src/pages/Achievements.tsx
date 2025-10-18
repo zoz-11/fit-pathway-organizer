@@ -11,7 +11,10 @@ const Achievements = () => {
   if (isLoadingUserAchievements) {
     return (
       <AppLayout>
-        <PageLayout title="My Achievements" description="Celebrate your fitness milestones!">
+        <PageLayout
+          title="My Achievements"
+          description="Celebrate your fitness milestones!"
+        >
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Skeleton className="h-32" />
             <Skeleton className="h-32" />
@@ -24,7 +27,10 @@ const Achievements = () => {
 
   return (
     <AppLayout>
-      <PageLayout title="My Achievements" description="Celebrate your fitness milestones!">
+      <PageLayout
+        title="My Achievements"
+        description="Celebrate your fitness milestones!"
+      >
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {userAchievements && userAchievements.length > 0 ? (
             userAchievements.map((ua) => (
@@ -36,8 +42,12 @@ const Achievements = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <p className="text-sm text-muted-foreground">{ua.achievement.description}</p>
-                  <p className="text-xs text-muted-foreground">Achieved on: {new Date(ua.awarded_at).toLocaleDateString()}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {ua.achievement.description}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Achieved on: {new Date(ua.awarded_at).toLocaleDateString()}
+                  </p>
                 </CardContent>
               </Card>
             ))

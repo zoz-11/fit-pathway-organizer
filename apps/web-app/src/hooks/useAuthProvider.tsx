@@ -1,13 +1,13 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
-import { useProfile } from './useProfile';
-import { useUserRole, UserRole } from './useUserRole';
+import React, { useState, useEffect, createContext, useContext } from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
+import { useProfile } from "./useProfile";
+import { useUserRole, UserRole } from "./useUserRole";
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/utils";
-import type { Database } from '@/integrations/supabase/types';
+import type { Database } from "@/integrations/supabase/types";
 
-type Profile = Database['public']['Tables']['profiles']['Row'];
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 interface AuthContextType {
   user: User | null;
@@ -24,7 +24,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
@@ -34,18 +34,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loadingInitial, setLoadingInitial] = useState(true);
 
-  const { data: profile, isLoading: isLoadingProfile, refetch } = useProfile(user?.id);
+  const {
+    data: profile,
+    isLoading: isLoadingProfile,
+    refetch,
+  } = useProfile(user?.id);
   const { data: role, isLoading: isLoadingRole } = useUserRole(user?.id);
 
   useEffect(() => {
     // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoadingInitial(false);
-      }
-    );
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoadingInitial(false);
+    });
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -63,10 +67,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (error) {
         throw error;
       }
-      window.location.href = '/auth';
+      window.location.href = "/auth";
     } catch (error) {
-      console.error('Error signing out:', error);
-      handleApiError(error, 'Failed to sign out.');
+      console.error("Error signing out:", error);
+      handleApiError(error, "Failed to sign out.");
     }
   };
 
@@ -77,7 +81,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const loading = loadingInitial || isLoadingProfile || isLoadingRole;
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, role, loading, signOut, refreshProfile }}>
+    <AuthContext.Provider
+      value={{ user, session, profile, role, loading, signOut, refreshProfile }}
+    >
       {children}
     </AuthContext.Provider>
   );

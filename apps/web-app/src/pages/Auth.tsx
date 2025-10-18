@@ -16,14 +16,16 @@ const Auth = () => {
   useEffect(() => {
     // Check for email confirmation in URL
     const type = searchParams.get("type");
-    
+
     if (type === "signup") {
       setConfirmationMessage("Email confirmed! You can now sign in.");
     }
 
     // Check if user is already logged in
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session) {
         navigate("/");
       }
@@ -32,7 +34,9 @@ const Auth = () => {
     checkAuth();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
         navigate("/");
       }

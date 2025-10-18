@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuthProvider';
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "./useAuthProvider";
 
 // Helper functions for date comparisons
 const isSameDay = (d1: Date, d2: Date) =>
@@ -18,16 +18,16 @@ export const useStreaks = () => {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: ['streaks', user?.id],
+    queryKey: ["streaks", user?.id],
     queryFn: async () => {
       if (!user) return { currentStreak: 0, longestStreak: 0 };
 
       const { data: completedWorkouts, error } = await supabase
-        .from('workout_schedules')
-        .select('updated_at')
-        .eq('athlete_id', user.id)
-        .eq('status', 'completed')
-        .order('updated_at', { ascending: false });
+        .from("workout_schedules")
+        .select("updated_at")
+        .eq("athlete_id", user.id)
+        .eq("status", "completed")
+        .order("updated_at", { ascending: false });
 
       if (error) throw error;
 
@@ -37,8 +37,8 @@ export const useStreaks = () => {
 
       // Filter out null updated_at and convert to Date objects
       const dates = completedWorkouts
-        .filter(w => w.updated_at !== null)
-        .map(w => new Date(w.updated_at))
+        .filter((w) => w.updated_at !== null)
+        .map((w) => new Date(w.updated_at))
         .sort((a, b) => b.getTime() - a.getTime()); // Sort descending
 
       let currentStreak = 0;
@@ -48,7 +48,11 @@ export const useStreaks = () => {
 
       for (const date of dates) {
         // Normalize date to start of day for accurate comparison
-        const normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const normalizedDate = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+        );
 
         if (lastProcessedDate === null) {
           // First date, start a streak
@@ -71,8 +75,15 @@ export const useStreaks = () => {
 
       // Final adjustment for current streak based on today's date
       if (dates.length > 0) {
-        const mostRecentWorkoutDate = new Date(dates[0].getFullYear(), dates[0].getMonth(), dates[0].getDate());
-        if (!isSameDay(mostRecentWorkoutDate, today) && !isYesterday(mostRecentWorkoutDate, today)) {
+        const mostRecentWorkoutDate = new Date(
+          dates[0].getFullYear(),
+          dates[0].getMonth(),
+          dates[0].getDate(),
+        );
+        if (
+          !isSameDay(mostRecentWorkoutDate, today) &&
+          !isYesterday(mostRecentWorkoutDate, today)
+        ) {
           currentStreak = 0;
         }
       }

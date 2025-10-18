@@ -14,7 +14,7 @@ const Progress = () => {
     { month: "Mar", workouts: 18, weight: 176 },
     { month: "Apr", workouts: 20, weight: 174 },
     { month: "May", workouts: 22, weight: 172 },
-    { month: "Jun", workouts: 25, weight: 170 }
+    { month: "Jun", workouts: 25, weight: 170 },
   ];
 
   const achievements = [
@@ -22,14 +22,16 @@ const Progress = () => {
     { title: "10 Workouts", date: "2024-02-10", icon: "💪" },
     { title: "Weight Goal", date: "2024-04-20", icon: "🎯" },
     { title: "Consistency King", date: "2024-05-15", icon: "👑" },
-    { title: "Month Streak", date: "2024-06-01", icon: "🔥" }
+    { title: "Month Streak", date: "2024-06-01", icon: "🔥" },
   ];
 
   return (
     <AppLayout>
       <div className="space-y-6 p-4 md:p-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Progress Tracking</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+            Progress Tracking
+          </h1>
           <p className="text-muted-foreground mt-1">
             Track your fitness journey and celebrate your achievements
           </p>
@@ -39,15 +41,19 @@ const Progress = () => {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Workouts</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Workouts
+              </CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">113</div>
-              <p className="text-xs text-muted-foreground">+12 from last month</p>
+              <p className="text-xs text-muted-foreground">
+                +12 from last month
+              </p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Weight Lost</CardTitle>
@@ -61,7 +67,9 @@ const Progress = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Current Streak
+              </CardTitle>
               <Target className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -72,7 +80,9 @@ const Progress = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Achievements</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Achievements
+              </CardTitle>
               <Award className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -83,10 +93,10 @@ const Progress = () => {
         </div>
 
         {/* Progress Chart */}
-        <ProgressCharts userId={user?.id || ''} />
+        <ProgressCharts userId={user?.id || ""} />
 
         {/* Advanced Analytics */}
-        <AdvancedAnalytics userId={user?.id || ''} />
+        <AdvancedAnalytics userId={user?.id || ""} />
 
         {/* Achievements */}
         <Card>
@@ -96,7 +106,10 @@ const Progress = () => {
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {achievements.map((achievement, index) => (
-                <div key={index} className="flex items-center space-x-3 p-3 border rounded-lg">
+                <div
+                  key={index}
+                  className="flex items-center space-x-3 p-3 border rounded-lg"
+                >
                   <div className="text-2xl">{achievement.icon}</div>
                   <div>
                     <p className="font-medium">{achievement.title}</p>
@@ -121,7 +134,10 @@ const Progress = () => {
                   <p className="text-sm text-gray-600">5 lbs to go</p>
                 </div>
                 <div className="w-32 bg-gray-200 dark:bg-gray-800 rounded-full h-2">
-                  <div className="bg-green-600 h-2 rounded-full" style={{ width: '70%' }}></div>
+                  <div
+                    className="bg-green-600 h-2 rounded-full"
+                    style={{ width: "70%" }}
+                  ></div>
                 </div>
               </div>
               <div className="flex items-center justify-between p-3 border rounded-lg">
@@ -130,7 +146,10 @@ const Progress = () => {
                   <p className="text-sm text-gray-600">15 days completed</p>
                 </div>
                 <div className="w-32 bg-gray-200 dark:bg-gray-800 rounded-full h-2">
-                  <div className="bg-blue-600 h-2 rounded-full" style={{ width: '50%' }}></div>
+                  <div
+                    className="bg-blue-600 h-2 rounded-full"
+                    style={{ width: "50%" }}
+                  ></div>
                 </div>
               </div>
             </div>

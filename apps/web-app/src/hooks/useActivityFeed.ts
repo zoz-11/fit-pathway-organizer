@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuthProvider';
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "./useAuthProvider";
 
 export interface ActivityItem {
   id: string;
-  type: 'workout_completed' | 'workout_assigned' | 'achievement' | 'info';
+  type: "workout_completed" | "workout_assigned" | "achievement" | "info";
   description: string;
   timestamp: string;
 }
@@ -13,61 +13,63 @@ export const useActivityFeed = () => {
   const { user, profile } = useAuth();
 
   return useQuery({
-    queryKey: ['activityFeed', user?.id, profile?.role],
+    queryKey: ["activityFeed", user?.id, profile?.role],
     queryFn: async (): Promise<ActivityItem[]> => {
       if (!user || !profile) return [];
 
       try {
-        if (profile.role === 'trainer') {
+        if (profile.role === "trainer") {
           // For trainers: show completed workouts from all their athletes
           const { data: completedWorkouts, error } = await supabase
-            .from('workout_schedules')
-            .select(`
+            .from("workout_schedules")
+            .select(
+              `
               id,
               title,
               updated_at,
               athlete:profiles!workout_schedules_athlete_id_fkey(full_name)
-            `)
-            .eq('trainer_id', user.id)
-            .eq('status', 'completed')
-            .order('updated_at', { ascending: false })
+            `,
+            )
+            .eq("trainer_id", user.id)
+            .eq("status", "completed")
+            .order("updated_at", { ascending: false })
             .limit(10);
 
           if (error) {
-            console.error('Error fetching trainer activity:', error);
+            console.error("Error fetching trainer activity:", error);
             return [];
           }
 
-          return (completedWorkouts || []).map(workout => ({
+          return (completedWorkouts || []).map((workout) => ({
             id: workout.id,
-            type: 'workout_completed' as const,
-            description: `${workout.athlete?.full_name || 'Athlete'} completed "${workout.title}"`,
+            type: "workout_completed" as const,
+            description: `${workout.athlete?.full_name || "Athlete"} completed "${workout.title}"`,
             timestamp: workout.updated_at || new Date().toISOString(),
           }));
         } else {
           // For athletes: show their own completed workouts and achievements
           const { data: completedWorkouts, error } = await supabase
-            .from('workout_schedules')
-            .select('id, title, updated_at')
-            .eq('athlete_id', user.id)
-            .eq('status', 'completed')
-            .order('updated_at', { ascending: false })
+            .from("workout_schedules")
+            .select("id, title, updated_at")
+            .eq("athlete_id", user.id)
+            .eq("status", "completed")
+            .order("updated_at", { ascending: false })
             .limit(10);
 
           if (error) {
-            console.error('Error fetching athlete activity:', error);
+            console.error("Error fetching athlete activity:", error);
             return [];
           }
 
-          return (completedWorkouts || []).map(workout => ({
+          return (completedWorkouts || []).map((workout) => ({
             id: workout.id,
-            type: 'workout_completed' as const,
+            type: "workout_completed" as const,
             description: `You completed "${workout.title}"`,
             timestamp: workout.updated_at || new Date().toISOString(),
           }));
         }
       } catch (error) {
-        console.error('Activity feed error:', error);
+        console.error("Activity feed error:", error);
         return [];
       }
     },

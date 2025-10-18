@@ -16,11 +16,11 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
     setLoading(true);
     try {
       const { error } = await supabase.auth.resend({
-        type: 'signup',
+        type: "signup",
         email,
         options: {
           emailRedirectTo: `${window.location.origin}/`,
-        }
+        },
       });
 
       if (error) {
@@ -28,7 +28,7 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
       } else {
         toast.success("Confirmation email sent! Check your inbox.");
         setCountdown(60); // 60 second cooldown
-        
+
         const timer = setInterval(() => {
           setCountdown((prev) => {
             if (prev <= 1) {
@@ -59,19 +59,18 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
           </p>
         </AlertDescription>
       </Alert>
-      
+
       <Button
         variant="outline"
         onClick={handleResend}
         disabled={loading || countdown > 0}
         className="w-full"
       >
-        {countdown > 0 
-          ? `Resend in ${countdown}s` 
-          : loading 
-          ? "Sending..." 
-          : "Resend Confirmation Email"
-        }
+        {countdown > 0
+          ? `Resend in ${countdown}s`
+          : loading
+            ? "Sending..."
+            : "Resend Confirmation Email"}
       </Button>
     </div>
   );

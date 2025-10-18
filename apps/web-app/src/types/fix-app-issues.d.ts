@@ -1,3 +1,3 @@
-declare module './fix-app-issues' {
+declare module "./fix-app-issues" {
   export const initializeClickabilityFixes: () => void;
 }

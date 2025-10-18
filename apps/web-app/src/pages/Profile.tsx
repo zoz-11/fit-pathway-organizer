@@ -2,7 +2,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Mail, Phone, MapPin, Calendar, Edit, Upload } from "lucide-react";
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  Edit,
+  Upload,
+} from "lucide-react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { useAuth } from "@/hooks/useAuthProvider";
@@ -18,15 +26,15 @@ const Profile = () => {
   const { profile, role, loading, refreshProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    location: '',
-    joinDate: '',
-    fitnessLevel: '',
-    goals: ''
+    fullName: "",
+    email: "",
+    phone: "",
+    location: "",
+    joinDate: "",
+    fitnessLevel: "",
+    goals: "",
   });
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -34,15 +42,17 @@ const Profile = () => {
   useEffect(() => {
     if (profile) {
       setFormData({
-        fullName: profile.full_name || '',
-        email: profile.email || '',
-        phone: profile.phone || '',
-        location: profile.location || '',
-        joinDate: profile.join_date ? new Date(profile.join_date).toISOString().split('T')[0] : '',
-        fitnessLevel: profile.fitness_level || '',
-        goals: profile.goals || ''
+        fullName: profile.full_name || "",
+        email: profile.email || "",
+        phone: profile.phone || "",
+        location: profile.location || "",
+        joinDate: profile.join_date
+          ? new Date(profile.join_date).toISOString().split("T")[0]
+          : "",
+        fitnessLevel: profile.fitness_level || "",
+        goals: profile.goals || "",
       });
-      
+
       if (profile.avatar_url) {
         setAvatarUrl(profile.avatar_url);
       }
@@ -51,9 +61,9 @@ const Profile = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [id]: value
+      [id]: value,
     }));
   };
 
@@ -62,43 +72,41 @@ const Profile = () => {
       if (!e.target.files || e.target.files.length === 0) {
         return;
       }
-      
+
       const file = e.target.files[0];
-      const fileExt = file.name.split('.').pop();
+      const fileExt = file.name.split(".").pop();
       const filePath = `${profile?.id}/avatar.${fileExt}`;
-      
+
       setUploading(true);
-      
+
       // Upload the file to Supabase storage
       const { error: uploadError } = await supabase.storage
-        .from('avatars')
+        .from("avatars")
         .upload(filePath, file, { upsert: true });
-        
+
       if (uploadError) throw uploadError;
-      
+
       // Get the public URL
-      const { data } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-        
+      const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
+
       // Update the avatar_url in the profiles table
       const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ 
+        .from("profiles")
+        .update({
           avatar_url: data.publicUrl,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', profile?.id);
-        
+        .eq("id", profile?.id);
+
       if (updateError) throw updateError;
-      
+
       setAvatarUrl(data.publicUrl);
-      toast.success('Profile picture updated');
-      
+      toast.success("Profile picture updated");
+
       // Refresh the profile data
       refreshProfile();
     } catch (error) {
-      handleApiError(error, 'Error uploading avatar');
+      handleApiError(error, "Error uploading avatar");
     } finally {
       setUploading(false);
     }
@@ -106,11 +114,11 @@ const Profile = () => {
 
   const handleSave = async () => {
     if (!profile) return;
-    
+
     setIsSaving(true);
     try {
       const { error } = await supabase
-        .from('profiles')
+        .from("profiles")
         .update({
           full_name: formData.fullName,
           email: formData.email,
@@ -118,18 +126,20 @@ const Profile = () => {
           location: formData.location,
           fitness_level: formData.fitnessLevel,
           goals: formData.goals,
-          join_date: formData.joinDate ? new Date(formData.joinDate).toISOString().split('T')[0] : null,
-          updated_at: new Date().toISOString()
+          join_date: formData.joinDate
+            ? new Date(formData.joinDate).toISOString().split("T")[0]
+            : null,
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', profile.id);
-      
+        .eq("id", profile.id);
+
       if (error) throw error;
-      
-      toast.success('Profile updated successfully!');
+
+      toast.success("Profile updated successfully!");
       setIsEditing(false);
       refreshProfile();
     } catch (error) {
-      handleApiError(error, 'Failed to update profile');
+      handleApiError(error, "Failed to update profile");
     } finally {
       setIsSaving(false);
     }
@@ -139,13 +149,15 @@ const Profile = () => {
     // Reset form data to original profile data
     if (profile) {
       setFormData({
-        fullName: profile.full_name || '',
-        email: profile.email || '',
-        phone: profile.phone || '',
-        location: profile.location || '',
-        joinDate: profile.join_date ? new Date(profile.join_date).toISOString().split('T')[0] : '',
-        fitnessLevel: profile.fitness_level || '',
-        goals: profile.goals || ''
+        fullName: profile.full_name || "",
+        email: profile.email || "",
+        phone: profile.phone || "",
+        location: profile.location || "",
+        joinDate: profile.join_date
+          ? new Date(profile.join_date).toISOString().split("T")[0]
+          : "",
+        fitnessLevel: profile.fitness_level || "",
+        goals: profile.goals || "",
       });
     }
     setIsEditing(false);
@@ -154,11 +166,14 @@ const Profile = () => {
   if (loading) {
     return (
       <AppLayout>
-        <PageLayout title={t('profile.title')} description={t('profile.description')}>
+        <PageLayout
+          title={t("profile.title")}
+          description={t("profile.description")}
+        >
           <div className="grid gap-6 lg:grid-cols-3">
             <Card className="lg:col-span-1">
               <CardHeader>
-                <CardTitle>{t('profile.picture_title')}</CardTitle>
+                <CardTitle>{t("profile.picture.title")}</CardTitle>
               </CardHeader>
               <CardContent className="text-center space-y-4">
                 <Skeleton className="w-32 h-32 rounded-full mx-auto" />
@@ -170,51 +185,7 @@ const Profile = () => {
             </Card>
             <Card className="lg:col-span-2">
               <CardHeader>
-                <CardTitle>{t('profile.personal_information')}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-16" />
-                    <Skeleton className="h-10 w-full" />
-                  </div>
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-16" />
-                    <Skeleton className="h-10 w-full" />
-                  </div>
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-16" />
-                    <Skeleton className="h-10 w-full" />
-                  </div>
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-16" />
-                    <Skeleton className="h-10 w-full" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </PageLayout>
-  if (loading) {
-    return (
-      <AppLayout>
-        <PageLayout title={t('profile.title')} description={t('profile.description')}>
-          <div className="grid gap-6 lg:grid-cols-3">
-            <Card className="lg:col-span-1">
-              <CardHeader>
-                <CardTitle>{t('profile.picture.title')}</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center space-y-4">
-                <Skeleton className="w-32 h-32 rounded-full mx-auto" />
-                <div>
-                  <Skeleton className="h-6 w-40 mx-auto" />
-                  <Skeleton className="h-4 w-20 mx-auto mt-2" />
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="lg:col-span-2">
-              <CardHeader>
-                <CardTitle>{t('profile.personal.title')}</CardTitle>
+                <CardTitle>{t("profile.personal.title")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
@@ -245,11 +216,14 @@ const Profile = () => {
 
   return (
     <AppLayout>
-      <PageLayout title={t('profile.title')} description={t('profile.description')}>
+      <PageLayout
+        title={t("profile.title")}
+        description={t("profile.description")}
+      >
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-1">
             <CardHeader>
-              <CardTitle>{t('profile.picture.title')}</CardTitle>
+              <CardTitle>{t("profile.picture.title")}</CardTitle>
             </CardHeader>
             <CardContent className="text-center space-y-4">
               <div className="relative w-32 h-32 mx-auto">
@@ -258,20 +232,23 @@ const Profile = () => {
                     <AvatarImage src={avatarUrl} alt={formData.fullName} />
                   ) : null}
                   <AvatarFallback className="text-3xl">
-                    {formData.fullName.split(' ').map(n => n[0]).join('')}
+                    {formData.fullName
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
                   </AvatarFallback>
                 </Avatar>
-                <label 
-                  htmlFor="avatar-upload" 
+                <label
+                  htmlFor="avatar-upload"
                   className="absolute bottom-0 right-0 p-1 bg-primary text-primary-foreground rounded-full cursor-pointer hover:bg-primary/90 transition-colors"
                   aria-label="Upload profile picture"
                 >
                   <Upload className="h-4 w-4" />
-                  <input 
-                    id="avatar-upload" 
-                    type="file" 
-                    accept="image/*" 
-                    className="hidden" 
+                  <input
+                    id="avatar-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
                     onChange={handleAvatarUpload}
                     disabled={uploading}
                     aria-label="Upload profile picture"
@@ -280,15 +257,17 @@ const Profile = () => {
               </div>
               <div>
                 <h3 className="text-xl font-semibold">{formData.fullName}</h3>
-                <p className="text-muted-foreground capitalize">{role || 'athlete'}</p>
+                <p className="text-muted-foreground capitalize">
+                  {role || "athlete"}
+                </p>
               </div>
             </CardContent>
           </Card>
           <Card className="lg:col-span-2">
             <CardHeader className="flex justify-between items-center">
               <CardTitle>Personal Information</CardTitle>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="default"
                 onClick={() => setIsEditing(!isEditing)}
                 aria-label="Edit profile information"
@@ -299,17 +278,19 @@ const Profile = () => {
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">{t('profile.personal.fullName')}</Label>
+                  <Label htmlFor="fullName">
+                    {t("profile.personal.fullName")}
+                  </Label>
                   <Input
                     id="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
                     disabled={!isEditing}
-                    aria-label={t('profile.personal.fullName')}
+                    aria-label={t("profile.personal.fullName")}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">{t('profile.personal.email')}</Label>
+                  <Label htmlFor="email">{t("profile.personal.email")}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -317,83 +298,90 @@ const Profile = () => {
                     onChange={handleInputChange}
                     disabled={!isEditing}
                     className={!isEditing ? "bg-muted" : ""}
-                    aria-label={t('profile.personal.email')}
+                    aria-label={t("profile.personal.email")}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">{t('profile.personal.phone')}</Label>
+                  <Label htmlFor="phone">{t("profile.personal.phone")}</Label>
                   <Input
                     id="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
                     disabled={!isEditing}
-                    aria-label={t('profile.personal.phone')}
+                    aria-label={t("profile.personal.phone")}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="location">{t('profile.personal.location')}</Label>
+                  <Label htmlFor="location">
+                    {t("profile.personal.location")}
+                  </Label>
                   <Input
                     id="location"
                     value={formData.location}
                     onChange={handleInputChange}
                     disabled={!isEditing}
-                    aria-label={t('profile.personal.location')}
+                    aria-label={t("profile.personal.location")}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="joinDate">{t('profile.personal.joinDate')}</Label>
+                  <Label htmlFor="joinDate">
+                    {t("profile.personal.joinDate")}
+                  </Label>
                   <Input
                     id="joinDate"
                     value={formData.joinDate}
                     disabled
-                    aria-label={t('profile.personal.joinDate')}
+                    aria-label={t("profile.personal.joinDate")}
                   />
-                </div> 
-                    id="goals" 
-                    <div className="space-y-2">
-                      <Label htmlFor="fitnessLevel">{t('profile.personal.fitnessLevel')}</Label>
-                      <Input
-                        id="fitnessLevel"
-                        value={formData.fitnessLevel}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        placeholder={t('profile.personal.fitnessLevel.placeholder')}
-                        aria-label={t('profile.personal.fitnessLevel')}
-                      />
-                    </div>
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="goals">{t('profile.personal.goals')}</Label>
-                      <Input
-                        id="goals"
-                        value={formData.goals}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                        placeholder={t('profile.personal.goals.placeholder')}
-                        aria-label={t('profile.personal.goals')}
-                      />
-                    </div>
-                  </div>
-                  {isEditing && (
-                    <div className="flex justify-end gap-3">
-                      <Button
-                        variant="outline"
-                        size="default"
-                        onClick={handleCancel}
-                        disabled={isSaving}
-                        aria-label={t('profile.edit.cancel')}
-                      >
-                        {t('profile.edit.cancel')}
-                      </Button>
-                      <Button
-                        size="default"
-                        onClick={handleSave}
-                        disabled={isSaving}
-                        aria-label={t('profile.edit.save')}
-                      >
-                        {isSaving ? t('profile.edit.saving') : t('profile.edit.save')}
-                      </Button>
-                    </div>
-                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fitnessLevel">
+                    {t("profile.personal.fitnessLevel")}
+                  </Label>
+                  <Input
+                    id="fitnessLevel"
+                    value={formData.fitnessLevel}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                    placeholder={t("profile.personal.fitnessLevel.placeholder")}
+                    aria-label={t("profile.personal.fitnessLevel")}
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="goals">{t("profile.personal.goals")}</Label>
+                  <Input
+                    id="goals"
+                    value={formData.goals}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                    placeholder={t("profile.personal.goals.placeholder")}
+                    aria-label={t("profile.personal.goals")}
+                  />
+                </div>
+              </div>
+              {isEditing && (
+                <div className="flex justify-end gap-3">
+                  <Button
+                    variant="outline"
+                    size="default"
+                    onClick={handleCancel}
+                    disabled={isSaving}
+                    aria-label={t("profile.edit.cancel")}
+                  >
+                    {t("profile.edit.cancel")}
+                  </Button>
+                  <Button
+                    size="default"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    aria-label={t("profile.edit.save")}
+                  >
+                    {isSaving
+                      ? t("profile.edit.saving")
+                      : t("profile.edit.save")}
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

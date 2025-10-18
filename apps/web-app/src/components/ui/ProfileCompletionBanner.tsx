@@ -10,18 +10,22 @@ export const ProfileCompletionBanner = () => {
 
   if (!profile) return null;
 
-  const isProfileIncomplete = !profile.phone || !profile.date_of_birth || !profile.emergency_contact_name || !profile.emergency_contact_phone;
+  const isProfileIncomplete =
+    !profile.phone ||
+    !profile.date_of_birth ||
+    !profile.emergency_contact_name ||
+    !profile.emergency_contact_phone;
 
   if (!isProfileIncomplete) return null;
 
   return (
     <Alert className="mb-4 bg-yellow-50 border-yellow-200">
-      <AlertTitle className="mb-2">{t('profile.completion.title')}</AlertTitle>
+      <AlertTitle className="mb-2">{t("profile.completion.title")}</AlertTitle>
       <AlertDescription className="mb-3">
-        {t('profile.completion.description')}
+        {t("profile.completion.description")}
       </AlertDescription>
       <Button asChild size="sm">
-        <Link to="/profile">{t('profile.completion.button')}</Link>
+        <Link to="/profile">{t("profile.completion.button")}</Link>
       </Button>
     </Alert>
   );

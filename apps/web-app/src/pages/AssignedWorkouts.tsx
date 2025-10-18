@@ -40,7 +40,10 @@ const AssignedWorkouts = () => {
   if (isLoading) {
     return (
       <AppLayout>
-        <PageLayout title="My Assigned Workouts" description="View and manage your assigned workout plans.">
+        <PageLayout
+          title="My Assigned Workouts"
+          description="View and manage your assigned workout plans."
+        >
           <div className="p-6">Loading your workout assignments...</div>
         </PageLayout>
       </AppLayout>
@@ -49,16 +52,14 @@ const AssignedWorkouts = () => {
 
   // Ensure assignments is an array before filtering
   const validAssignments: any[] = Array.isArray(assignments)
-    ? assignments.filter(
-        (a): a is any => a && typeof a === "object" && !!a.id
-      )
+    ? assignments.filter((a): a is any => a && typeof a === "object" && !!a.id)
     : [];
 
   const scheduledWorkouts = validAssignments.filter(
-    (a) => a.status === "scheduled" || a.status === "in_progress"
+    (a) => a.status === "scheduled" || a.status === "in_progress",
   );
   const completedWorkouts = validAssignments.filter(
-    (a) => a.status === "completed"
+    (a) => a.status === "completed",
   );
 
   const getMonthlyWorkoutData = () => {
@@ -66,7 +67,8 @@ const AssignedWorkouts = () => {
 
     completedWorkouts.forEach((assignment) => {
       // Use completed_at for accuracy, fall back to scheduled_date if needed
-      const completionDate = assignment.completed_at || assignment.scheduled_date;
+      const completionDate =
+        assignment.completed_at || assignment.scheduled_date;
       if (completionDate) {
         const date = new Date(completionDate);
         const monthYear = date.toLocaleString("default", {
@@ -87,7 +89,10 @@ const AssignedWorkouts = () => {
 
   return (
     <AppLayout>
-      <PageLayout title="My Assigned Workouts" description="View and manage your assigned workout plans.">
+      <PageLayout
+        title="My Assigned Workouts"
+        description="View and manage your assigned workout plans."
+      >
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -157,7 +162,7 @@ const AssignedWorkouts = () => {
                       <p className="text-sm text-muted-foreground">
                         Due:{" "}
                         {new Date(
-                          assignment.scheduled_date
+                          assignment.scheduled_date,
                         ).toLocaleDateString()}
                       </p>
                     </div>
@@ -196,7 +201,7 @@ const AssignedWorkouts = () => {
                         Completed on:{" "}
                         {assignment.completed_at
                           ? new Date(
-                              assignment.completed_at
+                              assignment.completed_at,
                             ).toLocaleDateString()
                           : "N/A"}
                       </p>

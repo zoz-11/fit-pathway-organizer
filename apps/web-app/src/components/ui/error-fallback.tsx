@@ -7,7 +7,10 @@ interface ErrorFallbackProps {
   resetErrorBoundary: () => void;
 }
 
-export const ErrorFallback = ({ error, resetErrorBoundary }: ErrorFallbackProps) => {
+export const ErrorFallback = ({
+  error,
+  resetErrorBoundary,
+}: ErrorFallbackProps) => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-lg">
@@ -32,7 +35,7 @@ export const ErrorFallback = ({ error, resetErrorBoundary }: ErrorFallbackProps)
             </details>
           </div>
           <div className="flex justify-center">
-            <Button 
+            <Button
               onClick={resetErrorBoundary}
               className="flex items-center gap-2"
             >

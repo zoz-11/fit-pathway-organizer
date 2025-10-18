@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,19 +19,28 @@ import { useConversations } from "@/hooks/useMessages";
 
 const Messages = () => {
   const { user, profile, loading: isLoadingAuth } = useAuth();
-  const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null);
-  const [selectedParticipantName, setSelectedParticipantName] = useState<string | null>(null);
+  const [selectedParticipantId, setSelectedParticipantId] = useState<
+    string | null
+  >(null);
+  const [selectedParticipantName, setSelectedParticipantName] = useState<
+    string | null
+  >(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   // Use the new hook for conversations
-  const { conversations, isLoading: isLoadingConversations } = useConversations();
+  const { conversations, isLoading: isLoadingConversations } =
+    useConversations();
 
-  const filteredConversations = conversations?.filter(c => 
-    c.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredConversations = conversations?.filter((c) =>
+    c.full_name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   useEffect(() => {
-    if (filteredConversations && filteredConversations.length > 0 && !selectedParticipantId) {
+    if (
+      filteredConversations &&
+      filteredConversations.length > 0 &&
+      !selectedParticipantId
+    ) {
       setSelectedParticipantId(filteredConversations[0].id);
       setSelectedParticipantName(filteredConversations[0].full_name);
     }
@@ -72,12 +87,12 @@ const Messages = () => {
                 <MessageCircle className="h-5 w-5" />
                 Messages
               </CardTitle>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="outline"
                 onClick={() => {
                   // TODO: Implement new chat functionality
-                  console.log('New chat clicked');
+                  console.log("New chat clicked");
                 }}
               >
                 <Users className="h-4 w-4 mr-2" />
@@ -105,7 +120,7 @@ const Messages = () => {
                       setSelectedParticipantName(conv.full_name);
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
+                      if (e.key === "Enter" || e.key === " ") {
                         setSelectedParticipantId(conv.id);
                         setSelectedParticipantName(conv.full_name);
                       }
@@ -113,21 +128,27 @@ const Messages = () => {
                     tabIndex={0}
                     role="button"
                     className={`p-4 cursor-pointer hover:bg-muted/50 transition-colors ${
-                      selectedParticipantId === conv.id ? 'bg-muted' : ''
+                      selectedParticipantId === conv.id ? "bg-muted" : ""
                     }`}
                   >
                     <div className="flex items-start gap-3">
                       <Avatar className="h-10 w-10">
                         <AvatarFallback>
-                          {conv.full_name.split(' ').map(n => n[0]).join('')}
+                          {conv.full_name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <h3 className="font-medium text-sm truncate">
                             {conv.full_name}
-                            {conv.role === 'trainer' && (
-                              <Badge variant="secondary" className="ml-2 text-xs">
+                            {conv.role === "trainer" && (
+                              <Badge
+                                variant="secondary"
+                                className="ml-2 text-xs"
+                              >
                                 Trainer
                               </Badge>
                             )}
@@ -143,7 +164,9 @@ const Messages = () => {
                   </div>
                 ))
               ) : (
-                <div className="p-4 text-muted-foreground text-center">No conversations found.</div>
+                <div className="p-4 text-muted-foreground text-center">
+                  No conversations found.
+                </div>
               )}
             </div>
           </CardContent>
@@ -151,10 +174,15 @@ const Messages = () => {
 
         <div className="md:col-span-2">
           {selectedParticipantId && selectedParticipantName ? (
-            <ChatWindow participantId={selectedParticipantId} participantName={selectedParticipantName} />
+            <ChatWindow
+              participantId={selectedParticipantId}
+              participantName={selectedParticipantName}
+            />
           ) : (
             <Card className="flex-1 flex items-center justify-center h-full">
-              <p className="text-muted-foreground">Select a conversation to start chatting.</p>
+              <p className="text-muted-foreground">
+                Select a conversation to start chatting.
+              </p>
             </Card>
           )}
         </div>

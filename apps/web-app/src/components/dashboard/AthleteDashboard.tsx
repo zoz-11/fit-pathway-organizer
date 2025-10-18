@@ -13,7 +13,12 @@ interface StatCardProps {
   description: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, description }) => {
+const StatCard: React.FC<StatCardProps> = ({
+  title,
+  value,
+  icon: Icon,
+  description,
+}) => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -34,7 +39,7 @@ export const AthleteDashboard: React.FC = () => {
   const { t } = useLanguage();
 
   const handleViewUpcomingWorkout = () => {
-    navigate('/schedule');
+    navigate("/schedule");
   };
 
   return (
@@ -42,64 +47,59 @@ export const AthleteDashboard: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{t('dashboard.athlete.title')}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+            {t("dashboard.athlete.title")}
+          </h1>
           <p className="text-muted-foreground mt-1">
-            {t('dashboard.athlete.welcome')} {profile?.full_name ?? t('dashboard.athlete.defaultName')}
+            {t("dashboard.athlete.welcome")}{" "}
+            {profile?.full_name ?? t("dashboard.athlete.defaultName")}
           </p>
         </div>
         <Button
           onClick={handleViewUpcomingWorkout}
           className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 w-full md:w-auto"
         >
-          {t('dashboard.athlete.viewWorkout')}
-        </Button>
-      </div>
-            Welcome back, {profile?.full_name ?? "Athlete"}! Here's your current progress.
-          </p>
-        </div>
-        <Button
-          onClick={handleViewUpcomingWorkout}
-          className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 w-full md:w-auto"
-        >
-          {t('dashboard.athlete.viewWorkout')}
+          {t("dashboard.athlete.viewWorkout")}
         </Button>
       </div>
 
       {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          title={t('dashboard.athlete.stats.workoutsCompleted')}
+          title={t("dashboard.athlete.stats.workoutsCompleted")}
           value="24"
           icon={Dumbbell}
-          description={t('dashboard.athlete.stats.workoutsDescription')}
+          description={t("dashboard.athlete.stats.workoutsDescription")}
         />
         <StatCard
-          title={t('dashboard.athlete.stats.nextWorkout')}
+          title={t("dashboard.athlete.stats.nextWorkout")}
           value="Leg Day"
           icon={Calendar}
-          description={t('dashboard.athlete.stats.nextWorkoutDescription')}
+          description={t("dashboard.athlete.stats.nextWorkoutDescription")}
         />
         <StatCard
-          title={t('dashboard.athlete.stats.currentProgram')}
+          title={t("dashboard.athlete.stats.currentProgram")}
           value="Hypertrophy"
           icon={PlayCircle}
-          description={t('dashboard.athlete.stats.programDescription')}
+          description={t("dashboard.athlete.stats.programDescription")}
         />
         <StatCard
-          title={t('dashboard.athlete.stats.achievements')}
+          title={t("dashboard.athlete.stats.achievements")}
           value="5"
           icon={Trophy}
-          description={t('dashboard.athlete.stats.achievementsDescription')}
+          description={t("dashboard.athlete.stats.achievementsDescription")}
         />
       </div>
 
       {/* Placeholder for future athlete-specific widgets */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('dashboard.athlete.progress.title')}</CardTitle>
+          <CardTitle>{t("dashboard.athlete.progress.title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">{t('dashboard.athlete.progress.description')}</p>
+          <p className="text-muted-foreground">
+            {t("dashboard.athlete.progress.description")}
+          </p>
         </CardContent>
       </Card>
     </div>
@@ -107,18 +107,3 @@ export const AthleteDashboard: React.FC = () => {
 };
 
 export default AthleteDashboard;
-
-      {/* Placeholder for future athlete-specific widgets */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Progress Overview</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Progress charts and analytics will appear here.</p>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
-export default AthleteDashboard; 

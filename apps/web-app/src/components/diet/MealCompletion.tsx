@@ -17,32 +17,39 @@ interface MealCompletionProps {
   color: string;
 }
 
-export const MealCompletion = ({ mealName, foods, icon: Icon, color }: MealCompletionProps) => {
+export const MealCompletion = ({
+  mealName,
+  foods,
+  icon: Icon,
+  color,
+}: MealCompletionProps) => {
   const [completed, setCompleted] = useState(false);
   const [servings, setServings] = useState<{ [key: string]: number }>({});
 
   const handleMealComplete = () => {
     setCompleted(!completed);
-    toast.success(completed ? `${mealName} marked as incomplete` : `${mealName} completed!`);
+    toast.success(
+      completed ? `${mealName} marked as incomplete` : `${mealName} completed!`,
+    );
   };
 
   const updateServing = (foodName: string, change: number) => {
     const current = servings[foodName] || 1;
     const newValue = Math.max(0, current + change);
-    setServings(prev => ({ ...prev, [foodName]: newValue }));
+    setServings((prev) => ({ ...prev, [foodName]: newValue }));
   };
 
   const getTotalCalories = () => {
     return foods.reduce((total, food) => {
       const serving = servings[food.name] || 1;
-      return total + (food.calories * serving);
+      return total + food.calories * serving;
     }, 0);
   };
 
   const getTotalProtein = () => {
     return foods.reduce((total, food) => {
       const serving = servings[food.name] || 1;
-      return total + (parseInt(food.protein) * serving);
+      return total + parseInt(food.protein) * serving;
     }, 0);
   };
 
@@ -55,7 +62,7 @@ export const MealCompletion = ({ mealName, foods, icon: Icon, color }: MealCompl
             <CardTitle className="text-xl">{mealName}</CardTitle>
             {completed && <Check className="h-5 w-5 text-green-600" />}
           </div>
-          <Button 
+          <Button
             size="sm"
             variant={completed ? "secondary" : "default"}
             onClick={handleMealComplete}
@@ -69,11 +76,15 @@ export const MealCompletion = ({ mealName, foods, icon: Icon, color }: MealCompl
           {foods.map((food, foodIndex) => {
             const serving = servings[food.name] || 1;
             return (
-              <div key={foodIndex} className="flex items-center justify-between p-3 bg-white dark:bg-card rounded-lg">
+              <div
+                key={foodIndex}
+                className="flex items-center justify-between p-3 bg-white dark:bg-card rounded-lg"
+              >
                 <div className="flex-1">
                   <p className="font-medium">{food.name}</p>
                   <p className="text-sm text-gray-600">
-                    {food.calories * serving} cal • {parseInt(food.protein) * serving}g protein
+                    {food.calories * serving} cal •{" "}
+                    {parseInt(food.protein) * serving}g protein
                   </p>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -85,7 +96,9 @@ export const MealCompletion = ({ mealName, foods, icon: Icon, color }: MealCompl
                   >
                     <Minus className="h-3 w-3" />
                   </Button>
-                  <span className="text-sm font-medium min-w-8 text-center">{serving}x</span>
+                  <span className="text-sm font-medium min-w-8 text-center">
+                    {serving}x
+                  </span>
                   <Button
                     size="sm"
                     variant="outline"

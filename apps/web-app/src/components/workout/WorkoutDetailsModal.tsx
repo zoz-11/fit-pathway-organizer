@@ -1,4 +1,9 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Play, Clock, Target, Flame } from "lucide-react";
@@ -20,7 +25,11 @@ interface WorkoutDetailsModalProps {
   onStartWorkout: () => void;
 }
 
-export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: WorkoutDetailsModalProps) => {
+export const WorkoutDetailsModal = ({
+  isOpen,
+  onClose,
+  onStartWorkout,
+}: WorkoutDetailsModalProps) => {
   const exercises: Exercise[] = [
     {
       name: "Push-ups",
@@ -28,7 +37,8 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
       reps: "10-15",
       thumbnailUrl: "https://example.com/pushup_thumbnail.jpg",
       videoUrl: "https://example.com/pushup_demo.mp4",
-      description: "Classic bodyweight exercise targeting chest, shoulders, and triceps"
+      description:
+        "Classic bodyweight exercise targeting chest, shoulders, and triceps",
     },
     {
       name: "Pull-ups",
@@ -36,7 +46,7 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
       reps: "5-10",
       thumbnailUrl: "https://example.com/pullup_thumbnail.jpg",
       videoUrl: "https://example.com/pullup_demo.mp4",
-      description: "Upper body strength exercise focusing on back and biceps"
+      description: "Upper body strength exercise focusing on back and biceps",
     },
     {
       name: "Bench Press",
@@ -44,7 +54,8 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
       reps: "8-12",
       thumbnailUrl: "https://example.com/benchpress_thumbnail.jpg",
       videoUrl: "https://example.com/benchpress_demo.mp4",
-      description: "Compound exercise for chest, shoulders, and triceps development"
+      description:
+        "Compound exercise for chest, shoulders, and triceps development",
     },
     {
       name: "Shoulder Press",
@@ -52,7 +63,7 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
       reps: "10-12",
       thumbnailUrl: "https://example.com/shoulderpress_thumbnail.jpg",
       videoUrl: "https://example.com/shoulderpress_demo.mp4",
-      description: "Overhead pressing movement for shoulder and arm strength"
+      description: "Overhead pressing movement for shoulder and arm strength",
     },
     {
       name: "Bicep Curls",
@@ -60,7 +71,7 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
       reps: "12-15",
       thumbnailUrl: "https://example.com/bicepcurl_thumbnail.jpg",
       videoUrl: "https://example.com/bicepcurl_demo.mp4",
-      description: "Isolation exercise targeting the biceps muscles"
+      description: "Isolation exercise targeting the biceps muscles",
     },
     {
       name: "Tricep Dips",
@@ -68,8 +79,8 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
       reps: "8-12",
       thumbnailUrl: "https://example.com/tricepdip_thumbnail.jpg",
       videoUrl: "https://example.com/tricepdip_demo.mp4",
-      description: "Bodyweight exercise focusing on triceps and chest"
-    }
+      description: "Bodyweight exercise focusing on triceps and chest",
+    },
   ];
 
   const handleStartWorkout = (e: React.MouseEvent) => {
@@ -109,9 +120,11 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-white dark:bg-card">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-gray-900">Upper Body Strength Workout</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-gray-900">
+            Upper Body Strength Workout
+          </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           {/* Workout Summary */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -141,21 +154,32 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">Exercises</h3>
             {exercises.map((exercise) => (
-              <div key={exercise.name} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+              <div
+                key={exercise.name}
+                className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+              >
                 <div className="flex items-start space-x-4">
                   <div className="text-3xl flex-shrink-0">💪</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-lg text-gray-900 truncate">{exercise.name}</h4>
+                      <h4 className="font-semibold text-lg text-gray-900 truncate">
+                        {exercise.name}
+                      </h4>
                       <div className="flex space-x-2 flex-shrink-0">
-                        <Badge variant="secondary" className="text-xs">{exercise.sets} sets</Badge>
-                        <Badge variant="outline" className="text-xs">{exercise.reps} reps</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          {exercise.sets} sets
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {exercise.reps} reps
+                        </Badge>
                       </div>
                     </div>
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{exercise.description}</p>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                      {exercise.description}
+                    </p>
                     <div className="flex space-x-2">
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         variant="outline"
                         onClick={(e) => handleWatchDemo(exercise, e)}
                         className="hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-900"
@@ -172,15 +196,15 @@ export const WorkoutDetailsModal = ({ isOpen, onClose, onStartWorkout }: Workout
 
           {/* Action Buttons */}
           <div className="flex space-x-3 pt-4 border-t border-gray-200">
-            <Button 
-              onClick={handleStartWorkout} 
+            <Button
+              onClick={handleStartWorkout}
               className="flex-1 bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white"
             >
               <Play className="h-4 w-4 mr-2" />
               Start Workout
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="default"
               onClick={handleCloseButton}
               className="hover:bg-gray-50"

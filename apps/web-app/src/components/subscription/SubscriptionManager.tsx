@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,53 +13,54 @@ interface SubscriptionStatus {
 }
 
 export const SubscriptionManager = () => {
-  const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus>({
-    subscribed: false,
-    plan: null
-  });
+  const [subscriptionStatus, setSubscriptionStatus] =
+    useState<SubscriptionStatus>({
+      subscribed: false,
+      plan: null,
+    });
   const [loading, setLoading] = useState(true);
   const [upgrading, setUpgrading] = useState<string | null>(null);
 
   const plans = [
     {
-      id: 'basic',
-      name: 'Basic',
-      price: '$9.99',
+      id: "basic",
+      name: "Basic",
+      price: "$9.99",
       icon: Check,
       features: [
-        'Basic workout tracking',
-        'Exercise library access',
-        'Progress monitoring',
-        'Email support'
-      ]
+        "Basic workout tracking",
+        "Exercise library access",
+        "Progress monitoring",
+        "Email support",
+      ],
     },
     {
-      id: 'premium',
-      name: 'Premium',
-      price: '$19.99',
+      id: "premium",
+      name: "Premium",
+      price: "$19.99",
       icon: Star,
       popular: true,
       features: [
-        'Everything in Basic',
-        'AI fitness coach',
-        'Custom workout plans',
-        'Nutrition tracking',
-        'Priority support'
-      ]
+        "Everything in Basic",
+        "AI fitness coach",
+        "Custom workout plans",
+        "Nutrition tracking",
+        "Priority support",
+      ],
     },
     {
-      id: 'enterprise',
-      name: 'Enterprise',
-      price: '$49.99',
+      id: "enterprise",
+      name: "Enterprise",
+      price: "$49.99",
       icon: Crown,
       features: [
-        'Everything in Premium',
-        'Unlimited trainer accounts',
-        'Advanced analytics',
-        'API access',
-        'Dedicated support'
-      ]
-    }
+        "Everything in Premium",
+        "Unlimited trainer accounts",
+        "Advanced analytics",
+        "API access",
+        "Dedicated support",
+      ],
+    },
   ];
 
   useEffect(() => {
@@ -68,15 +69,16 @@ export const SubscriptionManager = () => {
 
   const checkSubscriptionStatus = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('check-subscription');
+      const { data, error } =
+        await supabase.functions.invoke("check-subscription");
       if (error) {
         handleApiError(error, `Failed to check subscription status`);
         throw error;
       }
-      
+
       setSubscriptionStatus(data);
     } catch (error) {
-      console.error('Error checking subscription:', error);
+      console.error("Error checking subscription:", error);
       handleApiError(error, `Failed to check subscription status`);
     } finally {
       setLoading(false);
@@ -85,11 +87,14 @@ export const SubscriptionManager = () => {
 
   const handleUpgrade = async (planType: string) => {
     setUpgrading(planType);
-    
+
     try {
-      const { data, error } = await supabase.functions.invoke('create-subscription', {
-        body: { planType }
-      });
+      const { data, error } = await supabase.functions.invoke(
+        "create-subscription",
+        {
+          body: { planType },
+        },
+      );
 
       if (error) {
         handleApiError(error, `Failed to create subscription`);
@@ -97,9 +102,9 @@ export const SubscriptionManager = () => {
       }
 
       // Open Stripe checkout in new tab
-      window.open(data.url, '_blank');
+      window.open(data.url, "_blank");
     } catch (error) {
-      console.error('Error creating subscription:', error);
+      console.error("Error creating subscription:", error);
       handleApiError(error, `Failed to start subscription process`);
     } finally {
       setUpgrading(null);
@@ -130,7 +135,8 @@ export const SubscriptionManager = () => {
             <div className="flex items-center">
               <Check className="h-4 w-4 text-green-600 mr-2 flex-shrink-0" />
               <span className="text-green-800 text-sm">
-                You're currently subscribed to the <strong>{subscriptionStatus.plan}</strong> plan
+                You're currently subscribed to the{" "}
+                <strong>{subscriptionStatus.plan}</strong> plan
               </span>
             </div>
           </div>
@@ -140,15 +146,20 @@ export const SubscriptionManager = () => {
           {plans.map((plan) => {
             const Icon = plan.icon;
             const isCurrentPlan = subscriptionStatus.plan === plan.id;
-            
+
             return (
-              <Card key={plan.id} className={`relative w-full ${plan.popular ? 'ring-2 ring-blue-500' : ''}`}>
+              <Card
+                key={plan.id}
+                className={`relative w-full ${plan.popular ? "ring-2 ring-blue-500" : ""}`}
+              >
                 {plan.popular && (
                   <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-blue-600 text-white text-xs">Most Popular</Badge>
+                    <Badge className="bg-blue-600 text-white text-xs">
+                      Most Popular
+                    </Badge>
                   </div>
                 )}
-                
+
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-3">
@@ -174,19 +185,23 @@ export const SubscriptionManager = () => {
                           <span className="text-xs">Loading</span>
                         </div>
                       ) : isCurrentPlan ? (
-                        'Current'
-                      ) : (() => {
-                        const buttonText = subscriptionStatus.subscribed ? 'Upgrade' : 'Subscribe';
-                        return (
-                          <>
-                            <CreditCard className="h-3 w-3 mr-1" />
-                            {buttonText}
-                          </>
-                        );
-                      })()}
+                        "Current"
+                      ) : (
+                        (() => {
+                          const buttonText = subscriptionStatus.subscribed
+                            ? "Upgrade"
+                            : "Subscribe";
+                          return (
+                            <>
+                              <CreditCard className="h-3 w-3 mr-1" />
+                              {buttonText}
+                            </>
+                          );
+                        })()
+                      )}
                     </Button>
                   </div>
-                  
+
                   <ul className="space-y-1 text-sm">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-start">

@@ -22,8 +22,7 @@ const AssignedWorkoutsTrainer = () => {
   // Filter out invalid or malformed assignment objects and assert the type
   const validAssignments = Array.isArray(assignments)
     ? assignments.filter(
-        (a): a is any =>
-          a && typeof a === "object" && !!a.id && !!a.status,
+        (a): a is any => a && typeof a === "object" && !!a.id && !!a.status,
       )
     : [];
 
@@ -43,7 +42,10 @@ const AssignedWorkoutsTrainer = () => {
 
   return (
     <AppLayout>
-      <PageLayout title="Assigned Workouts" description="Overview of all assigned workout plans for your athletes.">
+      <PageLayout
+        title="Assigned Workouts"
+        description="Overview of all assigned workout plans for your athletes."
+      >
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {isLoading ? (
             renderSkeletons()

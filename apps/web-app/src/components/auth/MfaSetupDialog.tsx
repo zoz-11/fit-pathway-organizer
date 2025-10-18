@@ -38,7 +38,10 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
 
   const handleVerify = async () => {
     if (!factorId || !code) {
-      handleApiError(new Error("Factor ID or code is missing."), "Factor ID or code is missing.");
+      handleApiError(
+        new Error("Factor ID or code is missing."),
+        "Factor ID or code is missing.",
+      );
       return;
     }
 
@@ -71,7 +74,9 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
         <AlertDialogHeader>
           <AlertDialogTitle>Set up Two-Factor Authentication</AlertDialogTitle>
           <AlertDialogDescription>
-            Scan the QR code with your authenticator app (e.g., Google Authenticator, Authy) or manually enter the secret key. Then, enter the 6-digit code from the app to verify.
+            Scan the QR code with your authenticator app (e.g., Google
+            Authenticator, Authy) or manually enter the secret key. Then, enter
+            the 6-digit code from the app to verify.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="space-y-4">
@@ -83,7 +88,13 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
           {secret && (
             <div className="text-center">
               <Label htmlFor="secret-key">Secret Key:</Label>
-              <Input id="secret-key" type="text" value={secret} readOnly className="text-center font-mono" />
+              <Input
+                id="secret-key"
+                type="text"
+                value={secret}
+                readOnly
+                className="text-center font-mono"
+              />
             </div>
           )}
           <div className="space-y-2">
@@ -101,7 +112,11 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
-          <Button size="default" onClick={handleVerify} disabled={loading || code.length !== 6}>
+          <Button
+            size="default"
+            onClick={handleVerify}
+            disabled={loading || code.length !== 6}
+          >
             {loading ? "Verifying..." : "Verify Code"}
           </Button>
         </AlertDialogFooter>

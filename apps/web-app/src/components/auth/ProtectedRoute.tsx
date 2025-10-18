@@ -1,13 +1,15 @@
-
-import { useAuth } from '@/hooks/useAuthProvider';
-import { Navigate } from 'react-router-dom';
+import { useAuth } from "@/hooks/useAuthProvider";
+import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: 'trainer' | 'athlete';
+  requiredRole?: "trainer" | "athlete";
 }
 
-export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
+export const ProtectedRoute = ({
+  children,
+  requiredRole,
+}: ProtectedRouteProps) => {
   const { user, profile, loading } = useAuth();
 
   // Show a loading spinner while authentication status is being determined
@@ -32,8 +34,12 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Access Denied</h1>
-          <p className="text-gray-600">You don't have permission to access this page.</p>
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+            Access Denied
+          </h1>
+          <p className="text-gray-600">
+            You don't have permission to access this page.
+          </p>
         </div>
       </div>
     );

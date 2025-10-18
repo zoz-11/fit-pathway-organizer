@@ -19,7 +19,10 @@ interface RemoveAthleteDialogProps {
   athleteName: string;
 }
 
-export const RemoveAthleteDialog = ({ athleteId, athleteName }: RemoveAthleteDialogProps) => {
+export const RemoveAthleteDialog = ({
+  athleteId,
+  athleteName,
+}: RemoveAthleteDialogProps) => {
   const { t } = useLanguage();
   const { removeAthlete } = useTrainerAthletes();
 
@@ -28,20 +31,22 @@ export const RemoveAthleteDialog = ({ athleteId, athleteName }: RemoveAthleteDia
       <AlertDialogTrigger asChild>
         <span className="flex items-center text-red-600 cursor-pointer">
           <Trash2 className="mr-2 h-4 w-4" />
-          {t('removeAthleteDialog.trigger')}
+          {t("removeAthleteDialog.trigger")}
         </span>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t('removeAthleteDialog.title')}</AlertDialogTitle>
+          <AlertDialogTitle>{t("removeAthleteDialog.title")}</AlertDialogTitle>
           <AlertDialogDescription>
-            {t('removeAthleteDialog.description', { athleteName })}
+            {t("removeAthleteDialog.description", { athleteName })}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{t('removeAthleteDialog.cancel')}</AlertDialogCancel>
+          <AlertDialogCancel>
+            {t("removeAthleteDialog.cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction onClick={() => removeAthlete.mutate(athleteId)}>
-            {t('removeAthleteDialog.confirm')}
+            {t("removeAthleteDialog.confirm")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

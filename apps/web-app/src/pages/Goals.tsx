@@ -4,7 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,11 +22,11 @@ import { format } from "date-fns";
 interface Goal {
   id: string;
   user_id: string;
-  goal_type: 'weight' | 'strength' | 'cardio' | 'nutrition' | 'other';
+  goal_type: "weight" | "strength" | "cardio" | "nutrition" | "other";
   target_value: number | null;
   target_date: string | null;
   description: string;
-  status: 'active' | 'completed' | 'abandoned';
+  status: "active" | "completed" | "abandoned";
   created_at: string;
   updated_at: string;
 }
@@ -28,17 +34,21 @@ interface Goal {
 const Goals = () => {
   const queryClient = useQueryClient();
   const [newGoal, setNewGoal] = useState<Partial<Goal>>({
-    goal_type: 'other',
-    description: '',
-    status: 'active',
+    goal_type: "other",
+    description: "",
+    status: "active",
   });
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
 
-  const { data: goals, isLoading, error } = useQuery<Goal[]>({ 
-    queryKey: ['goals'],
+  const {
+    data: goals,
+    isLoading,
+    error,
+  } = useQuery<Goal[]>({
+    queryKey: ["goals"],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('manage-goals', {
-        body: { action: 'fetch' }
+      const { data, error } = await supabase.functions.invoke("manage-goals", {
+        body: { action: "fetch" },
       });
       if (error) throw error;
       return data;
@@ -47,15 +57,15 @@ const Goals = () => {
 
   const createGoalMutation = useMutation({
     mutationFn: async (goalData: Partial<Goal>) => {
-      const { data, error } = await supabase.functions.invoke('manage-goals', {
-        body: { action: 'create', goal: goalData }
+      const { data, error } = await supabase.functions.invoke("manage-goals", {
+        body: { action: "create", goal: goalData },
       });
       if (error) throw error;
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['goals'] });
-      setNewGoal({ goal_type: 'other', description: '', status: 'active' });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
+      setNewGoal({ goal_type: "other", description: "", status: "active" });
       toast.success("Goal created successfully!");
     },
     onError: (err) => {
@@ -66,14 +76,14 @@ const Goals = () => {
   const updateGoalMutation = useMutation({
     mutationFn: async (goalData: Partial<Goal>) => {
       if (!goalData.id) throw new Error("Goal ID is required for update.");
-      const { data, error } = await supabase.functions.invoke('manage-goals', {
-        body: { action: 'update', goalId: goalData.id, goal: goalData }
+      const { data, error } = await supabase.functions.invoke("manage-goals", {
+        body: { action: "update", goalId: goalData.id, goal: goalData },
       });
       if (error) throw error;
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['goals'] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
       setEditingGoal(null);
       toast.success("Goal updated successfully!");
     },
@@ -84,14 +94,14 @@ const Goals = () => {
 
   const deleteGoalMutation = useMutation({
     mutationFn: async (goalId: string) => {
-      const { data, error } = await supabase.functions.invoke('manage-goals', {
-        body: { action: 'delete', goalId }
+      const { data, error } = await supabase.functions.invoke("manage-goals", {
+        body: { action: "delete", goalId },
       });
       if (error) throw error;
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['goals'] });
+      queryClient.invalidateQueries({ queryKey: ["goals"] });
       toast.success("Goal deleted successfully!");
     },
     onError: (err) => {
@@ -109,8 +119,13 @@ const Goals = () => {
   };
 
   const handleEditClick = (goal: Goal) => {
-    setEditingGoal({ ...goal, target_date: goal.target_date ? format(new Date(goal.target_date), 'yyyy-MM-dd') : null });
-    setNewGoal({ goal_type: 'other', description: '', status: 'active' }); // Clear new goal form
+    setEditingGoal({
+      ...goal,
+      target_date: goal.target_date
+        ? format(new Date(goal.target_date), "yyyy-MM-dd")
+        : null,
+    });
+    setNewGoal({ goal_type: "other", description: "", status: "active" }); // Clear new goal form
   };
 
   const handleCancelEdit = () => {
@@ -121,7 +136,9 @@ const Goals = () => {
     return (
       <AppLayout>
         <div className="p-4 md:p-6">
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">Goals</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
+            Goals
+          </h1>
           <p>Loading goals...</p>
         </div>
       </AppLayout>
@@ -132,7 +149,9 @@ const Goals = () => {
     return (
       <AppLayout>
         <div className="p-4 md:p-6">
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">Goals</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
+            Goals
+          </h1>
           <p className="text-red-500">Error loading goals: {error.message}</p>
         </div>
       </AppLayout>
@@ -143,7 +162,9 @@ const Goals = () => {
     <AppLayout>
       <div className="space-y-6 p-4 md:p-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Goals</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+            Goals
+          </h1>
           <p className="text-muted-foreground mt-1">
             Set and track your fitness and nutrition goals.
           </p>
@@ -160,7 +181,7 @@ const Goals = () => {
                 <Label htmlFor="goal-type">Goal Type</Label>
                 <Select
                   value={editingGoal?.goal_type || newGoal.goal_type}
-                  onValueChange={(value: Goal['goal_type']) =>
+                  onValueChange={(value: Goal["goal_type"]) =>
                     editingGoal
                       ? setEditingGoal({ ...editingGoal, goal_type: value })
                       : setNewGoal({ ...newGoal, goal_type: value })
@@ -186,7 +207,10 @@ const Goals = () => {
                   value={editingGoal?.description || newGoal.description}
                   onChange={(e) =>
                     editingGoal
-                      ? setEditingGoal({ ...editingGoal, description: e.target.value })
+                      ? setEditingGoal({
+                          ...editingGoal,
+                          description: e.target.value,
+                        })
                       : setNewGoal({ ...newGoal, description: e.target.value })
                   }
                   required
@@ -199,11 +223,19 @@ const Goals = () => {
                   type="number"
                   step="0.01"
                   placeholder="e.g., 150 (lbs), 200 (lbs), 26.2 (miles)"
-                  value={editingGoal?.target_value || newGoal.target_value || ''}
+                  value={
+                    editingGoal?.target_value || newGoal.target_value || ""
+                  }
                   onChange={(e) =>
                     editingGoal
-                      ? setEditingGoal({ ...editingGoal, target_value: parseFloat(e.target.value) || null })
-                      : setNewGoal({ ...newGoal, target_value: parseFloat(e.target.value) || null })
+                      ? setEditingGoal({
+                          ...editingGoal,
+                          target_value: parseFloat(e.target.value) || null,
+                        })
+                      : setNewGoal({
+                          ...newGoal,
+                          target_value: parseFloat(e.target.value) || null,
+                        })
                   }
                 />
               </div>
@@ -212,11 +244,17 @@ const Goals = () => {
                 <Input
                   id="target-date"
                   type="date"
-                  value={editingGoal?.target_date || newGoal.target_date || ''}
+                  value={editingGoal?.target_date || newGoal.target_date || ""}
                   onChange={(e) =>
                     editingGoal
-                      ? setEditingGoal({ ...editingGoal, target_date: e.target.value || null })
-                      : setNewGoal({ ...newGoal, target_date: e.target.value || null })
+                      ? setEditingGoal({
+                          ...editingGoal,
+                          target_date: e.target.value || null,
+                        })
+                      : setNewGoal({
+                          ...newGoal,
+                          target_date: e.target.value || null,
+                        })
                   }
                 />
               </div>
@@ -225,7 +263,7 @@ const Goals = () => {
                   <Label htmlFor="status">Status</Label>
                   <Select
                     value={editingGoal.status}
-                    onValueChange={(value: Goal['status']) =>
+                    onValueChange={(value: Goal["status"]) =>
                       setEditingGoal({ ...editingGoal, status: value })
                     }
                   >
@@ -241,17 +279,21 @@ const Goals = () => {
                 </div>
               )}
               <div className="flex space-x-2">
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   size="default"
-                  disabled={createGoalMutation.isPending || updateGoalMutation.isPending}
+                  disabled={
+                    createGoalMutation.isPending || updateGoalMutation.isPending
+                  }
                 >
-                  {createGoalMutation.isPending || updateGoalMutation.isPending ? 'Saving...' : 'Save Goal'}
+                  {createGoalMutation.isPending || updateGoalMutation.isPending
+                    ? "Saving..."
+                    : "Save Goal"}
                 </Button>
                 {editingGoal && (
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type="button"
+                    variant="outline"
                     size="default"
                     onClick={handleCancelEdit}
                   >
@@ -272,26 +314,49 @@ const Goals = () => {
             {goals && goals.length > 0 ? (
               <div className="space-y-4">
                 {goals.map((goal) => (
-                  <div key={goal.id} className="flex items-center justify-between p-3 rounded-lg border">
+                  <div
+                    key={goal.id}
+                    className="flex items-center justify-between p-3 rounded-lg border"
+                  >
                     <div>
                       <p className="font-medium">{goal.description}</p>
                       <p className="text-sm text-muted-foreground">
-                        Type: {goal.goal_type} {goal.target_value ? `| Target: ${goal.target_value}` : ''}
-                        {goal.target_date ? ` | By: ${format(new Date(goal.target_date), 'PPP')}` : ''}
+                        Type: {goal.goal_type}{" "}
+                        {goal.target_value
+                          ? `| Target: ${goal.target_value}`
+                          : ""}
+                        {goal.target_date
+                          ? ` | By: ${format(new Date(goal.target_date), "PPP")}`
+                          : ""}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Status: <span className={`font-semibold ${
-                          goal.status === 'active' ? 'text-blue-600' :
-                          goal.status === 'completed' ? 'text-green-600' :
-                          'text-red-600'
-                        }`}>{goal.status}</span>
+                        Status:{" "}
+                        <span
+                          className={`font-semibold ${
+                            goal.status === "active"
+                              ? "text-blue-600"
+                              : goal.status === "completed"
+                                ? "text-green-600"
+                                : "text-red-600"
+                          }`}
+                        >
+                          {goal.status}
+                        </span>
                       </p>
                     </div>
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" onClick={() => handleEditClick(goal)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEditClick(goal)}
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="destructive" size="sm" onClick={() => deleteGoalMutation.mutate(goal.id)}>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => deleteGoalMutation.mutate(goal.id)}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>

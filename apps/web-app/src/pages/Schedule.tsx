@@ -29,7 +29,7 @@ const Schedule: React.FC = () => {
   const handleAddToCalendar = async (workout: Workout) => {
     if (!user) {
       toast.error("Authentication Required", {
-        description: "Please log in to connect your Google Calendar."
+        description: "Please log in to connect your Google Calendar.",
       });
       return;
     }
@@ -40,7 +40,8 @@ const Schedule: React.FC = () => {
       const redirectUri = process.env.VITE_GOOGLE_REDIRECT_URI;
       const scope = "https://www.googleapis.com/auth/calendar.events";
 
-      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      const authUrl =
+        `https://accounts.google.com/o/oauth2/v2/auth?` +
         `client_id=${googleClientId}` +
         `&redirect_uri=${redirectUri}` +
         `&response_type=code` +
@@ -62,27 +63,32 @@ const Schedule: React.FC = () => {
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
         end: {
-          dateTime: new Date(new Date().getTime() + 60 * 60 * 1000).toISOString(), // Placeholder, 1 hour after start
+          dateTime: new Date(
+            new Date().getTime() + 60 * 60 * 1000,
+          ).toISOString(), // Placeholder, 1 hour after start
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
       };
 
-      const { data, error } = await supabase.functions.invoke('create-calendar-event', {
-        body: JSON.stringify(event),
-      });
+      const { data, error } = await supabase.functions.invoke(
+        "create-calendar-event",
+        {
+          body: JSON.stringify(event),
+        },
+      );
 
       if (error) {
-        console.error('Error creating calendar event:', error);
-        toast.error('Failed to add event to Google Calendar.');
+        console.error("Error creating calendar event:", error);
+        toast.error("Failed to add event to Google Calendar.");
       } else if (data?.error) {
-        console.error('Server-side error creating calendar event:', data.error);
+        console.error("Server-side error creating calendar event:", data.error);
         toast.error(`Failed to add event to Google Calendar: ${data.error}`);
       } else {
-        toast.success('Workout added to Google Calendar!');
+        toast.success("Workout added to Google Calendar!");
       }
     } catch (err) {
-      console.error('Unexpected error adding event to calendar:', err);
-      toast.error('An unexpected error occurred while adding to calendar.');
+      console.error("Unexpected error adding event to calendar:", err);
+      toast.error("An unexpected error occurred while adding to calendar.");
     }
   };
 
@@ -103,7 +109,7 @@ const Schedule: React.FC = () => {
       location: "Gym Floor A",
       trainer: "Mike Johnson",
       spots: "3/10",
-      status: "confirmed"
+      status: "confirmed",
     },
     {
       id: 2,
@@ -113,7 +119,7 @@ const Schedule: React.FC = () => {
       location: "Cardio Room",
       trainer: "Sarah Smith",
       spots: "5/12",
-      status: "pending"
+      status: "pending",
     },
     {
       id: 3,
@@ -123,13 +129,16 @@ const Schedule: React.FC = () => {
       location: "Studio B",
       trainer: "Emma Wilson",
       spots: "8/15",
-      status: "available"
-    }
+      status: "available",
+    },
   ];
 
   return (
     <AppLayout>
-      <PageLayout title="My Schedule" description="Manage your upcoming workouts and training sessions">
+      <PageLayout
+        title="My Schedule"
+        description="Manage your upcoming workouts and training sessions"
+      >
         <div className="grid gap-6">
           {workouts.map((workout) => (
             <Card key={workout.id} className="w-full">
@@ -139,14 +148,20 @@ const Schedule: React.FC = () => {
                     <Calendar className="h-5 w-5 text-blue-600" />
                     <div>
                       <CardTitle className="text-lg">{workout.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground">{workout.date}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {workout.date}
+                      </p>
                     </div>
                   </div>
-                  <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    workout.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                    workout.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-blue-100 text-blue-800'
-                  }`}>
+                  <div
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      workout.status === "confirmed"
+                        ? "bg-green-100 text-green-800"
+                        : workout.status === "pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-blue-100 text-blue-800"
+                    }`}
+                  >
                     {workout.status}
                   </div>
                 </div>
@@ -167,36 +182,34 @@ const Schedule: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center justify-between pt-2">
-                  <p className="text-sm text-gray-600">Trainer: {workout.trainer}</p>
+                  <p className="text-sm text-gray-600">
+                    Trainer: {workout.trainer}
+                  </p>
                   <div className="flex gap-2">
-                    {workout.status === 'available' && (
-                      <Button 
-                        size="sm" 
+                    {workout.status === "available" && (
+                      <Button
+                        size="sm"
                         onClick={() => handleJoinWorkout(workout.name)}
                       >
                         Join Workout
                       </Button>
                     )}
-                    {workout.status === 'confirmed' && (
-                      <Button 
-                        variant="outline" 
+                    {workout.status === "confirmed" && (
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={() => handleCancelWorkout(workout.name)}
                       >
                         Cancel
                       </Button>
                     )}
-                    {workout.status === 'pending' && (
-                      <Button 
-                        variant="secondary" 
-                        size="sm"
-                        disabled
-                      >
+                    {workout.status === "pending" && (
+                      <Button variant="secondary" size="sm" disabled>
                         Pending Approval
                       </Button>
                     )}
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => handleAddToCalendar(workout)}
                     >

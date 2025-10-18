@@ -112,14 +112,14 @@ const ChartTooltipContent = React.forwardRef<
     hideIndicator?: boolean;
     labelFormatter?: (
       label: string | number,
-      payload?: any[]
+      payload?: any[],
     ) => React.ReactNode;
     formatter?: (
       value: number,
       name: string,
       item: any,
       index: number,
-      payload: any[]
+      payload: any[],
     ) => React.ReactNode;
     labelClassName?: string;
     nameKey?: string;

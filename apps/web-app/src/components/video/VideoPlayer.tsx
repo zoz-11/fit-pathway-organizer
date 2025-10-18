@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Play, X, ExternalLink } from 'lucide-react';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Play, X, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 
 interface VideoPlayerProps {
   videoUrl?: string;
@@ -15,9 +20,9 @@ interface VideoPlayerProps {
 const getYouTubeVideoId = (url: string): string | null => {
   const patterns = [
     /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
-    /youtube\.com\/v\/([^&\n?#]+)/
+    /youtube\.com\/v\/([^&\n?#]+)/,
   ];
-  
+
   for (const pattern of patterns) {
     const match = url.match(pattern);
     if (match) return match[1];
@@ -25,11 +30,11 @@ const getYouTubeVideoId = (url: string): string | null => {
   return null;
 };
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ 
-  videoUrl, 
-  title, 
-  isOpen, 
-  onClose 
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({
+  videoUrl,
+  title,
+  isOpen,
+  onClose,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,8 +46,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <DialogTitle>{title}</DialogTitle>
           </DialogHeader>
           <div className="text-center py-8">
-            <p className="text-muted-foreground mb-4">No video available for this exercise.</p>
-            <Button onClick={onClose} variant="outline">Close</Button>
+            <p className="text-muted-foreground mb-4">
+              No video available for this exercise.
+            </p>
+            <Button onClick={onClose} variant="outline">
+              Close
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -53,8 +62,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : null;
 
   const handleOpenExternal = () => {
-    window.open(videoUrl, '_blank');
-    toast.info('Opening video in new tab');
+    window.open(videoUrl, "_blank");
+    toast.info("Opening video in new tab");
   };
 
   return (
@@ -76,7 +85,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </div>
           </div>
         </DialogHeader>
-        
+
         <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
           {embedUrl ? (
             <>

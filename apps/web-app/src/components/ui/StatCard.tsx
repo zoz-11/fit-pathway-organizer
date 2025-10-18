@@ -9,7 +9,13 @@ interface StatCardProps {
   isLoading?: boolean;
 }
 
-export const StatCard = ({ title, value, icon: Icon, description, isLoading = false }: StatCardProps) => (
+export const StatCard = ({
+  title,
+  value,
+  icon: Icon,
+  description,
+  isLoading = false,
+}: StatCardProps) => (
   <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium">{title}</CardTitle>

@@ -1,9 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageCircle, Send, Bot, User, RefreshCw, AlertCircle } from "lucide-react";
+import {
+  MessageCircle,
+  Send,
+  Bot,
+  User,
+  RefreshCw,
+  AlertCircle,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuthProvider";
 import { toast } from "sonner";
@@ -11,7 +18,7 @@ import { handleApiError } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface Message {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   timestamp: Date;
 }
@@ -19,12 +26,13 @@ interface Message {
 export const AiChatAssistant = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
-      role: 'assistant',
-      content: "Hi! I'm your AI fitness coach. I can help you with workout advice, nutrition tips, and answer any fitness-related questions. How can I assist you today?",
-      timestamp: new Date()
-    }
+      role: "assistant",
+      content:
+        "Hi! I'm your AI fitness coach. I can help you with workout advice, nutrition tips, and answer any fitness-related questions. How can I assist you today?",
+      timestamp: new Date(),
+    },
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { profile } = useAuth();
@@ -32,7 +40,8 @@ export const AiChatAssistant = () => {
 
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
@@ -40,73 +49,82 @@ export const AiChatAssistant = () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = {
-      role: 'user',
+      role: "user",
       content: input,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     const currentInput = input;
-    setInput('');
+    setInput("");
     setIsLoading(true);
     setError(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-fitness-coach', {
-        body: {
-          message: currentInput,
-          userProfile: profile,
-          workoutHistory: []
-        }
-      });
+      const { data, error } = await supabase.functions.invoke(
+        "ai-fitness-coach",
+        {
+          body: {
+            message: currentInput,
+            userProfile: profile,
+            workoutHistory: [],
+          },
+        },
+      );
 
       if (error) {
-        console.error('Edge function error details:', error);
-        throw new Error(`AI service error: ${error.message || 'Unknown error'}`);
+        console.error("Edge function error details:", error);
+        throw new Error(
+          `AI service error: ${error.message || "Unknown error"}`,
+        );
       }
 
       if (!data || !data.response) {
-        console.error('Invalid response data:', data);
-        throw new Error('Invalid response from AI service');
+        console.error("Invalid response data:", data);
+        throw new Error("Invalid response from AI service");
       }
 
       const assistantMessage: Message = {
-        role: 'assistant',
+        role: "assistant",
         content: data.response,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
-      toast.success('AI response received!');
+      setMessages((prev) => [...prev, assistantMessage]);
+      toast.success("AI response received!");
     } catch (error) {
-      console.error('Detailed error in sendMessage:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      console.error("Detailed error in sendMessage:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error occurred";
       setError(errorMessage);
       handleApiError(error, `AI Chat Error: ${errorMessage}`);
-      
+
       const errorResponse: Message = {
-        role: 'assistant',
+        role: "assistant",
         content: `I apologize, but I'm experiencing technical difficulties right now. Please check your network connection and ensure the Supabase Edge Functions are properly deployed. If the problem continues, contact support.`,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorResponse]);
+      setMessages((prev) => [...prev, errorResponse]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const clearChat = () => {
-    setMessages([{
-      role: 'assistant',
-      content: "Chat cleared! I'm your AI fitness coach. How can I help you today?",
-      timestamp: new Date()
-    }]);
+    setMessages([
+      {
+        role: "assistant",
+        content:
+          "Chat cleared! I'm your AI fitness coach. How can I help you today?",
+        timestamp: new Date(),
+      },
+    ]);
     setError(null);
-    toast.info('Chat history cleared');
+    toast.info("Chat history cleared");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
@@ -138,27 +156,29 @@ export const AiChatAssistant = () => {
               <div
                 key={index}
                 className={`flex items-start gap-2 ${
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
+                  message.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                {message.role === 'assistant' && (
+                {message.role === "assistant" && (
                   <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
                     <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   </div>
                 )}
                 <div
                   className={`max-w-[80%] rounded-lg p-3 ${
-                    message.role === 'user'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+                    message.role === "user"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                  <p className="text-sm whitespace-pre-wrap break-words">
+                    {message.content}
+                  </p>
                   <p className="text-xs opacity-70 mt-1">
                     {message.timestamp.toLocaleTimeString()}
                   </p>
                 </div>
-                {message.role === 'user' && (
+                {message.role === "user" && (
                   <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
                     <User className="h-4 w-4 text-white" />
                   </div>
@@ -171,10 +191,18 @@ export const AiChatAssistant = () => {
                   <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 flex items-center gap-1">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">AI is thinking</span>
-                  <span className="animate-pulse text-sm text-gray-600 dark:text-gray-400">.</span>
-                  <span className="animate-pulse delay-100 text-sm text-gray-600 dark:text-gray-400">.</span>
-                  <span className="animate-pulse delay-200 text-sm text-gray-600 dark:text-gray-400">.</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    AI is thinking
+                  </span>
+                  <span className="animate-pulse text-sm text-gray-600 dark:text-gray-400">
+                    .
+                  </span>
+                  <span className="animate-pulse delay-100 text-sm text-gray-600 dark:text-gray-400">
+                    .
+                  </span>
+                  <span className="animate-pulse delay-200 text-sm text-gray-600 dark:text-gray-400">
+                    .
+                  </span>
                 </div>
               </div>
             )}
@@ -190,9 +218,9 @@ export const AiChatAssistant = () => {
               disabled={isLoading}
               className="flex-1 bg-white dark:bg-gray-800"
             />
-            <Button 
+            <Button
               size="default"
-              type="submit" 
+              type="submit"
               disabled={isLoading || !input.trim()}
               className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >

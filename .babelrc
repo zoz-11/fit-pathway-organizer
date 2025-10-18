@@ -5,10 +5,13 @@
     "@babel/preset-typescript"
   ],
   "plugins": [
-    ["module-resolver", {
-      "alias": {
-        "@": "./src"
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "@": "./src"
+        }
       }
-    }]
+    ]
   ]
 }

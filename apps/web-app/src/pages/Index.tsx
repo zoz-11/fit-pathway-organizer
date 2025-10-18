@@ -23,11 +23,11 @@ const Index = () => {
     );
   }
 
-  const userRole = profile?.role || 'athlete';
+  const userRole = profile?.role || "athlete";
 
   return (
     <AppLayout>
-      {userRole === 'trainer' ? <TrainerDashboard /> : <AthleteDashboard />}
+      {userRole === "trainer" ? <TrainerDashboard /> : <AthleteDashboard />}
     </AppLayout>
   );
 };

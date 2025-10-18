@@ -4,9 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { sanitizeEmail, checkAccountLockout, recordLoginAttempt, RateLimiter, validatePassword } from "@/lib/security";
+import {
+  sanitizeEmail,
+  checkAccountLockout,
+  recordLoginAttempt,
+  RateLimiter,
+  validatePassword,
+} from "@/lib/security";
 
-const signInLimiter = new RateLimiter({ windowMs: 15 * 60 * 1000, maxRequests: 5 });
+const signInLimiter = new RateLimiter({
+  windowMs: 15 * 60 * 1000,
+  maxRequests: 5,
+});
 
 export const SignInForm = () => {
   const [email, setEmail] = useState("");
@@ -34,8 +43,12 @@ export const SignInForm = () => {
 
     const lockoutStatus = checkAccountLockout(sanitizedEmail);
     if (lockoutStatus.isLocked) {
-      const remainingMinutes = Math.ceil((lockoutStatus.remainingTime || 0) / (1000 * 60));
-      setError(`Account temporarily locked. Please try again in ${remainingMinutes} minutes.`);
+      const remainingMinutes = Math.ceil(
+        (lockoutStatus.remainingTime || 0) / (1000 * 60),
+      );
+      setError(
+        `Account temporarily locked. Please try again in ${remainingMinutes} minutes.`,
+      );
       setLoading(false);
       return;
     }
@@ -57,9 +70,13 @@ export const SignInForm = () => {
       if (error) {
         recordLoginAttempt(sanitizedEmail, false);
         if (error.message === "Email not confirmed") {
-          setError("Please verify your email before signing in. Check your inbox and spam folder for the verification link.");
+          setError(
+            "Please verify your email before signing in. Check your inbox and spam folder for the verification link.",
+          );
         } else if (error.message.includes("Failed to fetch")) {
-          setError("Connection error. Please check your internet connection and try again.");
+          setError(
+            "Connection error. Please check your internet connection and try again.",
+          );
         } else {
           setError(error.message || "An error occurred during sign in");
         }
@@ -101,7 +118,12 @@ export const SignInForm = () => {
           placeholder="Enter your password"
         />
       </div>
-      <Button type="submit" size="default" className="w-full" disabled={loading}>
+      <Button
+        type="submit"
+        size="default"
+        className="w-full"
+        disabled={loading}
+      >
         {loading ? "Signing in..." : "Sign In"}
       </Button>
       {error && (
