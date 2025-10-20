@@ -7,18 +7,20 @@ import { SignInForm } from "@/components/auth/SignInForm";
 import { SignUpForm } from "@/components/auth/SignUpForm";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2 } from "lucide-react";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [confirmationMessage, setConfirmationMessage] = useState("");
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Check for email confirmation in URL
     const type = searchParams.get("type");
 
     if (type === "signup") {
-      setConfirmationMessage("Email confirmed! You can now sign in.");
+      setConfirmationMessage(t("auth.emailConfirmed"));
     }
 
     // Check if user is already logged in
@@ -43,16 +45,16 @@ const Auth = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, searchParams]);
+  }, [navigate, searchParams, t]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-            FitPathway Organizer
+            {t("auth.title")}
           </CardTitle>
-          <p className="text-gray-600 mt-2">Welcome back</p>
+          <p className="text-gray-600 mt-2">{t("auth.welcome")}</p>
         </CardHeader>
         <CardContent>
           {confirmationMessage && (
@@ -65,8 +67,8 @@ const Auth = () => {
           )}
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="signin">{t("auth.signIn")}</TabsTrigger>
+              <TabsTrigger value="signup">{t("auth.signUp")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="signin">

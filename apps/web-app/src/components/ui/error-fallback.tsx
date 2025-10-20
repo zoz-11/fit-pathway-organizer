@@ -1,5 +1,6 @@
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ErrorFallbackProps {
@@ -11,6 +12,7 @@ export const ErrorFallback = ({
   error,
   resetErrorBoundary,
 }: ErrorFallbackProps) => {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-lg">
@@ -24,7 +26,16 @@ export const ErrorFallback = ({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center text-muted-foreground">
-            <p>We're sorry, but something unexpected happened.</p>
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-red-600 mb-4">{t("errorFallback.oops")}</h1>
+        <p>{t("errorFallback.message")}</p>
+        <pre className="mt-4 p-4 bg-gray-100 text-red-700 rounded-md overflow-auto">
+          {error.message}
+        </pre>
+        <Button onClick={resetErrorBoundary} className="mt-6">
+          {t("errorFallback.tryAgain")}
+        </Button>
+      </div>
             <details className="mt-4 text-left">
               <summary className="cursor-pointer text-sm font-medium">
                 Error details

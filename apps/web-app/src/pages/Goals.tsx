@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { handleApiError } from "@/lib/utils";
 import { PlusCircle, Edit, Trash2, CheckCircle, XCircle } from "lucide-react";
 import { format } from "date-fns";
+import { useLanguage } from "../contexts/LanguageContext";
 
 interface Goal {
   id: string;
@@ -33,6 +34,7 @@ interface Goal {
 
 const Goals = () => {
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
   const [newGoal, setNewGoal] = useState<Partial<Goal>>({
     goal_type: "other",
     description: "",
@@ -66,16 +68,16 @@ const Goals = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       setNewGoal({ goal_type: "other", description: "", status: "active" });
-      toast.success("Goal created successfully!");
+      toast.success(t("goals.toast.createSuccess"));
     },
     onError: (err) => {
-      handleApiError(err, `Failed to create goal`);
+      handleApiError(err, t("goals.toast.createError"));
     },
   });
 
   const updateGoalMutation = useMutation({
     mutationFn: async (goalData: Partial<Goal>) => {
-      if (!goalData.id) throw new Error("Goal ID is required for update.");
+      if (!goalData.id) throw new Error(t("goals.error.idRequired"));
       const { data, error } = await supabase.functions.invoke("manage-goals", {
         body: { action: "update", goalId: goalData.id, goal: goalData },
       });
@@ -85,10 +87,10 @@ const Goals = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["goals"] });
       setEditingGoal(null);
-      toast.success("Goal updated successfully!");
+      toast.success(t("goals.toast.updateSuccess"));
     },
     onError: (err) => {
-      handleApiError(err, `Failed to update goal`);
+      handleApiError(err, t("goals.toast.updateError"));
     },
   });
 
@@ -102,10 +104,10 @@ const Goals = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["goals"] });
-      toast.success("Goal deleted successfully!");
+      toast.success(t("goals.toast.deleteSuccess"));
     },
     onError: (err) => {
-      handleApiError(err, `Failed to delete goal`);
+      handleApiError(err, t("goals.toast.deleteError"));
     },
   });
 
@@ -137,9 +139,9 @@ const Goals = () => {
       <AppLayout>
         <div className="p-4 md:p-6">
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
-            Goals
+            {t("goals.title")}
           </h1>
-          <p>Loading goals...</p>
+          <p>{t("goals.loading")}</p>
         </div>
       </AppLayout>
     );
@@ -150,9 +152,9 @@ const Goals = () => {
       <AppLayout>
         <div className="p-4 md:p-6">
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
-            Goals
+            {t("goals.title")}
           </h1>
-          <p className="text-red-500">Error loading goals: {error.message}</p>
+          <p className="text-red-500">{t("goals.error.loading")} {error.message}</p>
         </div>
       </AppLayout>
     );
@@ -163,22 +165,22 @@ const Goals = () => {
       <div className="space-y-6 p-4 md:p-6">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-            Goals
+            {t("goals.title")}
           </h1>
           <p className="text-muted-foreground mt-1">
-            Set and track your fitness and nutrition goals.
+            {t("goals.description")}
           </p>
         </div>
 
         {/* Goal Form */}
         <Card>
           <CardHeader>
-            <CardTitle>{editingGoal ? "Edit Goal" : "Add New Goal"}</CardTitle>
+            <CardTitle>{editingGoal ? t("goals.form.editTitle") : t("goals.form.addTitle")}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="goal-type">Goal Type</Label>
+                <Label htmlFor="goal-type">{t("goals.form.typeLabel")}</Label>
                 <Select
                   value={editingGoal?.goal_type || newGoal.goal_type}
                   onValueChange={(value: Goal["goal_type"]) =>
@@ -188,22 +190,22 @@ const Goals = () => {
                   }
                 >
                   <SelectTrigger id="goal-type">
-                    <SelectValue placeholder="Select a goal type" />
+                    <SelectValue placeholder={t("goals.form.typePlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="weight">Weight</SelectItem>
-                    <SelectItem value="strength">Strength</SelectItem>
-                    <SelectItem value="cardio">Cardio</SelectItem>
-                    <SelectItem value="nutrition">Nutrition</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="weight">{t("goals.types.weight")}</SelectItem>
+                    <SelectItem value="strength">{t("goals.types.strength")}</SelectItem>
+                    <SelectItem value="cardio">{t("goals.types.cardio")}</SelectItem>
+                    <SelectItem value="nutrition">{t("goals.types.nutrition")}</SelectItem>
+                    <SelectItem value="other">{t("goals.types.other")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">{t("goals.form.descriptionLabel")}</Label>
                 <Textarea
                   id="description"
-                  placeholder="e.g., Lose 10 lbs, Run a marathon, Lift 200 lbs"
+                  placeholder={t("goals.form.descriptionPlaceholder")}
                   value={editingGoal?.description || newGoal.description}
                   onChange={(e) =>
                     editingGoal
@@ -217,12 +219,12 @@ const Goals = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="target-value">Target Value (optional)</Label>
+                <Label htmlFor="target-value">{t("goals.form.targetValueLabel")}</Label>
                 <Input
                   id="target-value"
                   type="number"
                   step="0.01"
-                  placeholder="e.g., 150 (lbs), 200 (lbs), 26.2 (miles)"
+                  placeholder={t("goals.form.targetValuePlaceholder")}
                   value={
                     editingGoal?.target_value || newGoal.target_value || ""
                   }
@@ -240,7 +242,7 @@ const Goals = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="target-date">Target Date (optional)</Label>
+                <Label htmlFor="target-date">{t("goals.form.targetDateLabel")}</Label>
                 <Input
                   id="target-date"
                   type="date"
@@ -260,7 +262,7 @@ const Goals = () => {
               </div>
               {editingGoal && (
                 <div>
-                  <Label htmlFor="status">Status</Label>
+                  <Label htmlFor="status">{t("goals.form.statusLabel")}</Label>
                   <Select
                     value={editingGoal.status}
                     onValueChange={(value: Goal["status"]) =>
@@ -268,12 +270,12 @@ const Goals = () => {
                     }
                   >
                     <SelectTrigger id="status">
-                      <SelectValue placeholder="Select status" />
+                      <SelectValue placeholder={t("goals.form.statusPlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                      <SelectItem value="abandoned">Abandoned</SelectItem>
+                      <SelectItem value="active">{t("goals.status.active")}</SelectItem>
+                      <SelectItem value="completed">{t("goals.status.completed")}</SelectItem>
+                      <SelectItem value="abandoned">{t("goals.status.abandoned")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -287,8 +289,8 @@ const Goals = () => {
                   }
                 >
                   {createGoalMutation.isPending || updateGoalMutation.isPending
-                    ? "Saving..."
-                    : "Save Goal"}
+                    ? t("goals.form.savingButton")
+                    : t("goals.form.saveButton")}
                 </Button>
                 {editingGoal && (
                   <Button
@@ -297,7 +299,7 @@ const Goals = () => {
                     size="default"
                     onClick={handleCancelEdit}
                   >
-                    Cancel
+                    {t("goals.form.cancelButton")}
                   </Button>
                 )}
               </div>
@@ -308,7 +310,7 @@ const Goals = () => {
         {/* Goal List */}
         <Card>
           <CardHeader>
-            <CardTitle>Your Goals</CardTitle>
+            <CardTitle>{t("goals.list.title")}</CardTitle>
           </CardHeader>
           <CardContent>
             {goals && goals.length > 0 ? (
@@ -321,16 +323,16 @@ const Goals = () => {
                     <div>
                       <p className="font-medium">{goal.description}</p>
                       <p className="text-sm text-muted-foreground">
-                        Type: {goal.goal_type}{" "}
+                        {t("goals.list.type")} {goal.goal_type}{" "}
                         {goal.target_value
-                          ? `| Target: ${goal.target_value}`
+                          ? `| ${t("goals.list.target")} ${goal.target_value}`
                           : ""}
                         {goal.target_date
-                          ? ` | By: ${format(new Date(goal.target_date), "PPP")}`
+                          ? ` | ${t("goals.list.by")} ${format(new Date(goal.target_date), "PPP")}`
                           : ""}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Status:{" "}
+                        {t("goals.list.status")}{" "}
                         <span
                           className={`font-semibold ${
                             goal.status === "active"
@@ -340,7 +342,7 @@ const Goals = () => {
                                 : "text-red-600"
                           }`}
                         >
-                          {goal.status}
+                          {t(`goals.status.${goal.status}`)}
                         </span>
                       </p>
                     </div>
@@ -364,7 +366,7 @@ const Goals = () => {
                 ))}
               </div>
             ) : (
-              <p>No goals set yet. Add one above!</p>
+              <p>{t("goals.list.noGoals")}</p>
             )}
           </CardContent>
         </Card>

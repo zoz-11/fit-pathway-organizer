@@ -16,9 +16,11 @@ import { useAuth } from "@/hooks/useAuthProvider";
 import { ChatWindow } from "@/components/messages/ChatWindow";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useConversations } from "@/hooks/useMessages";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Messages = () => {
   const { user, profile, loading: isLoadingAuth } = useAuth();
+  const { t } = useLanguage();
   const [selectedParticipantId, setSelectedParticipantId] = useState<
     string | null
   >(null);
@@ -85,7 +87,7 @@ const Messages = () => {
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <MessageCircle className="h-5 w-5" />
-                Messages
+                {t("messages.title")}
               </CardTitle>
               <Button
                 size="sm"
@@ -95,17 +97,17 @@ const Messages = () => {
                   console.log("New chat clicked");
                 }}
               >
-                <Users className="h-4 w-4 mr-2" />
-                New Chat
+                <Users className="h-4 w-4 me-2 new-chat-icon" />
+                {t("messages.newChat")}
               </Button>
             </div>
             <div className="relative mt-4">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 search-icon" />
               <Input
-                placeholder="Search conversations..."
+                placeholder={t("messages.searchPlaceholder")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="ps-10 search-input"
               />
             </div>
           </CardHeader>
@@ -147,9 +149,9 @@ const Messages = () => {
                             {conv.role === "trainer" && (
                               <Badge
                                 variant="secondary"
-                                className="ml-2 text-xs"
+                                className="ms-2 text-xs trainer-badge"
                               >
-                                Trainer
+                                {t("messages.trainerBadge")}
                               </Badge>
                             )}
                           </h3>
@@ -165,7 +167,7 @@ const Messages = () => {
                 ))
               ) : (
                 <div className="p-4 text-muted-foreground text-center">
-                  No conversations found.
+                  {t("messages.noConversations")}
                 </div>
               )}
             </div>
@@ -181,7 +183,7 @@ const Messages = () => {
           ) : (
             <Card className="flex-1 flex items-center justify-center h-full">
               <p className="text-muted-foreground">
-                Select a conversation to start chatting.
+                {t("messages.selectConversation")}
               </p>
             </Card>
           )}

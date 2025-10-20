@@ -2,8 +2,10 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "../components/ui/use-toast";
 import { supabase } from "../integrations/supabase/client";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const OAuthCallback = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,21 +26,21 @@ const OAuthCallback = () => {
           if (error) {
             console.error("Error exchanging code:", error);
             toast({
-              title: "Error",
-              description: "Failed to connect to Google Calendar.",
+              title: t("oAuthCallback.toast.error.title"),
+              description: t("oAuthCallback.toast.error.failedToConnect"),
               variant: "destructive",
             });
           } else if (data?.error) {
             console.error("Server-side error exchanging code:", data.error);
             toast({
-              title: "Error",
-              description: `Failed to connect to Google Calendar: ${data.error}`,
+              title: t("oAuthCallback.toast.error.title"),
+              description: `${t("oAuthCallback.toast.error.failedToConnect")} ${data.error}`,
               variant: "destructive",
             });
           } else {
             toast({
-              title: "Success",
-              description: "Successfully connected to Google Calendar!",
+              title: t("oAuthCallback.toast.success.title"),
+              description: t("oAuthCallback.toast.success.description"),
             });
             // Redirect to a relevant page, e.g., schedule or settings
             navigate("/schedule");
@@ -46,15 +48,15 @@ const OAuthCallback = () => {
         } catch (err) {
           console.error("Unexpected error during OAuth callback:", err);
           toast({
-            title: "Error",
-            description: "An unexpected error occurred.",
+            title: t("oAuthCallback.toast.error.title"),
+            description: t("oAuthCallback.toast.error.unexpected"),
             variant: "destructive",
           });
         }
       } else {
         toast({
-          title: "Error",
-          description: "No authorization code found.",
+          title: t("oAuthCallback.toast.error.title"),
+          description: t("oAuthCallback.toast.error.noCode"),
           variant: "destructive",
         });
         navigate("/settings"); // Redirect if no code is present
@@ -66,7 +68,7 @@ const OAuthCallback = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <p>Connecting to Google Calendar...</p>
+      <p>{t("oAuthCallback.connecting")}</p>
     </div>
   );
 };

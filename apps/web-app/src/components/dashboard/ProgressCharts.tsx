@@ -126,7 +126,7 @@ export const ProgressCharts: React.FC<ProgressChartsProps> = ({ userId }) => {
               dataKey="count"
               stroke="#3b82f6"
               strokeWidth={2}
-              name={t("progressCharts.workouts")}
+              name={t("progressCharts.workoutsCompleted")}
             />
           </LineChart>
         </ResponsiveContainer>

@@ -133,13 +133,13 @@ const Settings = () => {
         setIsTwoFactorEnabled(data.currentLevel === "aal2");
       } catch (error) {
         console.error("Error fetching 2FA status:", error);
-        handleApiError(error, "Failed to fetch 2FA status.");
+        handleApiError(error, t("settings.toast.2fa.fetchError"));
       } finally {
         setTwoFactorLoading(false);
       }
     };
     fetchTwoFactorStatus();
-  }, []);
+  }, [t]);
 
   const handleTwoFactorToggle = useCallback(async (enabled: boolean) => {
     setTwoFactorLoading(true);
@@ -169,18 +169,18 @@ const Settings = () => {
             factorId: totpFactor.id,
           });
           if (error) throw error;
-          toast.success("Two-factor authentication disabled.");
+          toast.success(t("settings.toast.2fa.disabledSuccess"));
           setIsTwoFactorEnabled(false);
         } else {
-          toast.info("No TOTP factor found to disable.");
+          toast.info(t("settings.toast.2fa.noTotpFactor"));
         }
       }
     } catch (error) {
-      handleApiError(error, `Failed to ${enabled ? "enable" : "disable"} 2FA.`);
+      handleApiError(error, enabled ? t("settings.toast.2fa.enableError") : t("settings.toast.2fa.disableError"));
     } finally {
       setTwoFactorLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
@@ -193,13 +193,13 @@ const Settings = () => {
         password: newPassword,
       });
       if (error) throw error;
-      toast.success("Password updated successfully");
+      toast.success(t("settings.toast.password.updateSuccess"));
       setShowPasswordChangeDialog(false);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (error) {
-      handleApiError(error, "Failed to update password");
+      handleApiError(error, t("settings.toast.password.updateError"));
     }
   };
 
@@ -406,9 +406,7 @@ const Settings = () => {
                     const nameKey =
                       value === "en"
                         ? "language.english"
-                        : value === "es"
-                          ? "language.spanish"
-                          : "language.arabic";
+                        : "language.arabic";
                     toast.success(`${t("language.changed")} ${t(nameKey)}`);
                   }}
                 >
@@ -417,7 +415,6 @@ const Settings = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="en">{t("language.english")}</SelectItem>
-                    <SelectItem value="es">{t("language.spanish")}</SelectItem>
                     <SelectItem value="ar">{t("language.arabic")}</SelectItem>
                   </SelectContent>
                 </Select>
@@ -431,15 +428,15 @@ const Settings = () => {
                   value={units}
                   onValueChange={(value) => {
                     setUnits(value);
-                    toast.success(`${t("units.changed")} ${value}`);
+                    toast.success(`${t("units.changed")} ${t(value === 'imperial' ? 'settings.units.imperial' : 'settings.units.metric')}`);
                   }}
                 >
                   <SelectTrigger className="w-[180px]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="imperial">Imperial</SelectItem>
-                    <SelectItem value="metric">Metric</SelectItem>
+                    <SelectItem value="imperial">{t("settings.units.imperial")}</SelectItem>
+                    <SelectItem value="metric">{t("settings.units.metric")}</SelectItem>
                   </SelectContent>
                 </Select>
               }
@@ -754,8 +751,7 @@ const Settings = () => {
           <DialogHeader>
             <DialogTitle>{t("account.delete.title")}</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. Your account and all associated data
-              will be permanently deleted.
+              {t("settings.dialog.deleteAccount.description")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">

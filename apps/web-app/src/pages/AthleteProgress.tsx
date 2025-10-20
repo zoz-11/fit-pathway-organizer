@@ -85,8 +85,8 @@ const AthleteProgress = () => {
     return (
       <AppLayout>
         <PageLayout
-          title="Athlete's Progress"
-          description="An overview of their fitness journey and recent activity."
+          title={t("athleteProgress.title")}
+          description={t("athleteProgress.description")}
         >
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Skeleton className="h-28" />
@@ -104,12 +104,12 @@ const AthleteProgress = () => {
     return (
       <AppLayout>
         <PageLayout
-          title="Athlete Not Found"
-          description="Athlete profile could not be loaded or was not found."
+          title={t("athleteProgress.notFound.title")}
+          description={t("athleteProgress.notFound.description")}
         >
           <div className="text-center py-8">
             <p className="text-muted-foreground">
-              The requested athlete could not be found.
+              {t("athleteProgress.notFound.message")}
             </p>
           </div>
         </PageLayout>
@@ -120,8 +120,8 @@ const AthleteProgress = () => {
   return (
     <AppLayout>
       <PageLayout
-        title={`${athleteProfile.full_name || "Athlete"}'s Progress`}
-        description="An overview of their fitness journey and recent activity."
+        title={t("athleteProgress.title")} 
+        description={t("athleteProgress.description")}
       >
         <div className="flex justify-end">
           {athleteId && athleteProfile.full_name && (
@@ -133,28 +133,28 @@ const AthleteProgress = () => {
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
-            title="Workouts Completed"
+            title={t("athleteProgress.stats.completed")}
             value={completedCount}
             icon={Dumbbell}
-            description="Total completed workouts"
+            description={t("athleteProgress.stats.completedDescription")}
           />
           <StatCard
-            title="Upcoming Workouts"
+            title={t("athleteProgress.stats.upcoming")}
             value={scheduledCount}
             icon={Calendar}
-            description="Workouts yet to be done"
+            description={t("athleteProgress.stats.upcomingDescription")}
           />
           <StatCard
-            title="Goals Achieved"
+            title={t("athleteProgress.stats.goals")}
             value="N/A"
             icon={Target}
-            description="Feature coming soon"
+            description={t("athleteProgress.stats.goalsDescription")}
           />
           <StatCard
-            title="Current Streak"
+            title={t("athleteProgress.stats.streak")}
             value="N/A"
             icon={Flame}
-            description="Feature coming soon"
+            description={t("athleteProgress.stats.streakDescription")}
           />
         </div>
 

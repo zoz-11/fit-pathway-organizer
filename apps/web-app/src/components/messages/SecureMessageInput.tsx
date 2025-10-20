@@ -6,6 +6,7 @@ import { MessageEncryption } from "@/lib/encryption";
 import { SecurityAlert } from "@/components/ui/SecurityAlert";
 import { Send, Shield } from "lucide-react";
 import { z } from "zod";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SecureMessageInputProps {
   recipientId: string;
@@ -18,6 +19,7 @@ export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
   onSendMessage,
   disabled = false,
 }) => {
+  const { t } = useLanguage();
   const [content, setContent] = useState("");
   const [isEncrypting, setIsEncrypting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +54,7 @@ export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
       if (error instanceof z.ZodError) {
         setError(error.errors[0].message);
       } else {
-        setError("Failed to send message. Please try again.");
+        setError(t("secureMessageInput.error.failedToSend"));
       }
     } finally {
       setIsEncrypting(false);
@@ -79,7 +81,7 @@ export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
             className="rounded"
           />
           <Shield className="h-4 w-4" />
-          Encrypt message
+          {t("secureMessageInput.encryptLabel")}
         </label>
       </div>
 
@@ -88,7 +90,7 @@ export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="Type your message..."
+          placeholder={t("secureMessageInput.placeholder")}
           maxLength={1000}
           disabled={disabled || isEncrypting}
           className="min-h-[100px] pr-12"
@@ -108,12 +110,12 @@ export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
         {isEncrypting ? (
           <div className="flex items-center gap-2">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current" />
-            {useEncryption ? "Encrypting..." : "Sending..."}
+            {useEncryption ? t("secureMessageInput.encryptingButton") : t("secureMessageInput.sendingButton")}
           </div>
         ) : (
           <div className="flex items-center gap-2">
             <Send className="h-4 w-4" />
-            Send Message
+            {t("secureMessageInput.sendButton")}
           </div>
         )}
       </Button>

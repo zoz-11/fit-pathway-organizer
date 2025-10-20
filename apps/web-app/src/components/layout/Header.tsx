@@ -41,12 +41,12 @@ export const Header = ({ children }: HeaderProps) => {
       <div className="container flex h-16 items-center px-4 sm:px-6">
         <div className="flex gap-2 items-center">
           {children}
-          <div className="ml-2 text-lg font-medium hidden md:block">
+          <div className="ms-2 text-lg font-medium hidden md:block">
             {t("header.appName")}
           </div>
         </div>
 
-        <div className="flex items-center space-x-4 ml-auto">
+        <div className="flex items-center space-x-4 ms-auto">
           <Button
             variant="ghost"
             size="sm"
@@ -75,7 +75,7 @@ export const Header = ({ children }: HeaderProps) => {
                       : (user?.email?.[0]?.toUpperCase() ?? "U")}
                   </AvatarFallback>
                 </Avatar>
-                <div className="text-left hidden md:block">
+                <div className="text-start hidden md:block">
                   <p className="text-sm font-medium dark:text-white">
                     {profile?.full_name ?? user?.email}
                   </p>
@@ -101,20 +101,20 @@ export const Header = ({ children }: HeaderProps) => {
               <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
                   <Link to="/profile">
-                    <User className="mr-2 h-4 w-4" />
+                    <User className="me-2 h-4 w-4" />
                     <span>{t("header.account.profile")}</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/settings">
-                    <Settings className="mr-2 h-4 w-4" />
+                    <Settings className="me-2 h-4 w-4" />
                     <span>{t("header.account.settings")}</span>
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut}>
-                <LogOut className="mr-2 h-4 w-4" />
+                <LogOut className="me-2 h-4 w-4" />
                 <span>{t("header.account.logout")}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

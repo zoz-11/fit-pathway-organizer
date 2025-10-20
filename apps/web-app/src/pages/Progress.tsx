@@ -5,8 +5,10 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { ProgressCharts } from "@/components/dashboard/ProgressCharts";
 import { AdvancedAnalytics } from "@/components/dashboard/AdvancedAnalytics";
 import { useAuth } from "@/hooks/useAuthProvider";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Progress = () => {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const progressData = [
     { month: "Jan", workouts: 12, weight: 180 },
@@ -18,11 +20,11 @@ const Progress = () => {
   ];
 
   const achievements = [
-    { title: "First Workout", date: "2024-01-15", icon: "🏃" },
-    { title: "10 Workouts", date: "2024-02-10", icon: "💪" },
-    { title: "Weight Goal", date: "2024-04-20", icon: "🎯" },
-    { title: "Consistency King", date: "2024-05-15", icon: "👑" },
-    { title: "Month Streak", date: "2024-06-01", icon: "🔥" },
+    { title: t("progress.achievements.firstWorkout.title"), date: "2024-01-15", icon: "🏃" },
+    { title: t("progress.achievements.tenWorkouts.title"), date: "2024-02-10", icon: "💪" },
+    { title: t("progress.achievements.weightGoal.title"), date: "2024-04-20", icon: "🎯" },
+    { title: t("progress.achievements.consistencyKing.title"), date: "2024-05-15", icon: "👑" },
+    { title: t("progress.achievements.monthStreak.title"), date: "2024-06-01", icon: "🔥" },
   ];
 
   return (
@@ -30,10 +32,10 @@ const Progress = () => {
       <div className="space-y-6 p-4 md:p-6">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-            Progress Tracking
+            {t("progress.title")}
           </h1>
           <p className="text-muted-foreground mt-1">
-            Track your fitness journey and celebrate your achievements
+            {t("progress.description")}
           </p>
         </div>
 
@@ -42,52 +44,52 @@ const Progress = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Total Workouts
+                {t("progress.stats.totalWorkouts")}
               </CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">113</div>
               <p className="text-xs text-muted-foreground">
-                +12 from last month
+                {t("progress.stats.totalWorkoutsDescription")}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Weight Lost</CardTitle>
+              <CardTitle className="text-sm font-medium">{t("progress.stats.weightLost")}</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">10 lbs</div>
-              <p className="text-xs text-muted-foreground">Since January</p>
+              <div className="text-2xl font-bold">{t("progress.weightValue")}</div>
+              <p className="text-xs text-muted-foreground">{t("progress.stats.weightLostDescription")}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Current Streak
+                {t("progress.stats.currentStreak")}
               </CardTitle>
               <Target className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">15 days</div>
-              <p className="text-xs text-muted-foreground">Personal best!</p>
+              <div className="text-2xl font-bold">{t("progress.daysValue")}</div>
+              <p className="text-xs text-muted-foreground">{t("progress.stats.currentStreakDescription")}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Achievements
+                {t("progress.stats.achievements")}
               </CardTitle>
               <Award className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">5</div>
-              <p className="text-xs text-muted-foreground">Badges earned</p>
+              <p className="text-xs text-muted-foreground">{t("progress.stats.achievementsDescription")}</p>
             </CardContent>
           </Card>
         </div>
@@ -101,7 +103,7 @@ const Progress = () => {
         {/* Achievements */}
         <Card>
           <CardHeader>
-            <CardTitle>Achievements</CardTitle>
+            <CardTitle>{t("progress.achievements.title")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -124,14 +126,14 @@ const Progress = () => {
         {/* Goal Setting */}
         <Card>
           <CardHeader>
-            <CardTitle>Current Goals</CardTitle>
+            <CardTitle>{t("progress.goals.title")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3 border rounded-lg">
                 <div>
-                  <p className="font-medium">Reach 165 lbs</p>
-                  <p className="text-sm text-gray-600">5 lbs to go</p>
+                  <p className="font-medium">{t("progress.goals.reachWeight")}</p>
+                  <p className="text-sm text-gray-600">{t("progress.goals.weightToGo")}</p>
                 </div>
                 <div className="w-32 bg-gray-200 dark:bg-gray-800 rounded-full h-2">
                   <div
@@ -142,8 +144,8 @@ const Progress = () => {
               </div>
               <div className="flex items-center justify-between p-3 border rounded-lg">
                 <div>
-                  <p className="font-medium">30-day streak</p>
-                  <p className="text-sm text-gray-600">15 days completed</p>
+                  <p className="font-medium">{t("progress.goals.dayStreak")}</p>
+                  <p className="text-sm text-gray-600">{t("progress.goals.daysCompleted")}</p>
                 </div>
                 <div className="w-32 bg-gray-200 dark:bg-gray-800 rounded-full h-2">
                   <div

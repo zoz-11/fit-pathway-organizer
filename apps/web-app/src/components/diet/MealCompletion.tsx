@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, Plus, Minus } from "lucide-react";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MealItem {
   name: string;
@@ -23,13 +24,14 @@ export const MealCompletion = ({
   icon: Icon,
   color,
 }: MealCompletionProps) => {
+  const { t } = useLanguage();
   const [completed, setCompleted] = useState(false);
   const [servings, setServings] = useState<{ [key: string]: number }>({});
 
   const handleMealComplete = () => {
     setCompleted(!completed);
     toast.success(
-      completed ? `${mealName} marked as incomplete` : `${mealName} completed!`,
+      completed ? t("mealCompletion.toast.incomplete", { mealName }) : t("mealCompletion.toast.complete", { mealName }),
     );
   };
 
@@ -67,7 +69,7 @@ export const MealCompletion = ({
             variant={completed ? "secondary" : "default"}
             onClick={handleMealComplete}
           >
-            {completed ? "Mark Incomplete" : "Mark Complete"}
+            {completed ? t("mealCompletion.markIncomplete") : t("mealCompletion.markComplete")}
           </Button>
         </div>
       </CardHeader>
@@ -83,8 +85,8 @@ export const MealCompletion = ({
                 <div className="flex-1">
                   <p className="font-medium">{food.name}</p>
                   <p className="text-sm text-gray-600">
-                    {food.calories * serving} cal •{" "}
-                    {parseInt(food.protein) * serving}g protein
+                    {food.calories * serving} {t("mealCompletion.calories")} •{" "}
+                    {parseInt(food.protein) * serving}g {t("mealCompletion.protein")}
                   </p>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -113,9 +115,9 @@ export const MealCompletion = ({
         </div>
         <div className="mt-4 pt-3 border-t">
           <div className="flex justify-between text-sm">
-            <span className="font-medium">Meal Total:</span>
+            <span className="font-medium">{t("mealCompletion.mealTotal")}</span>
             <span>
-              {getTotalCalories()} calories • {getTotalProtein()}g protein
+              {getTotalCalories()} {t("mealCompletion.calories")} • {getTotalProtein()}g {t("mealCompletion.protein")}
             </span>
           </div>
         </div>

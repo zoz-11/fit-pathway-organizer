@@ -73,13 +73,13 @@ export const AthleteDashboard: React.FC = () => {
         />
         <StatCard
           title={t("dashboard.athlete.stats.nextWorkout")}
-          value="Leg Day"
+          value={t("athleteDashboard.legDay")}
           icon={Calendar}
           description={t("dashboard.athlete.stats.nextWorkoutDescription")}
         />
         <StatCard
           title={t("dashboard.athlete.stats.currentProgram")}
-          value="Hypertrophy"
+          value={t("athleteDashboard.hypertrophy")}
           icon={PlayCircle}
           description={t("dashboard.athlete.stats.programDescription")}
         />

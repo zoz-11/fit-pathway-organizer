@@ -109,7 +109,7 @@ export const ActivityFeed = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>{t("activityFeed.title")}</CardTitle>
         </CardHeader>
         <CardContent className="flex items-center justify-center p-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -124,10 +124,10 @@ export const ActivityFeed = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Activity</CardTitle>
+        <CardTitle>{t("activityFeed.title")}</CardTitle>
         {showMockDataWarning && (
           <p className="text-sm text-amber-600">
-            Showing sample data - Edge Functions unavailable
+            {t("activityFeed.mockDataWarning")}
           </p>
         )}
       </CardHeader>
@@ -150,7 +150,7 @@ export const ActivityFeed = () => {
             ))
           ) : (
             <p className="text-muted-foreground text-center py-4">
-              No recent activity to display.
+              {t("activityFeed.noActivity")}
             </p>
           )}
         </div>

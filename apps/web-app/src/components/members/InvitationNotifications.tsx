@@ -23,7 +23,7 @@ const useInvitations = () => {
         .eq("status", "pending");
 
       if (error) {
-        handleApiError(error, `Failed to fetch invitations`);
+        handleApiError(error, t("invitationNotifications.toast.error"));
         throw error;
       }
       return data;
