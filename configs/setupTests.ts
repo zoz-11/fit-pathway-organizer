@@ -3,9 +3,22 @@ import "@testing-library/jest-dom";
 
 import "./__mocks__/importMeta";
 
-import { TextEncoder, TextDecoder } from "util";
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+// Setup DOM environment for testing
+global.window = window as any;
+global.document = document as any;
+global.navigator = {
+  userAgent: 'node.js',
+} as Navigator;
+
+// Mock localStorage
+global.localStorage = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
+  length: 0,
+  key: jest.fn(),
+} as Storage;
 
 jest.mock("@/integrations/supabase/client", () => ({
   supabase: {

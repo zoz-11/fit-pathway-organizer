@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const StatCard = ({
   title,
@@ -13,7 +14,9 @@ const StatCard = ({
   icon: React.ComponentType<{ className?: string }>;
   description: string;
   trend?: { value: number; label: string } | null;
-}) => (
+}) => {
+  const { t } = useLanguage();
+  return (
   <Card className="transition-all duration-200 hover:shadow-md">
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium">{title}</CardTitle>
@@ -33,7 +36,7 @@ const StatCard = ({
                   : "text-gray-500"
             }`}
           >
-            {trend.value > 0 ? "↑" : trend.value < 0 ? "↓" : "→"}{" "}
+            {trend.value > 0 ? t("statCard.trend.up") : trend.value < 0 ? t("statCard.trend.down") : t("statCard.trend.stale")}{" "}
             {Math.abs(trend.value)}% {trend.label}
           </span>
         )}

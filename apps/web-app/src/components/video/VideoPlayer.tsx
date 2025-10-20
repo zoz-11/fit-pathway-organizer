@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Play, X, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface VideoPlayerProps {
   videoUrl?: string;
@@ -36,6 +37,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   isOpen,
   onClose,
 }) => {
+  const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(true);
 
   if (!videoUrl) {
@@ -47,10 +49,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           </DialogHeader>
           <div className="text-center py-8">
             <p className="text-muted-foreground mb-4">
-              No video available for this exercise.
+              {t("videoPlayer.noVideo")}
             </p>
             <Button onClick={onClose} variant="outline">
-              Close
+              {t("videoPlayer.closeButton")}
             </Button>
           </div>
         </DialogContent>
@@ -63,7 +65,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const handleOpenExternal = () => {
     window.open(videoUrl, "_blank");
-    toast.info("Opening video in new tab");
+    toast.info(t("videoPlayer.toast.opening"));
   };
 
   return (
@@ -80,7 +82,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 className="flex items-center gap-1"
               >
                 <ExternalLink className="h-4 w-4" />
-                Open in YouTube
+                {t("videoPlayer.openInYoutube")}
               </Button>
             </div>
           </div>
@@ -91,7 +93,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <>
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
-                  <div className="text-white">Loading video...</div>
+                  <div className="text-white">{t("videoPlayer.loading")}</div>
                 </div>
               )}
               <iframe
@@ -106,10 +108,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <div className="flex items-center justify-center h-full text-white">
               <div className="text-center">
                 <Play className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="mb-4">Cannot embed this video</p>
+                <p className="mb-4">{t("videoPlayer.cannotEmbed")}</p>
                 <Button onClick={handleOpenExternal} variant="secondary">
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Watch on YouTube
+                  <ExternalLink className="h-4 w-4 me-2" />
+                  {t("videoPlayer.watchOnYoutube")}
                 </Button>
               </div>
             </div>

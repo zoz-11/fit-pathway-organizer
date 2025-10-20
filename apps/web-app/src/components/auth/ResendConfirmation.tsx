@@ -3,12 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ResendConfirmationProps {
   email: string;
 }
 
 export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
@@ -26,7 +28,7 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success("Confirmation email sent! Check your inbox.");
+        toast.success(t("resendConfirmation.toast.success"));
         setCountdown(60); // 60 second cooldown
 
         const timer = setInterval(() => {
@@ -40,7 +42,7 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
         }, 1000);
       }
     } catch (error) {
-      toast.error("Failed to resend confirmation email");
+      toast.error(t("resendConfirmation.toast.error"));
     } finally {
       setLoading(false);
     }
@@ -50,12 +52,12 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
     <div className="space-y-4 mt-4">
       <Alert>
         <AlertDescription>
-          <strong>Check your email</strong>
+          <strong>{t("resendConfirmation.checkEmail")}</strong>
           <p className="text-sm mt-1">
-            We sent a confirmation link to <strong>{email}</strong>
+            {t("resendConfirmation.confirmationLink", { email })}
           </p>
           <p className="text-sm text-muted-foreground mt-1">
-            Don't forget to check your spam folder!
+            {t("resendConfirmation.checkSpam")}
           </p>
         </AlertDescription>
       </Alert>
@@ -67,10 +69,10 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
         className="w-full"
       >
         {countdown > 0
-          ? `Resend in ${countdown}s`
+          ? t("resendConfirmation.resendIn", { count: countdown })
           : loading
-            ? "Sending..."
-            : "Resend Confirmation Email"}
+            ? t("resendConfirmation.sending")
+            : t("resendConfirmation.resendButton")}
       </Button>
     </div>
   );

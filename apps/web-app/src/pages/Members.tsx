@@ -72,10 +72,10 @@ const Members = () => {
       >
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-center mb-4">
           <div className="relative w-full sm:max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground search-icon" />
             <Input
               placeholder={t("members.search.placeholder")}
-              className="pl-10"
+              className="ps-10 search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -128,12 +128,12 @@ const Members = () => {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem asChild>
                         <Link to={`/athlete-progress/${athlete.id}`}>
-                          <BarChart2 className="mr-2 h-4 w-4" />
-                          View Progress
+                          <BarChart2 className="me-2 h-4 w-4 dropdown-item-icon" />
+                          {t("members.actions.viewProgress")}
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <Mail className="mr-2 h-4 w-4" />
+                        <Mail className="me-2 h-4 w-4 dropdown-item-icon" />
                         {t("members.actions.sendMessage")}
                       </DropdownMenuItem>
                       <RemoveAthleteDialog

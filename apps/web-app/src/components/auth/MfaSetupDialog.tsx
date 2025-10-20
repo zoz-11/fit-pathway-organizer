@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MfaSetupDialogProps {
   isOpen: boolean;
@@ -33,14 +34,15 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
   factorId,
   onMfaEnabled,
 }) => {
+  const { t } = useLanguage();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleVerify = async () => {
     if (!factorId || !code) {
       handleApiError(
-        new Error("Factor ID or code is missing."),
-        "Factor ID or code is missing.",
+        new Error(t("mfaSetup.error.missingFactorOrCode")),
+        t("mfaSetup.error.missingFactorOrCode"),
       );
       return;
     }
@@ -57,12 +59,12 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
         throw error;
       }
 
-      toast.success("Two-factor authentication enabled successfully!");
+      toast.success(t("mfaSetup.toast.success"));
       onMfaEnabled();
       onClose();
     } catch (error) {
       console.error("Error verifying 2FA:", error);
-      handleApiError(error, `Failed to verify 2FA`);
+      handleApiError(error, t("mfaSetup.toast.error"));
     } finally {
       setLoading(false);
     }
@@ -72,22 +74,20 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Set up Two-Factor Authentication</AlertDialogTitle>
+          <AlertDialogTitle>{t("mfaSetup.title")}</AlertDialogTitle>
           <AlertDialogDescription>
-            Scan the QR code with your authenticator app (e.g., Google
-            Authenticator, Authy) or manually enter the secret key. Then, enter
-            the 6-digit code from the app to verify.
+            {t("mfaSetup.description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="space-y-4">
           {qrCode && (
             <div className="flex justify-center">
-              <img src={qrCode} alt="QR Code" className="w-48 h-48" />
+              <img src={qrCode} alt={t("mfaSetup.qrCodeAlt")} className="w-48 h-48" />
             </div>
           )}
           {secret && (
             <div className="text-center">
-              <Label htmlFor="secret-key">Secret Key:</Label>
+              <Label htmlFor="secret-key">{t("mfaSetup.secretKeyLabel")}</Label>
               <Input
                 id="secret-key"
                 type="text"
@@ -98,26 +98,26 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
             </div>
           )}
           <div className="space-y-2">
-            <Label htmlFor="verification-code">Verification Code</Label>
+            <Label htmlFor="verification-code">{t("mfaSetup.verificationCodeLabel")}</Label>
             <Input
               id="verification-code"
               type="text"
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              placeholder="Enter 6-digit code"
+              placeholder={t("mfaSetup.verificationCodePlaceholder")}
               maxLength={6}
               className="text-center text-lg tracking-widest"
             />
           </div>
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={onClose}>{t("mfaSetup.cancelButton")}</AlertDialogCancel>
           <Button
             size="default"
             onClick={handleVerify}
             disabled={loading || code.length !== 6}
           >
-            {loading ? "Verifying..." : "Verify Code"}
+            {loading ? t("mfaSetup.verifyingButton") : t("mfaSetup.verifyButton")}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

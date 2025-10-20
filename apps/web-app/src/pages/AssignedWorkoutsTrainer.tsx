@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWorkoutAssignments } from "@/hooks/useWorkoutAssignments";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Define a type for the assignment object for type safety
 type WorkoutAssignment = {
@@ -17,6 +18,7 @@ type WorkoutAssignment = {
 };
 
 const AssignedWorkoutsTrainer = () => {
+  const { t } = useLanguage();
   const { assignments, isLoading } = useWorkoutAssignments();
 
   // Filter out invalid or malformed assignment objects and assert the type
@@ -43,8 +45,8 @@ const AssignedWorkoutsTrainer = () => {
   return (
     <AppLayout>
       <PageLayout
-        title="Assigned Workouts"
-        description="Overview of all assigned workout plans for your athletes."
+        title={t("assignedWorkoutsTrainer.title")}
+        description={t("assignedWorkoutsTrainer.description")}
       >
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {isLoading ? (
@@ -54,24 +56,24 @@ const AssignedWorkoutsTrainer = () => {
               <Card key={assignment.id}>
                 <CardHeader>
                   <CardTitle>
-                    {assignment.title || "Untitled Workout"}
+                    {assignment.title || t("assignedWorkoutsTrainer.untitledWorkout")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <p className="text-sm text-muted-foreground">
-                    Assigned to:{" "}
+                    {t("assignedWorkoutsTrainer.assignedTo")}{" "}
                     <span className="font-medium text-foreground">
-                      {assignment.athlete?.full_name || "N/A"}
+                      {assignment.athlete?.full_name || t("assignedWorkoutsTrainer.notApplicable")}
                     </span>
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Scheduled Date:{" "}
+                    {t("assignedWorkoutsTrainer.scheduledDate")}{" "}
                     <span className="font-medium text-foreground">
                       {new Date(assignment.scheduled_date).toLocaleDateString()}
                     </span>
                   </p>
                   <div>
-                    Status:{" "}
+                    {t("assignedWorkoutsTrainer.status")}{" "}
                     <Badge
                       variant={
                         assignment.status === "completed"
@@ -90,7 +92,7 @@ const AssignedWorkoutsTrainer = () => {
             ))
           ) : (
             <div className="col-span-full text-center text-muted-foreground py-10">
-              <p>No workouts have been assigned yet.</p>
+              <p>{t("assignedWorkoutsTrainer.noWorkouts")}</p>
             </div>
           )}
         </div>

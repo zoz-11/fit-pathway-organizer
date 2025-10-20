@@ -101,12 +101,12 @@ const Profile = () => {
       if (updateError) throw updateError;
 
       setAvatarUrl(data.publicUrl);
-      toast.success("Profile picture updated");
+      toast.success(t("profile.toast.avatar.updateSuccess"));
 
       // Refresh the profile data
       refreshProfile();
     } catch (error) {
-      handleApiError(error, "Error uploading avatar");
+      handleApiError(error, t("profile.toast.avatar.updateError"));
     } finally {
       setUploading(false);
     }
@@ -135,11 +135,11 @@ const Profile = () => {
 
       if (error) throw error;
 
-      toast.success("Profile updated successfully!");
+      toast.success(t("profile.toast.updateSuccess"));
       setIsEditing(false);
       refreshProfile();
     } catch (error) {
-      handleApiError(error, "Failed to update profile");
+      handleApiError(error, t("profile.toast.updateError"));
     } finally {
       setIsSaving(false);
     }
@@ -240,8 +240,8 @@ const Profile = () => {
                 </Avatar>
                 <label
                   htmlFor="avatar-upload"
-                  className="absolute bottom-0 right-0 p-1 bg-primary text-primary-foreground rounded-full cursor-pointer hover:bg-primary/90 transition-colors"
-                  aria-label="Upload profile picture"
+                  className="absolute bottom-0 end-0 p-1 bg-primary text-primary-foreground rounded-full cursor-pointer hover:bg-primary/90 transition-colors avatar-upload-label"
+                  aria-label={t("profile.picture.upload.label")}
                 >
                   <Upload className="h-4 w-4" />
                   <input
@@ -251,7 +251,7 @@ const Profile = () => {
                     className="hidden"
                     onChange={handleAvatarUpload}
                     disabled={uploading}
-                    aria-label="Upload profile picture"
+                    aria-label={t("profile.picture.upload.label")}
                   />
                 </label>
               </div>
@@ -265,12 +265,12 @@ const Profile = () => {
           </Card>
           <Card className="lg:col-span-2">
             <CardHeader className="flex justify-between items-center">
-              <CardTitle>Personal Information</CardTitle>
+              <CardTitle>{t("profile.personal.title")}</CardTitle>
               <Button
                 variant="outline"
                 size="default"
                 onClick={() => setIsEditing(!isEditing)}
-                aria-label="Edit profile information"
+                aria-label={t("profile.edit.label")}
               >
                 <Edit className="h-4 w-4" />
               </Button>

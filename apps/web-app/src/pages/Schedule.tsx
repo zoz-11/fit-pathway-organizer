@@ -7,6 +7,7 @@ import { PageLayout } from "@/components/layout/PageLayout";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuthProvider";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Workout {
   id: number;
@@ -25,11 +26,12 @@ const hasGoogleRefreshToken = (profile: any) => {
 
 const Schedule: React.FC = () => {
   const { user, profile } = useAuth();
+  const { t } = useLanguage();
 
   const handleAddToCalendar = async (workout: Workout) => {
     if (!user) {
-      toast.error("Authentication Required", {
-        description: "Please log in to connect your Google Calendar.",
+      toast.error(t("schedule.toast.authRequired.title"), {
+        description: t("schedule.toast.authRequired.description"),
       });
       return;
     }
@@ -57,7 +59,7 @@ const Schedule: React.FC = () => {
     try {
       const event = {
         summary: workout.name,
-        description: `Trainer: ${workout.trainer}, Location: ${workout.location}`,
+        description: `${t("schedule.workout.item.trainer")} ${workout.trainer}, ${t("schedule.workout.item.location")} ${workout.location}`,
         start: {
           dateTime: new Date().toISOString(), // Placeholder, ideally use actual workout date/time
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -79,65 +81,65 @@ const Schedule: React.FC = () => {
 
       if (error) {
         console.error("Error creating calendar event:", error);
-        toast.error("Failed to add event to Google Calendar.");
+        toast.error(t("schedule.toast.gcal.addError"));
       } else if (data?.error) {
         console.error("Server-side error creating calendar event:", data.error);
-        toast.error(`Failed to add event to Google Calendar: ${data.error}`);
+        toast.error(`${t("schedule.toast.gcal.addError")} ${data.error}`);
       } else {
-        toast.success("Workout added to Google Calendar!");
+        toast.success(t("schedule.toast.gcal.addSuccess"));
       }
     } catch (err) {
       console.error("Unexpected error adding event to calendar:", err);
-      toast.error("An unexpected error occurred while adding to calendar.");
+      toast.error(t("schedule.toast.gcal.addUnexpectedError"));
     }
   };
 
   const handleJoinWorkout = (workoutName: string) => {
-    toast.success(`Joined ${workoutName}!`);
+    toast.success(t("schedule.toast.joinSuccess", { workoutName }));
   };
 
   const handleCancelWorkout = (workoutName: string) => {
-    toast.info(`Cancelled ${workoutName}`);
+    toast.info(t("schedule.toast.cancelSuccess", { workoutName }));
   };
 
   const workouts = [
     {
       id: 1,
-      name: "Upper Body Strength",
-      time: "9:00 AM - 10:00 AM",
-      date: "Today",
-      location: "Gym Floor A",
-      trainer: "Mike Johnson",
-      spots: "3/10",
-      status: "confirmed",
+      name: t("schedule.workouts.1.name"),
+      time: t("schedule.workouts.1.time"),
+      date: t("schedule.workouts.1.date"),
+      location: t("schedule.workouts.1.location"),
+      trainer: t("schedule.workouts.1.trainer"),
+      spots: t("schedule.workouts.1.spots"),
+      status: t("schedule.workouts.1.status"),
     },
     {
       id: 2,
-      name: "Cardio Blast",
-      time: "6:00 PM - 6:30 PM",
-      date: "Tomorrow",
-      location: "Cardio Room",
-      trainer: "Sarah Smith",
-      spots: "5/12",
-      status: "pending",
+      name: t("schedule.workouts.2.name"),
+      time: t("schedule.workouts.2.time"),
+      date: t("schedule.workouts.2.date"),
+      location: t("schedule.workouts.2.location"),
+      trainer: t("schedule.workouts.2.trainer"),
+      spots: t("schedule.workouts.2.spots"),
+      status: t("schedule.workouts.2.status"),
     },
     {
       id: 3,
-      name: "Yoga Flow",
-      time: "7:00 AM - 8:00 AM",
-      date: "Sunday",
-      location: "Studio B",
-      trainer: "Emma Wilson",
-      spots: "8/15",
-      status: "available",
+      name: t("schedule.workouts.3.name"),
+      time: t("schedule.workouts.3.time"),
+      date: t("schedule.workouts.3.date"),
+      location: t("schedule.workouts.3.location"),
+      trainer: t("schedule.workouts.3.trainer"),
+      spots: t("schedule.workouts.3.spots"),
+      status: t("schedule.workouts.3.status"),
     },
   ];
 
   return (
     <AppLayout>
       <PageLayout
-        title="My Schedule"
-        description="Manage your upcoming workouts and training sessions"
+        title={t("schedule.title")}
+        description={t("schedule.description")}
       >
         <div className="grid gap-6">
           {workouts.map((workout) => (
@@ -178,12 +180,12 @@ const Schedule: React.FC = () => {
                   </div>
                   <div className="flex items-center space-x-2">
                     <Users className="h-4 w-4 text-gray-500" />
-                    <span>{workout.spots} spots available</span>
+                    <span>{`${workout.spots} ${t("schedule.workout.item.spotsAvailable")} `}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between pt-2">
                   <p className="text-sm text-gray-600">
-                    Trainer: {workout.trainer}
+                    {t("schedule.workout.item.trainer")} {workout.trainer}
                   </p>
                   <div className="flex gap-2">
                     {workout.status === "available" && (
@@ -191,7 +193,7 @@ const Schedule: React.FC = () => {
                         size="sm"
                         onClick={() => handleJoinWorkout(workout.name)}
                       >
-                        Join Workout
+                        {t("schedule.workout.item.joinButton")}
                       </Button>
                     )}
                     {workout.status === "confirmed" && (
@@ -200,12 +202,12 @@ const Schedule: React.FC = () => {
                         size="sm"
                         onClick={() => handleCancelWorkout(workout.name)}
                       >
-                        Cancel
+                        {t("schedule.workout.item.cancelButton")}
                       </Button>
                     )}
                     {workout.status === "pending" && (
                       <Button variant="secondary" size="sm" disabled>
-                        Pending Approval
+                        {t("schedule.workout.item.pendingButton")}
                       </Button>
                     )}
                     <Button
@@ -213,7 +215,7 @@ const Schedule: React.FC = () => {
                       size="sm"
                       onClick={() => handleAddToCalendar(workout)}
                     >
-                      Add to Calendar
+                      {t("schedule.workout.item.addToCalendarButton")}
                     </Button>
                   </div>
                 </div>

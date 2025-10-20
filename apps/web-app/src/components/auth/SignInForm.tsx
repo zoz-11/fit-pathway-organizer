@@ -11,6 +11,7 @@ import {
   RateLimiter,
   validatePassword,
 } from "@/lib/security";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const signInLimiter = new RateLimiter({
   windowMs: 15 * 60 * 1000,
@@ -18,6 +19,7 @@ const signInLimiter = new RateLimiter({
 });
 
 export const SignInForm = () => {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,13 +32,13 @@ export const SignInForm = () => {
 
     const sanitizedEmail = sanitizeEmail(email);
     if (!sanitizedEmail) {
-      setError("Please enter a valid email address.");
+      setError(t("signIn.error.invalidEmail"));
       setLoading(false);
       return;
     }
 
     if (!signInLimiter.isAllowed(sanitizedEmail)) {
-      setError("Too many sign-in attempts. Please try again later.");
+      setError(t("signIn.error.tooManyAttempts"));
       setLoading(false);
       return;
     }
@@ -47,7 +49,7 @@ export const SignInForm = () => {
         (lockoutStatus.remainingTime || 0) / (1000 * 60),
       );
       setError(
-        `Account temporarily locked. Please try again in ${remainingMinutes} minutes.`,
+        t("signIn.error.accountLocked", { minutes: remainingMinutes }),
       );
       setLoading(false);
       return;
@@ -56,7 +58,7 @@ export const SignInForm = () => {
     // Additional password validation
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.isValid) {
-      setError("Password does not meet security requirements.");
+      setError(t("signIn.error.passwordRequirements"));
       setLoading(false);
       return;
     }
@@ -71,14 +73,14 @@ export const SignInForm = () => {
         recordLoginAttempt(sanitizedEmail, false);
         if (error.message === "Email not confirmed") {
           setError(
-            "Please verify your email before signing in. Check your inbox and spam folder for the verification link.",
+            t("signIn.error.emailNotConfirmed"),
           );
         } else if (error.message.includes("Failed to fetch")) {
           setError(
-            "Connection error. Please check your internet connection and try again.",
+            t("signIn.error.connectionError"),
           );
         } else {
-          setError(error.message || "An error occurred during sign in");
+          setError(error.message || t("signIn.error.generic"));
         }
         return;
       }
@@ -88,7 +90,7 @@ export const SignInForm = () => {
         window.location.href = "/";
       }
     } catch (error) {
-      setError((error as Error).message || "An error occurred during sign in");
+      setError((error as Error).message || t("signIn.error.generic"));
     } finally {
       setLoading(false);
     }
@@ -97,25 +99,25 @@ export const SignInForm = () => {
   return (
     <form onSubmit={handleSignIn} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="signin-email">Email</Label>
+        <Label htmlFor="signin-email">{t("signIn.label.email")}</Label>
         <Input
           id="signin-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          placeholder="Enter your email"
+          placeholder={t("signIn.placeholder.email")}
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="signin-password">Password</Label>
+        <Label htmlFor="signin-password">{t("signIn.label.password")}</Label>.
         <Input
           id="signin-password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          placeholder="Enter your password"
+          placeholder={t("signIn.placeholder.password")}
         />
       </div>
       <Button
@@ -124,7 +126,7 @@ export const SignInForm = () => {
         className="w-full"
         disabled={loading}
       >
-        {loading ? "Signing in..." : "Sign In"}
+        {loading ? t("signIn.button.signingIn") : t("signIn.button.signIn")}
       </Button>
       {error && (
         <Alert className="mt-4 border-red-200 bg-red-50">

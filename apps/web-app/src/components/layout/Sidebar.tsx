@@ -130,7 +130,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
               key={item.label}
               variant={isActive ? "default" : "ghost"}
               className={cn(
-                "w-full justify-start space-x-3 py-3 px-4 cursor-pointer text-left",
+                "w-full justify-start space-x-3 py-3 px-4 cursor-pointer text-start",
                 isActive
                   ? "bg-primary text-primary-foreground shadow-md"
                   : "hover:bg-accent hover:text-accent-foreground",
@@ -151,8 +151,8 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
           className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
           onClick={handleSignOut}
         >
-          <LogOut className="h-4 w-4 mr-2" />
-          Sign Out
+          <LogOut className="h-4 w-4 me-2" />
+          {t("sidebar.signOut")}
         </Button>
       </nav>
 

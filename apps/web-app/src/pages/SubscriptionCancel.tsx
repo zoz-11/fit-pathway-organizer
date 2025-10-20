@@ -2,8 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { XCircle, Home, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const SubscriptionCancel = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   return (
@@ -14,30 +16,28 @@ const SubscriptionCancel = () => {
             <XCircle className="h-16 w-16 text-orange-500" />
           </div>
           <CardTitle className="text-2xl text-orange-700">
-            Subscription Cancelled
+            {t("subscriptionCancel.title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-gray-600">
-            No worries! Your subscription process was cancelled and no charges
-            were made.
+            {t("subscriptionCancel.message")}
           </p>
           <p className="text-sm text-gray-500">
-            You can try again anytime or continue using FitPathway with our free
-            features.
+            {t("subscriptionCancel.info")}
           </p>
           <div className="space-y-2">
             <Button onClick={() => navigate("/")} className="w-full">
-              <Home className="h-4 w-4 mr-2" />
-              Go to Dashboard
+              <Home className="h-4 w-4 me-2" />
+              {t("subscriptionCancel.dashboardButton")}
             </Button>
             <Button
               variant="outline"
               onClick={() => navigate("/?tab=subscription")}
               className="w-full"
             >
-              <CreditCard className="h-4 w-4 mr-2" />
-              Try Again
+              <CreditCard className="h-4 w-4 me-2" />
+              {t("subscriptionCancel.retryButton")}
             </Button>
           </div>
         </CardContent>

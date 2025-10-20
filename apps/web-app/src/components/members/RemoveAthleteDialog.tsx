@@ -30,7 +30,7 @@ export const RemoveAthleteDialog = ({
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <span className="flex items-center text-red-600 cursor-pointer">
-          <Trash2 className="mr-2 h-4 w-4" />
+          <Trash2 className="me-2 h-4 w-4" />
           {t("removeAthleteDialog.trigger")}
         </span>
       </AlertDialogTrigger>

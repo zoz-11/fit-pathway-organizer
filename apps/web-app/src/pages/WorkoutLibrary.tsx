@@ -48,7 +48,7 @@ const WorkoutLibrary = () => {
                   <p className="text-sm text-muted-foreground">
                     {workout.description}
                   </p>
-                  <div className="flex justify-end space-x-2 mt-4">
+                  <div className="flex justify-end gap-2 mt-4">
                     <Button variant="outline" size="sm">
                       <Edit className="h-4 w-4" />
                     </Button>
@@ -60,10 +60,7 @@ const WorkoutLibrary = () => {
               </Card>
             ))
           ) : (
-            <p>
-              No workouts created yet. Click "Create New Workout" to get
-              started!
-            </p>
+            <p>{t("workoutLibrary.noWorkouts")}</p>
           )}
         </div>
       </PageLayout>

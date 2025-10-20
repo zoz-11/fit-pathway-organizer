@@ -16,6 +16,7 @@ import { useAuth } from "@/hooks/useAuthProvider";
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Message {
   role: "user" | "assistant";
@@ -24,11 +25,12 @@ interface Message {
 }
 
 export const AiChatAssistant = () => {
+  const { t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
       content:
-        "Hi! I'm your AI fitness coach. I can help you with workout advice, nutrition tips, and answer any fitness-related questions. How can I assist you today?",
+        t("aiChat.initialMessage"),
       timestamp: new Date(),
     },
   ]);
@@ -75,13 +77,13 @@ export const AiChatAssistant = () => {
       if (error) {
         console.error("Edge function error details:", error);
         throw new Error(
-          `AI service error: ${error.message || "Unknown error"}`,
+          t("aiChat.error.serviceError", { message: error.message || t("aiChat.error.unknown") }),
         );
       }
 
       if (!data || !data.response) {
         console.error("Invalid response data:", data);
-        throw new Error("Invalid response from AI service");
+        throw new Error(t("aiChat.error.invalidResponse"));
       }
 
       const assistantMessage: Message = {
@@ -91,17 +93,17 @@ export const AiChatAssistant = () => {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
-      toast.success("AI response received!");
-    } catch (error) {
+      toast.success(t("aiChat.toast.responseReceived"));
+    } catch (error) { 
       console.error("Detailed error in sendMessage:", error);
       const errorMessage =
-        error instanceof Error ? error.message : "Unknown error occurred";
+        error instanceof Error ? error.message : t("aiChat.error.unknown");
       setError(errorMessage);
-      handleApiError(error, `AI Chat Error: ${errorMessage}`);
+      handleApiError(error, `${t("aiChat.error.chatError")}: ${errorMessage}`);
 
       const errorResponse: Message = {
         role: "assistant",
-        content: `I apologize, but I'm experiencing technical difficulties right now. Please check your network connection and ensure the Supabase Edge Functions are properly deployed. If the problem continues, contact support.`,
+        content: t("aiChat.error.technicalDifficulties"),
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorResponse]);
@@ -115,12 +117,12 @@ export const AiChatAssistant = () => {
       {
         role: "assistant",
         content:
-          "Chat cleared! I'm your AI fitness coach. How can I help you today?",
+          t("aiChat.chatCleared"),
         timestamp: new Date(),
       },
     ]);
     setError(null);
-    toast.info("Chat history cleared");
+    toast.info(t("aiChat.toast.chatCleared"));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -134,14 +136,14 @@ export const AiChatAssistant = () => {
     <Card className="h-[500px] flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center">
-          <MessageCircle className="h-5 w-5 mr-2 text-blue-600" />
-          <CardTitle>AI Fitness Coach</CardTitle>
+          <MessageCircle className="h-5 w-5 me-2 text-blue-600" />
+          <CardTitle>{t("aiChat.title")}</CardTitle>
         </div>
         <div className="flex gap-2">
           {error && (
             <div className="flex items-center text-red-500 text-sm">
-              <AlertCircle className="h-4 w-4 mr-1" />
-              <span>Connection Error</span>
+              <AlertCircle className="h-4 w-4 me-1" />
+              <span>{t("aiChat.connectionError")}</span>
             </div>
           )}
           <Button variant="ghost" size="sm-icon" onClick={clearChat}>
@@ -192,7 +194,7 @@ export const AiChatAssistant = () => {
                 </div>
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 flex items-center gap-1">
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    AI is thinking
+                    {t("aiChat.thinking")}
                   </span>
                   <span className="animate-pulse text-sm text-gray-600 dark:text-gray-400">
                     .
@@ -214,7 +216,7 @@ export const AiChatAssistant = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask me anything about fitness..."
+              placeholder={t("aiChat.placeholder")}
               disabled={isLoading}
               className="flex-1 bg-white dark:bg-gray-800"
             />
@@ -224,7 +226,7 @@ export const AiChatAssistant = () => {
               disabled={isLoading || !input.trim()}
               className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
             >
-              {isLoading ? "Sending..." : "Send"}
+              {isLoading ? t("aiChat.sending") : t("aiChat.send")}
             </Button>
           </div>
         </div>

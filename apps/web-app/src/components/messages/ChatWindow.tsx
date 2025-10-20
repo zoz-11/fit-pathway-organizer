@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ChatWindowProps {
   participantId: string;
@@ -23,6 +24,7 @@ export const ChatWindow = ({
   participantId,
   participantName,
 }: ChatWindowProps) => {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const { messages, isLoading, sendMessage } = useMessages(participantId);
   const [newMessage, setNewMessage] = useState("");
@@ -48,12 +50,12 @@ export const ChatWindow = ({
     return (
       <Card className="flex flex-col h-[500px]">
         <CardHeader>
-          <CardTitle>Chat with {participantName}</CardTitle>
+          <CardTitle>{t("chatWindow.title", { participantName })}</CardTitle>
         </CardHeader>
         <CardContent className="flex-1 overflow-hidden p-4">
           <div className="space-y-4">
             <Skeleton className="h-10 w-3/4" />
-            <Skeleton className="h-10 w-1/2 ml-auto" />
+            <Skeleton className="h-10 w-1/2 ms-auto" />
             <Skeleton className="h-10 w-2/3" />
             <Skeleton className="h-10 w-full" />
           </div>
@@ -68,7 +70,7 @@ export const ChatWindow = ({
   return (
     <Card className="flex flex-col h-[500px]">
       <CardHeader>
-        <CardTitle>Chat with {participantName}</CardTitle>
+        <CardTitle>{t("chatWindow.title", { participantName })}</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden p-4">
         <ScrollArea className="h-full pr-4">
@@ -99,7 +101,7 @@ export const ChatWindow = ({
               ))
             ) : (
               <div className="text-center text-muted-foreground">
-                Start a conversation!
+                {t("chatWindow.startConversation")}
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -109,7 +111,7 @@ export const ChatWindow = ({
       <CardFooter>
         <form onSubmit={handleSendMessage} className="flex w-full space-x-2">
           <Input
-            placeholder="Type your message..."
+            placeholder={t("chatWindow.placeholder")}
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             className="flex-1"

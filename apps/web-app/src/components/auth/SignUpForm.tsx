@@ -18,6 +18,7 @@ import {
   RateLimiter,
 } from "@/lib/security";
 import { ResendConfirmation } from "./ResendConfirmation";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const signUpLimiter = new RateLimiter({
   windowMs: 60 * 60 * 1000,
@@ -25,6 +26,7 @@ const signUpLimiter = new RateLimiter({
 });
 
 export const SignUpForm = () => {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -47,23 +49,23 @@ export const SignUpForm = () => {
     const sanitizedFullName = sanitizeString(fullName);
 
     if (!signUpLimiter.isAllowed(sanitizedEmail)) {
-      setError("Too many sign-up attempts. Please try again later.");
+      setError(t("signUp.error.tooManyAttempts"));
       setLoading(false);
       return;
     }
 
     if (!sanitizedFullName) {
-      setError("Full Name cannot be empty.");
+      setError(t("signUp.error.fullNameRequired"));
       setLoading(false);
       return;
     }
     if (!sanitizedEmail) {
-      setError("Please enter a valid email address.");
+      setError(t("signUp.error.invalidEmail"));
       setLoading(false);
       return;
     }
     if (!role) {
-      setError("Please select a role.");
+      setError(t("signUp.error.roleRequired"));
       setLoading(false);
       return;
     }
@@ -71,7 +73,7 @@ export const SignUpForm = () => {
     const passwordValidation = validatePassword(password);
     if (!passwordValidation.isValid) {
       setPasswordErrors(passwordValidation.errors);
-      setError("Please fix the password requirements.");
+      setError(t("signUp.error.passwordRequirements"));
       setLoading(false);
       return;
     }
@@ -102,14 +104,14 @@ export const SignUpForm = () => {
           setRegisteredEmail(sanitizedEmail);
           setShowResend(true);
           setMessage(
-            "Account created! Please check your email (including spam folder) and click the verification link.",
+            t("signUp.message.accountCreated"),
           );
         } else {
           window.location.href = "/";
         }
       }
     } catch (error) {
-      setError((error as Error).message || "An error occurred during sign up");
+      setError((error as Error).message || t("signUp.error.generic"));
     } finally {
       setLoading(false);
     }
@@ -133,11 +135,11 @@ export const SignUpForm = () => {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="fullName">Full Name</Label>
+        <Label htmlFor="fullName">{t("signUp.label.fullName")}</Label>
         <Input
           id="fullName"
           type="text"
-          placeholder="Enter your full name"
+          placeholder={t("signUp.placeholder.fullName")}
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           required
@@ -145,11 +147,11 @@ export const SignUpForm = () => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t("signUp.label.email")}</Label>
         <Input
           id="email"
           type="email"
-          placeholder="Enter your email"
+          placeholder={t("signUp.placeholder.email")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -157,11 +159,11 @@ export const SignUpForm = () => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t("signUp.label.password")}</Label>
         <Input
           id="password"
           type="password"
-          placeholder="Create a password"
+          placeholder={t("signUp.placeholder.password")}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -176,23 +178,23 @@ export const SignUpForm = () => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="role">I am a</Label>
+        <Label htmlFor="role">{t("signUp.label.role")}</Label>
         <Select
           value={role}
           onValueChange={(value) => setRole(value as "trainer" | "athlete")}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select your role" />
+            <SelectValue placeholder={t("signUp.placeholder.role")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="athlete">Athlete</SelectItem>
-            <SelectItem value="trainer">Trainer</SelectItem>
+            <SelectItem value="athlete">{t("signUp.role.athlete")}</SelectItem>
+            <SelectItem value="trainer">{t("signUp.role.trainer")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? "Creating Account..." : "Sign Up"}
+        {loading ? t("signUp.button.creatingAccount") : t("signUp.button.signUp")}
       </Button>
     </form>
   );

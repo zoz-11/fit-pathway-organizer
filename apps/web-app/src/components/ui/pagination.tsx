@@ -1,7 +1,8 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
+import { useLanguage } from "@/contexts/LanguageContext";;
 import { ButtonProps, buttonVariants } from "@/components/ui/button";
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
@@ -43,9 +44,10 @@ const PaginationLink = ({
   className,
   isActive,
   size = "icon",
-  children,
   ...props
-}: PaginationLinkProps) => (
+}: PaginationLinkProps) => {
+  const { t } = useLanguage();
+  return (
   <a
     aria-current={isActive ? "page" : undefined}
     className={cn(
@@ -53,46 +55,51 @@ const PaginationLink = ({
         variant: isActive ? "outline" : "ghost",
         size,
       }),
-      className,
+      className
     )}
     {...props}
-  >
-    {children || <span className="sr-only">Page link</span>}
-  </a>
-);
+  />
+)}
 PaginationLink.displayName = "PaginationLink";
+
+    <PaginationLink {...props}>
+      {children || <span className="sr-only">{t("pagination.pageLink")}</span>}
+    </PaginationLink>
+  )
+}
+PaginationItem.displayName = "PaginationItem"
 
 const PaginationPrevious = ({
   className,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
-    aria-label="Go to previous page"
+    aria-label={t("pagination.previousPage")}
     size="default"
     className={cn("gap-1 pl-2.5", className)}
     {...props}
   >
     <ChevronLeft className="h-4 w-4" />
-    <span>Previous</span>
+    <span>{t("pagination.previous")}</span>
   </PaginationLink>
-);
-PaginationPrevious.displayName = "PaginationPrevious";
+)
+PaginationPrevious.displayName = "PaginationPrevious"
 
 const PaginationNext = ({
   className,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
-    aria-label="Go to next page"
+    aria-label={t("pagination.nextPage")}
     size="default"
     className={cn("gap-1 pr-2.5", className)}
     {...props}
   >
-    <span>Next</span>
+    <span>{t("pagination.next")}</span>
     <ChevronRight className="h-4 w-4" />
   </PaginationLink>
-);
-PaginationNext.displayName = "PaginationNext";
+)
+PaginationNext.displayName = "PaginationNext"
 
 const PaginationEllipsis = ({
   className,
@@ -104,10 +111,10 @@ const PaginationEllipsis = ({
     {...props}
   >
     <MoreHorizontal className="h-4 w-4" />
-    <span className="sr-only">More pages</span>
+    <span className="sr-only">{t("pagination.morePages")}</span>
   </span>
-);
-PaginationEllipsis.displayName = "PaginationEllipsis";
+)
+
 
 export {
   Pagination,

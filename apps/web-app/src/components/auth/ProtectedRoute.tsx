@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/useAuthProvider";
 import { Navigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -10,6 +11,7 @@ export const ProtectedRoute = ({
   children,
   requiredRole,
 }: ProtectedRouteProps) => {
+  const { t } = useLanguage();
   const { user, profile, loading } = useAuth();
 
   // Show a loading spinner while authentication status is being determined
@@ -18,7 +20,7 @@ export const ProtectedRoute = ({
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Loading...</p>
+          <p className="mt-2 text-gray-600">{t("protectedRoute.loading")}</p>
         </div>
       </div>
     );
@@ -35,10 +37,10 @@ export const ProtectedRoute = ({
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            Access Denied
+            {t("protectedRoute.accessDenied")}
           </h1>
           <p className="text-gray-600">
-            You don't have permission to access this page.
+            {t("protectedRoute.noPermission")}
           </p>
         </div>
       </div>

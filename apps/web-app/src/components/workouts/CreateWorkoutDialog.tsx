@@ -34,7 +34,7 @@ export const CreateWorkoutDialog = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <PlusCircle className="h-4 w-4 mr-2" />
+          <PlusCircle className="h-4 w-4 me-2" />
           {t("createWorkoutDialog.createWorkout")}
         </Button>
       </DialogTrigger>

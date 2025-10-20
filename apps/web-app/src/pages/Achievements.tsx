@@ -4,16 +4,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAchievements } from "@/hooks/useAchievements";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Achievements = () => {
   const { userAchievements, isLoadingUserAchievements } = useAchievements();
+  const { t } = useLanguage();
 
   if (isLoadingUserAchievements) {
     return (
       <AppLayout>
         <PageLayout
-          title="My Achievements"
-          description="Celebrate your fitness milestones!"
+          title={t("achievements.title")}
+          description={t("achievements.description")}
         >
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <Skeleton className="h-32" />
@@ -28,8 +30,8 @@ const Achievements = () => {
   return (
     <AppLayout>
       <PageLayout
-        title="My Achievements"
-        description="Celebrate your fitness milestones!"
+        title={t("achievements.title")}
+        description={t("achievements.description")}
       >
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {userAchievements && userAchievements.length > 0 ? (
@@ -46,13 +48,13 @@ const Achievements = () => {
                     {ua.achievement.description}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Achieved on: {new Date(ua.awarded_at).toLocaleDateString()}
+                    {t("achievements.achievedOn")} {new Date(ua.awarded_at).toLocaleDateString()}
                   </p>
                 </CardContent>
               </Card>
             ))
           ) : (
-            <p>No achievements unlocked yet. Keep working out!</p>
+            <p>{t("achievements.noAchievements")}</p>
           )}
         </div>
       </PageLayout>

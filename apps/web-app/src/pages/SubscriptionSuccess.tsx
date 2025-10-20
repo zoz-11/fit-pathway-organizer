@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useLanguage } from "../contexts/LanguageContext";
 
 const SubscriptionSuccess = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
-    toast.success("Subscription activated successfully!");
+    toast.success(t("subscriptionSuccess.toast.success"));
   }, []);
 
   return (
@@ -20,21 +22,19 @@ const SubscriptionSuccess = () => {
             <CheckCircle className="h-16 w-16 text-green-500" />
           </div>
           <CardTitle className="text-2xl text-green-700">
-            Subscription Activated!
+            {t("subscriptionSuccess.title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-gray-600">
-            Welcome to your premium FitPathway experience! Your subscription has
-            been successfully activated.
+            {t("subscriptionSuccess.message")}
           </p>
           <p className="text-sm text-gray-500">
-            You now have access to all premium features including AI coaching,
-            advanced analytics, and priority support.
+            {t("subscriptionSuccess.info")}
           </p>
           <Button onClick={() => navigate("/")} className="w-full">
-            <Home className="h-4 w-4 mr-2" />
-            Go to Dashboard
+            <Home className="h-4 w-4 me-2" />
+            {t("subscriptionSuccess.dashboardButton")}
           </Button>
         </CardContent>
       </Card>

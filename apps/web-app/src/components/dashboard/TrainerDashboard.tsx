@@ -58,7 +58,7 @@ export const TrainerDashboard = () => {
     const newActivity = {
       id: activities.length + 1,
       text: t("dashboard.trainer.activities.athleteAdded", {
-        name: "Alex Johnson",
+        name: t("trainerDashboard.mock.athleteName"),
       }),
       time: t("dashboard.trainer.activities.justNow"),
       type: "success" as const,
@@ -66,7 +66,7 @@ export const TrainerDashboard = () => {
     setActivities((prev) => [newActivity, ...prev]);
     toast.success(t("dashboard.trainer.toasts.athleteAdded.title"), {
       description: t("dashboard.trainer.toasts.athleteAdded.description", {
-        name: "Alex Johnson",
+        name: t("trainerDashboard.mock.athleteName"),
       }),
     });
   };
@@ -76,7 +76,7 @@ export const TrainerDashboard = () => {
       id: activities.length + 1,
       text: t("dashboard.trainer.activities.workoutScheduled", {
         name: "John",
-        workout: "Upper Body Strength",
+        workout: t("trainerDashboard.mock.workoutName"),
         time: "Tomorrow 10 AM",
       }),
       time: t("dashboard.trainer.activities.justNow"),
@@ -85,7 +85,7 @@ export const TrainerDashboard = () => {
     setActivities((prev) => [newActivity, ...prev]);
     toast.success(t("dashboard.trainer.toasts.workoutScheduled.title"), {
       description: t("dashboard.trainer.toasts.workoutScheduled.description", {
-        workout: "Upper Body Strength",
+        workout: t("trainerDashboard.mock.workoutName"),
         name: "John",
         time: "tomorrow at 10 AM",
       }),
@@ -102,7 +102,7 @@ export const TrainerDashboard = () => {
     const newActivity = {
       id: activities.length + 1,
       text: t("dashboard.trainer.activities.exerciseCreated", {
-        exercise: "Diamond Push-ups",
+        exercise: t("trainerDashboard.mock.exerciseName"),
       }),
       time: t("dashboard.trainer.activities.justNow"),
       type: "success" as const,
@@ -110,7 +110,7 @@ export const TrainerDashboard = () => {
     setActivities((prev) => [newActivity, ...prev]);
     toast.success(t("dashboard.trainer.toasts.exerciseCreated.title"), {
       description: t("dashboard.trainer.toasts.exerciseCreated.description", {
-        exercise: "Diamond Push-ups",
+        exercise: t("trainerDashboard.mock.exerciseName"),
       }),
     });
   };
@@ -187,67 +187,66 @@ export const TrainerDashboard = () => {
                 >
                   <div className="flex items-center space-x-3">
                     <Calendar className="h-5 w-5 text-blue-600" />
-                    <div className="text-left">
-                      <div className="font-medium">
-                        {t("dashboard.trainer.quickActions.scheduleWorkout")}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {t(
-                          "dashboard.trainer.quickActions.scheduleDescription",
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </Button>
-                <Button
-                  size="default"
-                  onClick={handleAddAthlete}
-                  className="justify-start h-auto p-4"
-                >
-                  <div className="flex items-center space-x-3">
-                    <UserPlus className="h-5 w-5 text-green-600" />
-                    <div className="text-left">
-                      <div className="font-medium">
-                        {t("dashboard.trainer.quickActions.addAthlete")}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {t("dashboard.trainer.quickActions.expandRoster")}
-                      </div>
-                    </div>
-                  </div>
-                </Button>
-                <Button
-                  size="default"
-                  onClick={handleSendMessage}
-                  className="justify-start h-auto p-4"
-                >
-                  <div className="flex items-center space-x-3">
-                    <Send className="h-5 w-5 text-purple-600" />
-                    <div className="text-left">
-                      <div className="font-medium">
-                        {t("dashboard.trainer.quickActions.sendMessage")}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {t("dashboard.trainer.quickActions.communicate")}
-                      </div>
-                    </div>
-                  </div>
-                </Button>
-                <Button
-                  size="default"
-                  onClick={handleCreateExercise}
-                  className="justify-start h-auto p-4"
-                >
-                  <div className="flex items-center space-x-3">
-                    <PlusCircle className="h-5 w-5 text-orange-600" />
-                    <div className="text-left">
-                      <div className="font-medium">
-                        {t("dashboard.trainer.quickActions.createExercise")}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {t("dashboard.trainer.quickActions.buildLibrary")}
-                      </div>
-                    </div>
+                                      <div className="text-start">
+                                        <div className="font-medium">
+                                          {t("dashboard.trainer.quickActions.scheduleWorkout")}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                          {t(
+                                            "dashboard.trainer.quickActions.scheduleDescription",
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </Button>
+                                  <Button
+                                    size="default"
+                                    onClick={handleAddAthlete}
+                                    className="justify-start h-auto p-4"
+                                  >
+                                    <div className="flex items-center space-x-3">
+                                      <UserPlus className="h-5 w-5 text-green-600" />
+                                      <div className="text-start">
+                                        <div className="font-medium">
+                                          {t("dashboard.trainer.quickActions.addAthlete")}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                          {t("dashboard.trainer.quickActions.expandRoster")}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </Button>
+                                  <Button
+                                    size="default"
+                                    onClick={handleSendMessage}
+                                    className="justify-start h-auto p-4"
+                                  >
+                                    <div className="flex items-center space-x-3">
+                                      <Send className="h-5 w-5 text-purple-600" />
+                                      <div className="text-start">
+                                        <div className="font-medium">
+                                          {t("dashboard.trainer.quickActions.sendMessage")}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                          {t("dashboard.trainer.quickActions.communicate")}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </Button>
+                                  <Button
+                                    size="default"
+                                    onClick={handleCreateExercise}
+                                    className="justify-start h-auto p-4"
+                                  >
+                                    <div className="flex items-center space-x-3">
+                                      <PlusCircle className="h-5 w-5 text-orange-600" />
+                                      <div className="text-start">
+                                        <div className="font-medium">
+                                          {t("dashboard.trainer.quickActions.createExercise")}
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                          {t("dashboard.trainer.quickActions.buildLibrary")}
+                                        </div>                    </div>
                   </div>
                 </Button>
               </div>

@@ -13,6 +13,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // A more accurate type for the workout assignment object, including optional fields.
 type WorkoutAssignment = {
@@ -36,15 +37,16 @@ type WorkoutAssignment = {
 
 const AssignedWorkouts = () => {
   const { assignments, isLoading, markAsComplete } = useWorkoutAssignments();
+  const { t } = useLanguage();
 
   if (isLoading) {
     return (
       <AppLayout>
         <PageLayout
-          title="My Assigned Workouts"
-          description="View and manage your assigned workout plans."
+          title={t("assignedWorkouts.title")}
+          description={t("assignedWorkouts.description")}
         >
-          <div className="p-6">Loading your workout assignments...</div>
+          <div className="p-6">{t("assignedWorkouts.loading")}</div>
         </PageLayout>
       </AppLayout>
     );
@@ -90,14 +92,14 @@ const AssignedWorkouts = () => {
   return (
     <AppLayout>
       <PageLayout
-        title="My Assigned Workouts"
-        description="View and manage your assigned workout plans."
+        title={t("assignedWorkouts.title")}
+        description={t("assignedWorkouts.description")}
       >
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Workouts Completed
+                {t("assignedWorkouts.completed.title")}
               </CardTitle>
               <Dumbbell className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -106,14 +108,14 @@ const AssignedWorkouts = () => {
                 {completedWorkouts.length}
               </div>
               <p className="text-xs text-muted-foreground">
-                Total workouts you've finished. Keep it up!
+                {t("assignedWorkouts.completed.description")}
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Upcoming Workouts
+                {t("assignedWorkouts.upcoming.title")}
               </CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -122,7 +124,7 @@ const AssignedWorkouts = () => {
                 {scheduledWorkouts.length}
               </div>
               <p className="text-xs text-muted-foreground">
-                Workouts waiting for you to conquer.
+                {t("assignedWorkouts.upcoming.description")}
               </p>
             </CardContent>
           </Card>
@@ -130,7 +132,7 @@ const AssignedWorkouts = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Monthly Workout Progress</CardTitle>
+            <CardTitle>{t("assignedWorkouts.monthlyProgress.title")}</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -147,7 +149,7 @@ const AssignedWorkouts = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Scheduled Workouts</CardTitle>
+            <CardTitle>{t("assignedWorkouts.scheduled.title")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4">
@@ -160,7 +162,7 @@ const AssignedWorkouts = () => {
                     <div>
                       <h3 className="font-semibold">{assignment.title}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Due:{" "}
+                        {t("assignedWorkouts.scheduled.due")}{" "}
                         {new Date(
                           assignment.scheduled_date,
                         ).toLocaleDateString()}
@@ -169,14 +171,14 @@ const AssignedWorkouts = () => {
                     <Button
                       onClick={() => markAsComplete.mutate(assignment.id)}
                     >
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Mark as Complete
+                      <CheckCircle className="h-4 w-4 me-2 dropdown-item-icon" />
+                      {t("assignedWorkouts.scheduled.markAsComplete")}
                     </Button>
                   </div>
                 ))
               ) : (
                 <p className="text-muted-foreground text-center py-4">
-                  No scheduled workouts. Great job!
+                  {t("assignedWorkouts.scheduled.noWorkouts")}
                 </p>
               )}
             </div>
@@ -185,7 +187,7 @@ const AssignedWorkouts = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Completed Workouts</CardTitle>
+            <CardTitle>{t("assignedWorkouts.completed.table.title")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4">
@@ -198,23 +200,23 @@ const AssignedWorkouts = () => {
                     <div>
                       <h3 className="font-semibold">{assignment.title}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Completed on:{" "}
+                        {t("assignedWorkouts.completed.table.completedOn")}{" "}
                         {assignment.completed_at
                           ? new Date(
                               assignment.completed_at,
                             ).toLocaleDateString()
-                          : "N/A"}
+                          : t("assignedWorkouts.na")}
                       </p>
                     </div>
                     <span className="text-green-600 font-medium flex items-center">
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Completed
+                      <CheckCircle className="h-4 w-4 me-2 dropdown-item-icon" />
+                      {t("assignedWorkouts.completed.table.status.completed")}
                     </span>
                   </div>
                 ))
               ) : (
                 <p className="text-muted-foreground text-center py-4">
-                  No workouts completed yet. Let's get started!
+                  {t("assignedWorkouts.completed.table.noWorkouts")}
                 </p>
               )}
             </div>

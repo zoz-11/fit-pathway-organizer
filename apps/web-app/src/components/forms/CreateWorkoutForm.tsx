@@ -72,11 +72,11 @@ export const CreateWorkoutForm = ({
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="title">Workout Title</Label>
+          <Label htmlFor="title">{t("createWorkoutForm.titleLabel")}</Label>
           <Input
             id="title"
             {...register("title")}
-            placeholder="Enter workout title"
+            placeholder={t("createWorkoutForm.titlePlaceholder")}
           />
           {errors.title && (
             <p className="text-sm text-red-600">{errors.title.message}</p>
@@ -84,11 +84,11 @@ export const CreateWorkoutForm = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description">{t("createWorkoutForm.descriptionLabel")}</Label>
           <Textarea
             id="description"
             {...register("description")}
-            placeholder="Enter workout description (optional)"
+            placeholder={t("createWorkoutForm.descriptionPlaceholder")}
             rows={3}
           />
           {errors.description && (
@@ -110,7 +110,7 @@ export const CreateWorkoutForm = ({
               append({ name: "", sets: 3, reps: "10-12", rest: 60 })
             }
           >
-            <PlusCircle className="h-4 w-4 mr-2" />
+            <PlusCircle className="h-4 w-4 me-2" />
             {t("createWorkoutForm.exercises.add")}
           </Button>
         </div>
@@ -231,7 +231,7 @@ export const CreateWorkoutForm = ({
         className="w-full"
         disabled={isLoading}
       >
-        {isLoading ? "Creating..." : "Create Workout"}
+        {isLoading ? t("createWorkoutForm.creatingButton") : t("createWorkoutForm.createButton")}
       </Button>
     </form>
   );
