@@ -4,7 +4,7 @@ import "@testing-library/jest-dom";
 import "./__mocks__/importMeta";
 
 // Setup DOM environment for testing
-global.window = window as any;
+
 global.document = document as any;
 global.navigator = {
   userAgent: 'node.js',

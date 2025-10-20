@@ -52,7 +52,8 @@ const AthleteProgress = () => {
 
   // Query for the athlete's assigned workouts from the correct table
   const { data: assignedWorkouts, isLoading: isLoadingWorkouts } = useQuery<
-    Workout[]
+    Workout[],
+    Error
   >({
     queryKey: ["assignedWorkoutsForAthlete", athleteId],
     queryFn: async () => {
@@ -134,13 +135,13 @@ const AthleteProgress = () => {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title={t("athleteProgress.stats.completed")}
-            value={completedCount}
+            value={completedCount.toString()}
             icon={Dumbbell}
             description={t("athleteProgress.stats.completedDescription")}
           />
           <StatCard
             title={t("athleteProgress.stats.upcoming")}
-            value={scheduledCount}
+            value={scheduledCount.toString()}
             icon={Calendar}
             description={t("athleteProgress.stats.upcomingDescription")}
           />

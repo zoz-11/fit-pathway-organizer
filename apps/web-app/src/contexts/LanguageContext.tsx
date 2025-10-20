@@ -8,11 +8,11 @@ import React, {
 import enTranslations from "./translations/en.json";
 import arTranslations from "./translations/ar.json";
 
-interface LanguageContextType {
+type LanguageContextType = {
   language: string;
   setLanguage: (language: string) => void;
   t: (key: string) => string;
-}
+};
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
   undefined,

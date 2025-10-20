@@ -95,11 +95,11 @@ const Schedule: React.FC = () => {
   };
 
   const handleJoinWorkout = (workoutName: string) => {
-    toast.success(t("schedule.toast.joinSuccess", { workoutName }));
+    toast.success(`${t("schedule.toast.joinSuccess")} ${workoutName}`);
   };
 
   const handleCancelWorkout = (workoutName: string) => {
-    toast.info(t("schedule.toast.cancelSuccess", { workoutName }));
+    toast.info(`${t("schedule.toast.cancelSuccess")} ${workoutName}`);
   };
 
   const workouts = [

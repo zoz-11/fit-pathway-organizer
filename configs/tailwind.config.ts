@@ -1,6 +1,8 @@
 import tailwindcssAnimate from "tailwindcss-animate";
 
-export default {
+import type { Config } from "tailwindcss";
+
+const config = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
