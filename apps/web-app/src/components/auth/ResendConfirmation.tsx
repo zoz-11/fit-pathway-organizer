@@ -27,9 +27,9 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
       });
 
       if (error) {
-        toast(error.message, { type: 'error' });
+        toast.error(error.message);
       } else {
-        toast(t("resendConfirmation.toast.success"), { type: 'success' });
+        toast.success(t("resendConfirmation.toast.success"));
         setCountdown(60); // 60 second cooldown
         const timer = setInterval(() => {
           setCountdown((prev) => {
@@ -42,7 +42,7 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
         }, 1000);
       }
     } catch (error) {
-      toast(t("resendConfirmation.toast.error"), { type: 'error' });
+      toast.error(t("resendConfirmation.toast.error"));
     } finally {
       setLoading(false);
     }
