@@ -59,7 +59,7 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
         throw error;
       }
 
-      toast(t("mfaSetup.toast.success"), { type: 'success' });
+      toast.success(t("mfaSetup.toast.success"));
       onMfaEnabled();
       onClose();
     } catch (error) {
