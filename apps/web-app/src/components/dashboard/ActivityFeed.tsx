@@ -1,8 +1,5 @@
-import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { handleApiError } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -50,6 +47,7 @@ const MOCK_ACTIVITY_DATA: ActivityItem[] = [
 
 export const ActivityFeed = () => {
   const { t } = useLanguage();
+
   const { data, isLoading, error, refetch } = useQuery<ActivityItem[]>({
     queryKey: ["activityFeed"],
     queryFn: async () => {
@@ -112,7 +110,7 @@ export const ActivityFeed = () => {
           <CardTitle>{t("activityFeed.title")}</CardTitle>
         </CardHeader>
         <CardContent className="flex items-center justify-center p-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
         </CardContent>
       </Card>
     );
