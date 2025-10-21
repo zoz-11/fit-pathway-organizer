@@ -90,13 +90,14 @@ const Profile = () => {
       const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
 
       // Update the avatar_url in the profiles table
+      if (!profile) return;
       const { error: updateError } = await supabase
         .from("profiles")
         .update({
           avatar_url: data.publicUrl,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", profile?.id);
+        .eq("id", profile.id);
 
       if (updateError) throw updateError;
 

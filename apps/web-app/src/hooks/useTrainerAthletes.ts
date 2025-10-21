@@ -29,6 +29,7 @@ export const useTrainerAthletes = () => {
 
   const inviteAthlete = useMutation({
     mutationFn: async (athleteEmail: string) => {
+      if (!user) throw new Error("User not authenticated");
       // 1. Find the user with the given email.
       const { data: athlete, error: fetchError } = await supabase
         .from("profiles")
@@ -79,6 +80,7 @@ export const useTrainerAthletes = () => {
 
   const removeAthlete = useMutation({
     mutationFn: async (athleteId: string) => {
+      if (!user) throw new Error("User not authenticated");
       const { error } = await supabase
         .from("trainer_athletes")
         .delete()

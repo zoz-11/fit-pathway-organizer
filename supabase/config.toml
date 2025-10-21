@@ -7,3 +7,9 @@ verify_jwt = false
 [functions.send-notification-email]
 enabled = true
 verify_jwt = true
+
+[functions.fetch-progress-data]
+verify_jwt = true
+
+[functions.fetch-analytics-data]
+verify_jwt = true

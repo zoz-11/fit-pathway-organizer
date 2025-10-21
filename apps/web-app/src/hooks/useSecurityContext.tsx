@@ -49,12 +49,11 @@ export const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsSecureSession(secure);
 
       if (user?.id) {
-        auditLogger.log("session_status_check", {
-          userId: user.id,
+        auditLogger.logSecurityEvent("session_status_check", {
           sessionAge,
           expiringBool: isExpiringSoon,
           isSecureSession: secure,
-        });
+        }, user.id);
       }
     } else {
       setIsSecureSession(false);
@@ -63,9 +62,9 @@ export const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logSecurityEvent = useCallback(
     (event: string, details?: Record<string, unknown>) => {
-      auditLogger.log(event, details);
+      auditLogger.logSecurityEvent(event, details ?? {}, user?.id);
     },
-    [],
+    [user?.id],
   );
 
   const refreshSecurityStatus = useCallback(() => {
@@ -90,7 +89,7 @@ export const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({
     const timer = setTimeout(() => {
       logSecurityEvent("session_expiry_warning", {
         remainingTime: 5 * 60 * 1000,
-      });
+      }, user.id);
       // Could show a modal warning here
     }, warningTime);
 

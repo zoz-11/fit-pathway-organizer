@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "../apps/web-app/src"),
+      "@": path.resolve(__dirname, "./apps/web-app/src"),
     },
   },
   build: {

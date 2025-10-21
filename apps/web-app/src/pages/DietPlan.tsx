@@ -9,7 +9,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const DietPlan = () => {
   const { t } = useLanguage();
   const handleMealComplete = (meal: string) => {
-    toast.success(t("dietPlan.toast.mealCompleted", { meal }));
+    toast.success(`${t("dietPlan.toast.mealCompleted")} ${meal}`);
   };
 
   const meals = [

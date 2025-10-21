@@ -1,8 +1,8 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { useLanguage } from "@/contexts/LanguageContext";;
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { ButtonProps, buttonVariants } from "@/components/ui/button";
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
@@ -40,81 +40,80 @@ type PaginationLinkProps = {
 } & Pick<ButtonProps, "size"> &
   React.ComponentProps<"a">;
 
-const PaginationLink = ({
-  className,
-  isActive,
-  size = "icon",
-  ...props
-}: PaginationLinkProps) => {
+const PaginationLink = ({ children, className, isActive, size = "icon", ...props }: PaginationLinkProps) => {
   const { t } = useLanguage();
   return (
-  <a
-    aria-current={isActive ? "page" : undefined}
-    className={cn(
-      buttonVariants({
-        variant: isActive ? "outline" : "ghost",
-        size,
-      }),
-      className
-    )}
-    {...props}
-  />
-)}
-PaginationLink.displayName = "PaginationLink";
-
-    <PaginationLink {...props}>
-      {children || <span className="sr-only">{t("pagination.pageLink")}</span>}
-    </PaginationLink>
+    <a
+      aria-current={isActive ? "page" : undefined}
+      className={cn(
+        buttonVariants({
+          variant: isActive ? "outline" : "ghost",
+          size,
+        }),
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </a>
   )
 }
-PaginationItem.displayName = "PaginationItem"
+PaginationLink.displayName = "PaginationLink";
 
 const PaginationPrevious = ({
   className,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink
-    aria-label={t("pagination.previousPage")}
-    size="default"
-    className={cn("gap-1 pl-2.5", className)}
-    {...props}
-  >
-    <ChevronLeft className="h-4 w-4" />
-    <span>{t("pagination.previous")}</span>
-  </PaginationLink>
-)
+}: React.ComponentProps<typeof PaginationLink>) => {
+  const { t } = useLanguage();
+  return (
+    <PaginationLink
+      aria-label={t("pagination.previousPage")}
+      size="default"
+      className={cn("gap-1 ps-2.5", className)}
+      {...props}
+    >
+      <ChevronLeft className="h-4 w-4" />
+      <span>{t("pagination.previous")}</span>
+    </PaginationLink>
+  )
+}
 PaginationPrevious.displayName = "PaginationPrevious"
 
 const PaginationNext = ({
   className,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink
-    aria-label={t("pagination.nextPage")}
-    size="default"
-    className={cn("gap-1 pr-2.5", className)}
-    {...props}
-  >
-    <span>{t("pagination.next")}</span>
-    <ChevronRight className="h-4 w-4" />
-  </PaginationLink>
-)
+}: React.ComponentProps<typeof PaginationLink>) => {
+  const { t } = useLanguage();
+  return (
+    <PaginationLink
+      aria-label={t("pagination.nextPage")}
+      size="default"
+      className={cn("gap-1 pe-2.5", className)}
+      {...props}
+    >
+      <span>{t("pagination.next")}</span>
+      <ChevronRight className="h-4 w-4" />
+    </PaginationLink>
+  )
+}
 PaginationNext.displayName = "PaginationNext"
 
 const PaginationEllipsis = ({
   className,
   ...props
-}: React.ComponentProps<"span">) => (
-  <span
-    aria-hidden
-    className={cn("flex h-9 w-9 items-center justify-center", className)}
-    {...props}
-  >
-    <MoreHorizontal className="h-4 w-4" />
-    <span className="sr-only">{t("pagination.morePages")}</span>
-  </span>
-)
-
+}: React.ComponentProps<"span">) => {
+  const { t } = useLanguage();
+  return (
+    <span
+      aria-hidden
+      className={cn("flex h-9 w-9 items-center justify-center", className)}
+      {...props}
+    >
+      <MoreHorizontal className="h-4 w-4" />
+      <span className="sr-only">{t("pagination.morePages")}</span>
+    </span>
+  )
+}
 
 export {
   Pagination,
