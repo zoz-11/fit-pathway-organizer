@@ -16,6 +16,7 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
 
   const handleResend = async () => {
     setLoading(true);
+
     try {
       const { error } = await supabase.auth.resend({
         type: "signup",
@@ -26,11 +27,10 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
       });
 
       if (error) {
-        toast.error(error.message);
+        toast(error.message, { type: 'error' });
       } else {
-        toast.success(t("resendConfirmation.toast.success"));
+        toast(t("resendConfirmation.toast.success"), { type: 'success' });
         setCountdown(60); // 60 second cooldown
-
         const timer = setInterval(() => {
           setCountdown((prev) => {
             if (prev <= 1) {
@@ -42,7 +42,7 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
         }, 1000);
       }
     } catch (error) {
-      toast.error(t("resendConfirmation.toast.error"));
+      toast(t("resendConfirmation.toast.error"), { type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -52,7 +52,7 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
     <div className="space-y-4 mt-4">
       <Alert>
         <AlertDescription>
-          <strong>{t("resendConfirmation.checkEmail")}</strong>
+          {t("resendConfirmation.checkEmail")}
           <p className="text-sm mt-1">
             {t("resendConfirmation.confirmationLink", { email })}
           </p>
