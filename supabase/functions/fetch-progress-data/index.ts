@@ -19,13 +19,16 @@ async function logAudit(
   details: Record<string, unknown>,
 ) {
   try {
-    const { error } = await supabaseClient.from("audit_logs").insert([
-      {
-        user_id: userId,
-        action: action,
-        details: details,
-      },
-    ]);
+    const { error } = await supabaseClient
+      .from("audit_logs")
+      .insert([
+        {
+          user_id: userId,
+          action: action,
+          details: details,
+        },
+      ]);
+
     if (error) {
       console.error("Error inserting audit log:", error);
     }
@@ -34,38 +37,89 @@ async function logAudit(
   }
 }
 
-const FetchProgressDataSchema = z.object({
-  userId: z.string().uuid().optional(), // Optional: if trainer wants to fetch athlete's data
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
+// Request body schema
+const RequestBodySchema = z.object({
+  traineeId: z.string().uuid(),
 });
 
+type RequestBody = z.infer<typeof RequestBodySchema>;
+
+interface ProgressData {
+  id: string;
+  trainee_id: string;
+  program_id: string;
+  week: number;
+  day: number;
+  exercise_name: string;
+  sets: number;
+  reps: number;
+  weight: number;
+  notes?: string;
+  created_at: string;
+}
+
+interface TraineeProfile {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
+interface ResponseData {
+  trainee: TraineeProfile;
+  progressData: ProgressData[];
+}
+
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders,
+    });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-    {
-      global: {
-        headers: { Authorization: req.headers.get("Authorization")! },
+  if (req.method !== "POST") {
+    return new Response(
+      JSON.stringify({ error: "Method not allowed" }),
+      {
+        status: 405,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       },
-    },
-  );
+    );
+  }
 
   try {
+    // Parse and validate request body
+    const body: RequestBody = RequestBodySchema.parse(await req.json());
+    const { traineeId } = body;
+
+    // Get Supabase client
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      {
+        global: {
+          headers: { Authorization: req.headers.get("Authorization")! },
+        },
+      },
+    );
+
+    // Get current user
     const {
       data: { user },
+      error: userError,
     } = await supabaseClient.auth.getUser();
-    if (!user) {
-      await logAudit(supabaseClient, undefined, "Fetch Progress Data Failed", {
-        reason: "Unauthorized: No active session",
-        ipAddress: req.headers.get("x-forwarded-for"),
-      });
+
+    if (userError || !user) {
+      await logAudit(
+        supabaseClient,
+        undefined,
+        "FETCH_PROGRESS_AUTH_FAILED",
+        { error: userError?.message || "No user found" },
+      );
       return new Response(
-        JSON.stringify({ error: "Unauthorized: No active session" }),
+        JSON.stringify({ error: "Authentication failed" }),
         {
           status: 401,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -73,128 +127,111 @@ serve(async (req) => {
       );
     }
 
-    const requestBody = await req.json();
-    const parsedRequest = FetchProgressDataSchema.safeParse(requestBody);
+    // Check if user is a trainer using user_roles table
+    const { data: userRole, error: roleError } = await supabaseClient
+      .from("user_roles")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("role", "trainer")
+      .single();
 
-    if (!parsedRequest.success) {
-      await logAudit(supabaseClient, user.id, "Fetch Progress Data Failed", {
-        reason: "Invalid request body",
-        details: parsedRequest.error.issues,
-        ipAddress: req.headers.get("x-forwarded-for"),
-      });
+    if (roleError || !userRole) {
+      await logAudit(
+        supabaseClient,
+        user.id,
+        "FETCH_PROGRESS_UNAUTHORIZED",
+        { traineeId, error: "Not a trainer" },
+      );
       return new Response(
-        JSON.stringify({
-          error: "Invalid request body",
-          details: parsedRequest.error.issues,
-        }),
+        JSON.stringify({ error: "Unauthorized: Trainer role required" }),
         {
-          status: 400,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         },
       );
     }
 
-    const { userId: requestedUserId, startDate, endDate } = parsedRequest.data;
+    // Get trainee profile
+    const { data: traineeProfile, error: traineeError } = await supabaseClient
+      .from("profiles")
+      .select("id, first_name, last_name, email")
+      .eq("id", traineeId)
+      .single();
 
-    // Determine the user whose data is being requested
-    let targetUserId = user.id;
-    if (requestedUserId && user.id !== requestedUserId) {
-      // If a userId is provided and it's not the current user, check if the current user is a trainer
-      const { data: profileData, error: profileError } = await supabaseClient
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
-
-      if (profileError || profileData?.role !== "trainer") {
-        await logAudit(supabaseClient, user.id, "Fetch Progress Data Failed", {
-          reason: "Forbidden: Not authorized to view other user's data",
-          requestedUserId: requestedUserId,
-          ipAddress: req.headers.get("x-forwarded-for"),
-        });
-        return new Response(
-          JSON.stringify({
-            error: "Forbidden: Not authorized to view other user's data",
-          }),
-          {
-            status: 403,
-            headers: { "Content-Type": "application/json", ...corsHeaders },
-          },
-        );
-      }
-      // If current user is a trainer, allow fetching data for the requested user
-      targetUserId = requestedUserId;
+    if (traineeError || !traineeProfile) {
+      await logAudit(
+        supabaseClient,
+        user.id,
+        "FETCH_PROGRESS_TRAINEE_NOT_FOUND",
+        { traineeId, error: traineeError?.message },
+      );
+      return new Response(
+        JSON.stringify({ error: "Trainee not found" }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
 
-    // Fetch completed workouts for the target user within the date range
-    let query = supabaseClient
-      .from("workout_assignments")
-      .select("completed_at")
-      .eq("athlete_id", targetUserId)
-      .eq("status", "completed");
+    // Get progress data
+    const { data: progressData, error: progressError } = await supabaseClient
+      .from("progress_tracking")
+      .select("*")
+      .eq("trainee_id", traineeId)
+      .order("created_at", { ascending: false });
 
-    if (startDate) {
-      query = query.gte("completed_at", startDate);
-    }
-    if (endDate) {
-      query = query.lte("completed_at", endDate);
-    }
-
-    const { data: completedWorkouts, error: fetchError } = await query;
-
-    if (fetchError) {
-      await logAudit(supabaseClient, user.id, "Fetch Progress Data Failed", {
-        reason: "Database error",
-        details: fetchError.message,
-        targetUserId: targetUserId,
-        ipAddress: req.headers.get("x-forwarded-for"),
-      });
-      throw fetchError;
+    if (progressError) {
+      await logAudit(
+        supabaseClient,
+        user.id,
+        "FETCH_PROGRESS_DATA_ERROR",
+        { traineeId, error: progressError.message },
+      );
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch progress data" }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
 
-    // Aggregate data by date
-    const aggregatedData: { date: string; count: number }[] = [];
-    const dateMap = new Map<string, number>();
-
-    completedWorkouts.forEach((assignment) => {
-      if (assignment.completed_at) {
-        const date = new Date(assignment.completed_at)
-          .toISOString()
-          .split("T")[0]; // YYYY-MM-DD
-        dateMap.set(date, (dateMap.get(date) || 0) + 1);
-      }
-    });
-
-    dateMap.forEach((count, date) => {
-      aggregatedData.push({ date, count });
-    });
-
-    // Sort by date
-    aggregatedData.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    // Log successful fetch
+    await logAudit(
+      supabaseClient,
+      user.id,
+      "FETCH_PROGRESS_SUCCESS",
+      {
+        traineeId,
+        recordCount: progressData?.length || 0,
+      },
     );
 
-    await logAudit(supabaseClient, user.id, "Fetch Progress Data Success", {
-      targetUserId: targetUserId,
-      startDate: startDate,
-      endDate: endDate,
-      recordCount: aggregatedData.length,
-      ipAddress: req.headers.get("x-forwarded-for"),
-    });
+    const responseData: ResponseData = {
+      trainee: traineeProfile as TraineeProfile,
+      progressData: (progressData || []) as ProgressData[],
+    };
 
-    return new Response(JSON.stringify(aggregatedData), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify(responseData),
+      {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
   } catch (error) {
-    console.error("Error in fetch-progress-data function:", error);
-    await logAudit(supabaseClient, undefined, "Fetch Progress Data Failed", {
-      error: (error as Error).message,
-      ipAddress: req.headers.get("x-forwarded-for"),
-    });
-    return new Response(JSON.stringify({ error: (error as Error).message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
-    });
+    console.error("Unexpected error:", error);
+
+    return new Response(
+      JSON.stringify({
+        error: "Internal server error",
+        message: error instanceof Error ? error.message : String(error),
+      }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
   }
 });
