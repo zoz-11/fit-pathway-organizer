@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   MessageCircle,
-  Send,
   Bot,
   User,
   RefreshCw,
@@ -15,7 +14,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuthProvider";
 import { toast } from "sonner";
 import { handleApiError } from "@/lib/utils";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Message {
@@ -36,19 +34,18 @@ export const AiChatAssistant = () => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { profile } = useAuth();
-  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+    if (!input.trim()) return;
 
     const userMessage: Message = {
       role: "user",
@@ -57,72 +54,49 @@ export const AiChatAssistant = () => {
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    const currentInput = input;
     setInput("");
     setIsLoading(true);
-    setError(null);
 
     try {
       const { data, error } = await supabase.functions.invoke(
         "ai-fitness-coach",
         {
           body: {
-            message: currentInput,
-            userProfile: profile,
-            workoutHistory: [],
+            message: input,
+            userId: user?.id,
+            conversationHistory: messages.map((m) => ({
+              role: m.role,
+              content: m.content,
+            })),
           },
         },
       );
 
       if (error) {
-        console.error("Edge function error details:", error);
-        throw new Error(
-          t("aiChat.error.serviceError", { message: error.message || t("aiChat.error.unknown") }),
-        );
-      }
-
-      if (!data || !data.response) {
-        console.error("Invalid response data:", data);
-        throw new Error(t("aiChat.error.invalidResponse"));
+        console.error("AI Coach Error:", error);
+        throw error;
       }
 
       const assistantMessage: Message = {
         role: "assistant",
-        content: data.response,
+        content: data.response || t("aiChat.fallbackResponse"),
         timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
-      toast.success(t("aiChat.toast.responseReceived"));
-    } catch (error) { 
-      console.error("Detailed error in sendMessage:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : t("aiChat.error.unknown");
-      setError(errorMessage);
-      handleApiError(error, `${t("aiChat.error.chatError")}: ${errorMessage}`);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      handleApiError(error);
 
-      const errorResponse: Message = {
+      const errorMessage: Message = {
         role: "assistant",
-        content: t("aiChat.error.technicalDifficulties"),
+        content: t("aiChat.errorResponse"),
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, errorResponse]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const clearChat = () => {
-    setMessages([
-      {
-        role: "assistant",
-        content:
-          t("aiChat.chatCleared"),
-        timestamp: new Date(),
-      },
-    ]);
-    setError(null);
-    toast.info(t("aiChat.toast.chatCleared"));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -132,105 +106,135 @@ export const AiChatAssistant = () => {
     }
   };
 
+  const clearChat = () => {
+    setMessages([
+      {
+        role: "assistant",
+        content: t("aiChat.initialMessage"),
+        timestamp: new Date(),
+      },
+    ]);
+  };
+
+  if (!isOpen) {
+    return (
+      <div className="fixed bottom-4 right-4 z-50">
+        <Button
+          onClick={() => setIsOpen(true)}
+          size="lg"
+          className="h-16 w-16 rounded-full shadow-lg"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <Card className="h-[500px] flex flex-col">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <div className="flex items-center">
-          <MessageCircle className="h-5 w-5 me-2 text-blue-600" />
-          <CardTitle>{t("aiChat.title")}</CardTitle>
-        </div>
-        <div className="flex gap-2">
-          {error && (
-            <div className="flex items-center text-red-500 text-sm">
-              <AlertCircle className="h-4 w-4 me-1" />
-              <span>{t("aiChat.connectionError")}</span>
-            </div>
-          )}
-          <Button variant="ghost" size="sm-icon" onClick={clearChat}>
-            <RefreshCw className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="flex-1 flex flex-col p-0">
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex items-start gap-2 ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
-                {message.role === "assistant" && (
-                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                    <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  </div>
-                )}
+    <div className="fixed bottom-4 right-4 z-50 w-96">
+      <Card className="shadow-2xl">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">
+            {t("aiChat.title")}
+          </CardTitle>
+          <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearChat}
+              className="h-8 w-8 p-0"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsOpen(false)}
+              className="h-8 w-8 p-0"
+            >
+              ✕
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <ScrollArea className="h-96 pr-4" ref={scrollAreaRef}>
+            <div className="space-y-4">
+              {messages.map((message, index) => (
                 <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.role === "user"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                  key={index}
+                  className={`flex gap-2 ${
+                    message.role === "assistant" ? "" : "flex-row-reverse"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap break-words">
-                    {message.content}
-                  </p>
-                  <p className="text-xs opacity-70 mt-1">
-                    {message.timestamp.toLocaleTimeString()}
-                  </p>
-                </div>
-                {message.role === "user" && (
-                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
-                    <User className="h-4 w-4 text-white" />
+                  <div
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                      message.role === "assistant"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-secondary"
+                    }`}
+                  >
+                    {message.role === "assistant" ? (
+                      <Bot className="h-4 w-4" />
+                    ) : (
+                      <User className="h-4 w-4" />
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
-            {isLoading && (
-              <div className="flex items-start gap-2 justify-start">
-                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                  <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <div
+                    className={`flex-1 space-y-1 rounded-lg p-3 ${
+                      message.role === "assistant"
+                        ? "bg-muted"
+                        : "bg-primary text-primary-foreground"
+                    }`}
+                  >
+                    <p className="text-sm">{message.content}</p>
+                    <p
+                      className={`text-xs ${
+                        message.role === "assistant"
+                          ? "text-muted-foreground"
+                          : "text-primary-foreground/70"
+                      }`}
+                    >
+                      {message.timestamp.toLocaleTimeString()}
+                    </p>
+                  </div>
                 </div>
-                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 flex items-center gap-1">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {t("aiChat.thinking")}
-                  </span>
-                  <span className="animate-pulse text-sm text-gray-600 dark:text-gray-400">
-                    .
-                  </span>
-                  <span className="animate-pulse delay-100 text-sm text-gray-600 dark:text-gray-400">
-                    .
-                  </span>
-                  <span className="animate-pulse delay-200 text-sm text-gray-600 dark:text-gray-400">
-                    .
-                  </span>
+              ))}
+              {isLoading && (
+                <div className="flex gap-2">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                    <Bot className="h-4 w-4" />
+                  </div>
+                  <div className="flex-1 space-y-1 rounded-lg bg-muted p-3">
+                    <p className="text-sm">{t("aiChat.thinking")}</p>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-        <div className="p-4 border-t bg-gray-50 dark:bg-gray-900/50 mt-4">
-          <div className="flex gap-3">
+              )}
+            </div>
+          </ScrollArea>
+          <div className="mt-4 flex gap-2">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={t("aiChat.placeholder")}
               disabled={isLoading}
-              className="flex-1 bg-white dark:bg-gray-800"
             />
-            <Button
-              size="default"
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-            >
-              {isLoading ? t("aiChat.sending") : t("aiChat.send")}
+            <Button onClick={sendMessage} disabled={isLoading || !input.trim()}>
+              {isLoading ? (
+                <RefreshCw className="h-4 w-4 animate-spin" />
+              ) : (
+                t("common.send")
+              )}
             </Button>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+          {!user && (
+            <div className="mt-2 flex items-center gap-2 rounded-md bg-yellow-50 p-2 text-sm text-yellow-800">
+              <AlertCircle className="h-4 w-4" />
+              <p>{t("aiChat.signInPrompt")}</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
