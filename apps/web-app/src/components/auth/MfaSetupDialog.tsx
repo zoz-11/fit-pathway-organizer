@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -48,6 +47,7 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
     }
 
     setLoading(true);
+
     try {
       const { error } = await supabase.auth.mfa.verify({
         factorId,
@@ -79,12 +79,18 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
             {t("mfaSetup.description")}
           </AlertDialogDescription>
         </AlertDialogHeader>
+
         <div className="space-y-4">
           {qrCode && (
             <div className="flex justify-center">
-              <img src={qrCode} alt={t("mfaSetup.qrCodeAlt")} className="w-48 h-48" />
+              <img
+                src={qrCode}
+                alt={t("mfaSetup.qrCodeAlt")}
+                className="w-48 h-48"
+              />
             </div>
           )}
+
           {secret && (
             <div className="text-center">
               <Label htmlFor="secret-key">{t("mfaSetup.secretKeyLabel")}</Label>
@@ -97,6 +103,7 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
               />
             </div>
           )}
+
           <div className="space-y-2">
             <Label htmlFor="verification-code">{t("mfaSetup.verificationCodeLabel")}</Label>
             <Input
@@ -110,6 +117,7 @@ const MfaSetupDialog: React.FC<MfaSetupDialogProps> = ({
             />
           </div>
         </div>
+
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>{t("mfaSetup.cancelButton")}</AlertDialogCancel>
           <Button

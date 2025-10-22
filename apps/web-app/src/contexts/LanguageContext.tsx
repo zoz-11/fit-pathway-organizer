@@ -1,17 +1,11 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
-import enTranslations from "./translations/en.json";
-import arTranslations from "./translations/ar.json";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import enTranslations from "../locales/en.json";
+import arTranslations from "../locales/ar.json";
 
 interface LanguageContextType {
   language: string;
   setLanguage: (language: string) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, any>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
@@ -43,47 +37,40 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   // Load language from localStorage on initial render
   useEffect(() => {
     const savedLanguage = localStorage.getItem("language");
-    if (
-      savedLanguage &&
-      (savedLanguage === "en" ||
-        savedLanguage === "ar")
-    ) {
+    if (savedLanguage && (savedLanguage === "en" || savedLanguage === "ar")) {
       setLanguage(savedLanguage);
     }
   }, []);
 
-  // Save language to localStorage whenever it changes
+  // Save language to localStorage when it changes
   useEffect(() => {
     localStorage.setItem("language", language);
-    // Update document direction for RTL languages
-    if (language === "ar") {
-      document.documentElement.setAttribute("dir", "rtl");
-      document.documentElement.setAttribute("lang", "ar");
-    } else {
-      document.documentElement.setAttribute("dir", "ltr");
-      document.documentElement.setAttribute("lang", language);
-    }
   }, [language]);
 
-  const t = (key: string): string => {
-    return translations[language]?.[key] || translations["en"]?.[key] || key;
-  };
-
-  const value = {
-    language,
-    setLanguage: (newLanguage: string) => {
-      if (
-        newLanguage === "en" ||
-        newLanguage === "ar"
-      ) {
-        setLanguage(newLanguage);
-      }
-    },
-    t,
+  const t = (key: string, params?: Record<string, any>): string => {
+    const keys = key.split(".");
+    let value: any = translations[language];
+    for (const k of keys) {
+      value = value?.[k];
+    }
+    
+    // If value is not found, return the key
+    if (typeof value !== "string") {
+      return key;
+    }
+    
+    // Replace template variables like {varName} with values from params
+    if (params) {
+      return value.replace(/\{(\w+)\}/g, (match, paramKey) => {
+        return params[paramKey] !== undefined ? String(params[paramKey]) : match;
+      });
+    }
+    
+    return value;
   };
 
   return (
-    <LanguageContext.Provider value={value}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );

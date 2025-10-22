@@ -59,6 +59,7 @@ serve(async (req) => {
     const {
       data: { user },
     } = await supabaseClient.auth.getUser();
+
     if (!user) {
       await logAudit(supabaseClient, undefined, "Fetch Analytics Data Failed", {
         reason: "Unauthorized: No active session",
@@ -95,16 +96,18 @@ serve(async (req) => {
     }
 
     const { userId: requestedUserId, startDate, endDate } = parsedRequest.data;
-
     let targetUserId = user.id;
+
     if (requestedUserId && user.id !== requestedUserId) {
-      const { data: profileData, error: profileError } = await supabaseClient
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
+      // Check if user is a trainer using user_roles table
+      const { data: userRole, error: roleError } = await supabaseClient
+        .from("user_roles")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("role", "trainer")
         .single();
 
-      if (profileError || profileData?.role !== "trainer") {
+      if (roleError || !userRole) {
         await logAudit(supabaseClient, user.id, "Fetch Analytics Data Failed", {
           reason: "Forbidden: Not authorized to view other users data",
           requestedUserId: requestedUserId,
@@ -139,6 +142,7 @@ serve(async (req) => {
 
     const { data: completedWorkouts, error: workoutsError } =
       await workoutsQuery;
+
     if (workoutsError) {
       await logAudit(supabaseClient, user.id, "Fetch Analytics Data Failed", {
         reason: "Database error fetching workouts",

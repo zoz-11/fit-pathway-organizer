@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { SonnerToaster } from "@/components/ui/sonner";
+import { Toaster as SonnerToaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -10,7 +10,6 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { initializeClickabilityFixes } from "./fix-app-issues";
 import { usePushNotifications } from "./hooks/usePushNotifications";
 import "./apple-hig-styles.css";
-
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Schedule from "./pages/Schedule";

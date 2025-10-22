@@ -16,6 +16,7 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
 
   const handleResend = async () => {
     setLoading(true);
+
     try {
       const { error } = await supabase.auth.resend({
         type: "signup",
@@ -30,7 +31,6 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
       } else {
         toast.success(t("resendConfirmation.toast.success"));
         setCountdown(60); // 60 second cooldown
-
         const timer = setInterval(() => {
           setCountdown((prev) => {
             if (prev <= 1) {
@@ -52,7 +52,7 @@ export const ResendConfirmation = ({ email }: ResendConfirmationProps) => {
     <div className="space-y-4 mt-4">
       <Alert>
         <AlertDescription>
-          <strong>{t("resendConfirmation.checkEmail")}</strong>
+          {t("resendConfirmation.checkEmail")}
           <p className="text-sm mt-1">
             {t("resendConfirmation.confirmationLink", { email })}
           </p>
