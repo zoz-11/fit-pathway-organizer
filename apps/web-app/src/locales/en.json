@@ -1,0 +1,34 @@
+{
+  "common": {
+    "appName": "Fit Pathway Organizer",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "signUp": "Sign Up",
+    "forgotPassword": "Forgot Password?"
+  },
+  "mfa": {
+    "title": "Multi-Factor Authentication",
+    "setup": "Set up MFA",
+    "enable": "Enable MFA",
+    "disable": "Disable MFA",
+    "verify": "Verify code",
+    "code": "Verification code",
+    "scanQR": "Scan QR code",
+    "enterCode": "Enter the code from your authenticator app",
+    "setupComplete": "MFA setup complete",
+    "verificationFailed": "Verification failed"
+  },
+  "app": {
+    "boot": {
+      "initializing": "Initializing application...",
+      "loading": "Loading resources...",
+      "ready": "Application ready",
+      "error": "Failed to start application"
+    }
+  }
+}
