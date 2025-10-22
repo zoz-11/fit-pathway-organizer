@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ActivityItem {
@@ -34,125 +33,117 @@ const MOCK_ACTIVITY_DATA: ActivityItem[] = [
   {
     id: "4",
     text: "Missed scheduled workout - consider rescheduling",
-    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+    timestamp: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(), // 8 hours ago
     type: "warning",
   },
   {
     id: "5",
-    text: "Updated fitness goals and targets",
-    timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+    text: "Updated nutrition plan",
+    timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), // 12 hours ago
     type: "info",
   },
 ];
 
-export const ActivityFeed = () => {
+const ActivityFeed: React.FC = () => {
   const { t } = useLanguage();
 
-  const { data, isLoading, error, refetch } = useQuery<ActivityItem[]>({
+  const { data, isLoading, error } = useQuery<ActivityItem[]>({
     queryKey: ["activityFeed"],
     queryFn: async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke(
-          "fetch-activity-feed",
-        );
+      const { data: activities, error } = await supabase
+        .from("activity_feed")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(10);
 
-        if (error) {
-          console.error("Edge function error:", error);
-          // Return mock data instead of throwing error
-          console.warn(
-            "Using mock activity data due to Edge Function unavailability",
-          );
-          return MOCK_ACTIVITY_DATA;
-        }
+      if (error) throw error;
 
-        return data || MOCK_ACTIVITY_DATA;
-      } catch (err) {
-        console.error("Activity feed fetch error:", err);
-        console.warn(
-          "Using mock activity data due to Edge Function unavailability",
-        );
-        return MOCK_ACTIVITY_DATA;
-      }
+      return activities.map((activity) => ({
+        id: activity.id,
+        text: activity.text,
+        timestamp: activity.created_at,
+        type: activity.type,
+      }));
     },
-    retry: 1, // Only retry once
-    retryDelay: 1000,
+    retry: false,
   });
 
-  const getActivityIcon = (type: string) => {
-    switch (type) {
-      case "success":
-        return "🟢";
-      case "info":
-        return "🔵";
-      case "warning":
-        return "🟡";
-      case "error":
-        return "🔴";
-      default:
-        return "⚪";
-    }
-  };
-
-  const formatTimestamp = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
-  };
+  const activities = data || MOCK_ACTIVITY_DATA;
 
   if (isLoading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>{t("activityFeed.title")}</CardTitle>
+          <CardTitle>{t("dashboard.activityFeed")}</CardTitle>
         </CardHeader>
-        <CardContent className="flex items-center justify-center p-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+        <CardContent>
+          <div className="flex items-center justify-center py-8">
+            <p>{t("common.loading")}</p>
+          </div>
         </CardContent>
       </Card>
     );
   }
 
-  // Show mock data warning if there was an error but we have fallback data
-  const showMockDataWarning = error && data === MOCK_ACTIVITY_DATA;
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("activityFeed.title")}</CardTitle>
-        {showMockDataWarning && (
-          <p className="text-sm text-amber-600">
-            {t("activityFeed.mockDataWarning")}
-          </p>
-        )}
+        <CardTitle>{t("dashboard.activityFeed")}</CardTitle>
       </CardHeader>
       <CardContent>
+        {error && (
+          <div className="mb-4 rounded bg-yellow-50 p-3 text-sm text-yellow-800">
+            {t("dashboard.usingMockData")}
+          </div>
+        )}
         <div className="space-y-4">
-          {data && data.length > 0 ? (
-            data.map((activity) => (
-              <div
-                key={activity.id}
-                className="flex items-start space-x-3 border-b pb-3 last:border-0"
-              >
-                <div className="text-lg">{getActivityIcon(activity.type)}</div>
-                <div className="flex-1">
-                  <p className="text-sm">{activity.text}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {formatTimestamp(activity.timestamp)}
-                  </p>
-                </div>
+          {activities.map((item) => (
+            <div
+              key={item.id}
+              className={`flex items-start space-x-3 rounded-lg p-3 ${
+                item.type === "success"
+                  ? "bg-green-50"
+                  : item.type === "warning"
+                    ? "bg-yellow-50"
+                    : item.type === "error"
+                      ? "bg-red-50"
+                      : "bg-blue-50"
+              }`}
+            >
+              <div className="flex-1">
+                <p
+                  className={`text-sm font-medium ${
+                    item.type === "success"
+                      ? "text-green-900"
+                      : item.type === "warning"
+                        ? "text-yellow-900"
+                        : item.type === "error"
+                          ? "text-red-900"
+                          : "text-blue-900"
+                  }`}
+                >
+                  {item.text}
+                </p>
+                <p
+                  className={`mt-1 text-xs ${
+                    item.type === "success"
+                      ? "text-green-700"
+                      : item.type === "warning"
+                        ? "text-yellow-700"
+                        : item.type === "error"
+                          ? "text-red-700"
+                          : "text-blue-700"
+                  }`}
+                >
+                  {new Date(item.timestamp).toLocaleString()}
+                </p>
               </div>
-            ))
-          ) : (
-            <p className="text-muted-foreground text-center py-4">
-              {t("activityFeed.noActivity")}
-            </p>
-          )}
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>
   );
 };
+
+export default ActivityFeed;
