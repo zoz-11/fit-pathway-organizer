@@ -58,6 +58,7 @@ serve(async (req) => {
     const {
       data: { user },
     } = await supabaseClient.auth.getUser();
+
     if (!user) {
       await logAudit(supabaseClient, undefined, "Fetch Activity Feed Failed", {
         reason: "Unauthorized: No active session",
@@ -95,10 +96,10 @@ serve(async (req) => {
 
     const { limit, offset } = parsedRequest.data;
 
-    // Get user role to determine what activities to show
+    // Get user profile for full_name
     const { data: userProfile, error: profileError } = await supabaseClient
       .from("profiles")
-      .select("role, full_name")
+      .select("full_name")
       .eq("id", user.id)
       .single();
 
@@ -111,9 +112,18 @@ serve(async (req) => {
       throw profileError;
     }
 
+    // Check if user is a trainer using user_roles table
+    const { data: userRole, error: roleError } = await supabaseClient
+      .from("user_roles")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("role", "trainer")
+      .single();
+
+    const isTrainer = !roleError && userRole;
     let activities = [];
 
-    if (userProfile.role === "trainer") {
+    if (isTrainer) {
       // For trainers: show completed workouts from all their athletes
       const { data: completedWorkouts, error: workoutsError } =
         await supabaseClient
