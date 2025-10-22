@@ -5,7 +5,7 @@ import arTranslations from "../locales/ar.json";
 interface LanguageContextType {
   language: string;
   setLanguage: (language: string) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, any>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
@@ -47,13 +47,26 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     localStorage.setItem("language", language);
   }, [language]);
 
-  const t = (key: string): string => {
+  const t = (key: string, params?: Record<string, any>): string => {
     const keys = key.split(".");
     let value: any = translations[language];
     for (const k of keys) {
       value = value?.[k];
     }
-    return value || key;
+    
+    // If value is not found, return the key
+    if (typeof value !== "string") {
+      return key;
+    }
+    
+    // Replace template variables like {varName} with values from params
+    if (params) {
+      return value.replace(/\{(\w+)\}/g, (match, paramKey) => {
+        return params[paramKey] !== undefined ? String(params[paramKey]) : match;
+      });
+    }
+    
+    return value;
   };
 
   return (
