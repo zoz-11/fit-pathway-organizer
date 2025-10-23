@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import enTranslations from "./translations/en.json";
 import arTranslations from "./translations/ar.json";
 
@@ -30,7 +24,7 @@ interface LanguageProviderProps {
   children: ReactNode;
 }
 
-const translations: Record<string, Record<string, string>> = {
+const translations: Record<string, Record<string, string | Record<string, string>>> = {
   en: enTranslations,
   ar: arTranslations,
 };
@@ -39,51 +33,39 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children,
 }) => {
   const [language, setLanguage] = useState<string>("en");
+  const [isRTL, setIsRTL] = useState<boolean>(false);
 
-  // Load language from localStorage on initial render
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("language");
-    if (
-      savedLanguage &&
-      (savedLanguage === "en" ||
-        savedLanguage === "ar")
-    ) {
-      setLanguage(savedLanguage);
-    }
+    const savedLanguage = localStorage.getItem("language") || "en";
+    setLanguage(savedLanguage);
+    setIsRTL(savedLanguage === "ar");
   }, []);
 
-  // Save language to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("language", language);
-    // Update document direction for RTL languages
-    if (language === "ar") {
-      document.documentElement.setAttribute("dir", "rtl");
-      document.documentElement.setAttribute("lang", "ar");
-    } else {
-      document.documentElement.setAttribute("dir", "ltr");
-      document.documentElement.setAttribute("lang", language);
-    }
-  }, [language]);
+    setIsRTL(language === "ar");
+    document.documentElement.lang = language;
+    document.documentElement.dir = isRTL ? "rtl" : "ltr";
+  }, [language, isRTL]);
 
   const t = (key: string): string => {
-    return translations[language]?.[key] || translations["en"]?.[key] || key;
-  };
-
-  const value = {
-    language,
-    setLanguage: (newLanguage: string) => {
-      if (
-        newLanguage === "en" ||
-        newLanguage === "ar"
-      ) {
-        setLanguage(newLanguage);
+    // Support nested keys with dot notation (e.g., "common.welcome")
+    const keys = key.split('.');
+    let value: any = translations[language];
+    
+    for (const k of keys) {
+      if (value && typeof value === 'object' && k in value) {
+        value = value[k];
+      } else {
+        return key; // Return key if translation not found
       }
-    },
-    t,
+    }
+    
+    return typeof value === 'string' ? value : key;
   };
 
   return (
-    <LanguageContext.Provider value={value}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
