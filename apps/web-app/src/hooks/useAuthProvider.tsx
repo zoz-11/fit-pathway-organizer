@@ -42,23 +42,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: role, isLoading: isLoadingRole } = useUserRole(user?.id);
 
   useEffect(() => {
+    let isMounted = true; // Prevent state updates on unmounted component
+
     // Set up auth state listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoadingInitial(false);
+      if (isMounted) {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoadingInitial(false);
+      }
     });
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoadingInitial(false);
+      if (isMounted && !session) {
+        // Only update if we don't have a session yet to prevent race condition
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoadingInitial(false);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signOut = async () => {

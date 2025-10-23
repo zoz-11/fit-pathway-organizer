@@ -7,10 +7,12 @@ import { AuthProvider } from "@/hooks/useAuthProvider";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
-import { initializeClickabilityFixes } from "./fix-app-issues";
+import { useClickabilityFixes } from "./hooks/useClickabilityFixes";
+import "./styles/clickability-fixes.css";
 import { usePushNotifications } from "./hooks/usePushNotifications";
 import "./apple-hig-styles.css";
 
+// Page imports
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Schedule from "./pages/Schedule";
@@ -32,6 +34,14 @@ import Goals from "./pages/Goals";
 import OAuthCallback from "./pages/OAuthCallback";
 import EmailConfirmed from "./pages/EmailConfirmed";
 
+// Route configuration type
+interface RouteConfig {
+  path: string;
+  element: React.ComponentType<any>;
+  protected?: boolean;
+  exact?: boolean;
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -41,140 +51,65 @@ const queryClient = new QueryClient({
   },
 });
 
+// Centralized route configuration
+const routes: RouteConfig[] = [
+  // Public routes
+  { path: "/auth", element: Auth },
+  { path: "/email-confirmed", element: EmailConfirmed },
+  { path: "/subscription-success", element: SubscriptionSuccess },
+  { path: "/subscription-cancel", element: SubscriptionCancel },
+  { path: "/oauth-callback", element: OAuthCallback },
+  
+  // Protected routes
+  { path: "/", element: Index, protected: true },
+  { path: "/schedule", element: Schedule, protected: true },
+  { path: "/assigned-workouts", element: AssignedWorkouts, protected: true },
+  { path: "/assigned-workouts-trainer", element: AssignedWorkoutsTrainer, protected: true },
+  { path: "/workout-library", element: WorkoutLibrary, protected: true },
+  { path: "/achievements", element: Achievements, protected: true },
+  { path: "/athlete-progress/:athleteId", element: AthleteProgress, protected: true },
+  { path: "/diet-plan", element: DietPlan, protected: true },
+  { path: "/progress", element: Progress, protected: true },
+  { path: "/messages", element: Messages, protected: true },
+  { path: "/profile", element: Profile, protected: true },
+  { path: "/settings", element: Settings, protected: true },
+  { path: "/members", element: Members, protected: true },
+  { path: "/goals", element: Goals, protected: true },
+];
+
+// Route renderer component
+const RouteRenderer: React.FC<{ config: RouteConfig }> = ({ config }) => {
+  const { path, element: Component, protected: isProtected } = config;
+  
+  return (
+    <Route
+      path={path}
+      element={isProtected ? (
+        <ProtectedRoute>
+          <Component />
+        </ProtectedRoute>
+      ) : (
+        <Component />
+      )}
+    />
+  );
+};
+
 const AppContent: React.FC = () => {
   // Initialize push notifications while inside AuthProvider
   usePushNotifications();
-
-  useEffect(() => {
-    // Fixes for clickability issues on some browsers/devices
-    initializeClickabilityFixes();
-  }, []);
+  
+  // Initialize clickability fixes using the new hook
+  useClickabilityFixes();
 
   return (
     <TooltipProvider>
       <SonnerToaster />
       <BrowserRouter>
         <Routes>
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/email-confirmed" element={<EmailConfirmed />} />
-          <Route
-            path="/subscription-success"
-            element={<SubscriptionSuccess />}
-          />
-          <Route path="/subscription-cancel" element={<SubscriptionCancel />} />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Index />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/schedule"
-            element={
-              <ProtectedRoute>
-                <Schedule />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/assigned-workouts"
-            element={
-              <ProtectedRoute>
-                <AssignedWorkouts />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/assigned-workouts-trainer"
-            element={
-              <ProtectedRoute>
-                <AssignedWorkoutsTrainer />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/workout-library"
-            element={
-              <ProtectedRoute>
-                <WorkoutLibrary />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/achievements"
-            element={
-              <ProtectedRoute>
-                <Achievements />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/athlete-progress/:athleteId"
-            element={
-              <ProtectedRoute>
-                <AthleteProgress />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/diet-plan"
-            element={
-              <ProtectedRoute>
-                <DietPlan />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/progress"
-            element={
-              <ProtectedRoute>
-                <Progress />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/messages"
-            element={
-              <ProtectedRoute>
-                <Messages />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <ProtectedRoute>
-                <Settings />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/members"
-            element={
-              <ProtectedRoute>
-                <Members />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/goals"
-            element={
-              <ProtectedRoute>
-                <Goals />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/oauth-callback" element={<OAuthCallback />} />
+          {routes.map((route) => (
+            <RouteRenderer key={route.path} config={route} />
+          ))}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
@@ -197,3 +132,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+export { routes, RouteConfig };

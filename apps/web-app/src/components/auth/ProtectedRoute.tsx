@@ -32,7 +32,7 @@ export const ProtectedRoute = ({
   }
 
   // If a specific role is required and the authenticated user does not have that role, display an access denied message
-  if (requiredRole && profile?.role !== requiredRole) {
+  if (requiredRole && profile && profile.role !== requiredRole) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center">
         <div className="text-center">

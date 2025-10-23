@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuthProvider";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
-  const { profile, loading } = useAuth();
+  const { profile, role, loading } = useAuth();
   const { t } = useLanguage();
 
   if (loading) {
@@ -25,7 +25,35 @@ const Index = () => {
     );
   }
 
-  const userRole = profile?.role || "athlete";
+  // Handle case where profile is null (auth error or not loaded properly)
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold text-red-600">{t("index.error")}</h2>
+            <p className="text-muted-foreground">{t("index.profileLoadError")}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle case where role is null or undefined
+  if (!role) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold text-red-600">{t("index.error")}</h2>
+            <p className="text-muted-foreground">{t("index.roleLoadError") || "Unable to load user role. Please try refreshing the page."}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const userRole = role;
 
   return (
     <AppLayout>
