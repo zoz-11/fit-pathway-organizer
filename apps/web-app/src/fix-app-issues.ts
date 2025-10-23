@@ -76,11 +76,9 @@ export const initializeClickabilityFixes = () => {
     childList: true,
     subtree: true,
   });
+
+  // Return cleanup function to prevent memory leaks
+  return () => observer.disconnect();
 };
 
-// Auto-initialize when DOM is ready
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializeClickabilityFixes);
-} else {
-  initializeClickabilityFixes();
-}
+// Removed auto-initialization - this is now handled by App.tsx to prevent double initialization

@@ -30,6 +30,12 @@ def load_chat(filename="chat_history.json"):
     try:
         with open(filename, 'r') as f:
             chat_history = json.load(f)
+        
+        # Validate that chat_history is a list
+        if not isinstance(chat_history, list):
+            print(f"Error: Invalid chat history format in {filename}. Expected a list.")
+            return []
+            
         print(f"Chat history loaded from {filename}.")
         return chat_history
     except json.JSONDecodeError:

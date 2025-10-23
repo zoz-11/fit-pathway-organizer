@@ -110,7 +110,7 @@ export const SignInForm = () => {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="signin-password">{t("signIn.label.password")}</Label>.
+        <Label htmlFor="signin-password">{t("signIn.label.password")}</Label>
         <Input
           id="signin-password"
           type="password"

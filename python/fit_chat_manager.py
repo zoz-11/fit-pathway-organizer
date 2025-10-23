@@ -12,6 +12,9 @@ def save_chat(chat_content_str, filename=DEFAULT_FILENAME):
     """
     try:
         chat_history = json.loads(chat_content_str)
+        if not isinstance(chat_history, list):
+            print("Error: Chat content must be a JSON array.")
+            return
     except json.JSONDecodeError:
         print("Error: Invalid JSON format for chat content. Please provide a valid JSON string.")
         return

@@ -52,7 +52,7 @@ jest.mock('@/hooks/usePushNotifications', () => ({
   usePushNotifications: jest.fn(),
 }));
 
-jest.mock('./fix-app-issues', () => ({
+jest.mock('@/fix-app-issues', () => ({
   initializeClickabilityFixes: jest.fn(),
 }));
 
