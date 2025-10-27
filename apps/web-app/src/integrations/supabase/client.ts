@@ -1,45 +1,25 @@
-// Trigger CI: trivial change for workflow - Oct 27, 2025
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "./types";
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+/**
+ * Supabase client factory.
+ *
+ * For Vite, environment variables must start with VITE_ to be exposed to the client.
+ * Ensure you configure these in your deployment environment / .env file.
+ *
+ * Example variables:
+ *   VITE_SUPABASE_URL=https://xxxx.supabase.co
+ *   VITE_SUPABASE_ANON_KEY=public-anon-key
+ */
 
-// Validate environment variables
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.error('Supabase environment variables are not configured properly');
-  throw new Error('Missing Supabase configuration');
+  // Throwing here ensures devs notice immediately instead of accidentally shipping an app with empty keys.
+  throw new Error(
+    "Supabase environment variables are missing. Ensure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set."
+  );
 }
 
-// Import the supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
-
-// Custom fetch with longer timeout for Edge Functions
-const customFetch = (url: RequestInfo | URL, options?: RequestInit) => {
-  const timeout = 30000; // 30 seconds timeout
-  return Promise.race([
-    fetch(url, options),
-    new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Request timed out")), timeout),
-    ),
-  ]) as Promise<Response>;
-};
-
-export const supabase = createClient<Database>(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY,
-  {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-    },
-    global: {
-      fetch: customFetch,
-      headers: {
-        "x-client-info": "fit-pathway-organizer",
-      },
-    },
-  },
-);
-
+export const supabase = createClient(String(SUPABASE_URL), String(SUPABASE_ANON_KEY));
 export default supabase;
