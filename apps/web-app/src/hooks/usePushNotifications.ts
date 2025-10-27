@@ -110,14 +110,17 @@ export const usePushNotifications = () => {
         if (granted) {
           showPermissionGrantedToast();
         } else {
-          // Permission was not granted - check if it was denied or an error occurred
-          // If an error occurred, the permission state won't be updated (stays 'default')
-          // We need to get the latest permission state after the async call
+          // Permission was not granted. We need to determine if it was:
+          // 1. Denied by the user (permission state is now 'denied')
+          // 2. Failed due to an error (permission state is still 'default')
+          // We read from Notification.permission directly because the component's
+          // permission state won't update until the next render, but we need the
+          // current value immediately to show the appropriate toast.
           const currentPermissionState = "Notification" in window ? Notification.permission : null;
           if (currentPermissionState === 'denied') {
             showPermissionDeniedToast();
           } else {
-            // Permission is still default, meaning an error occurred
+            // Permission is still default, meaning an error occurred during the request
             showPermissionErrorToast();
           }
         }
@@ -128,7 +131,7 @@ export const usePushNotifications = () => {
     };
 
     requestNotificationPermission();
-  }, [user, requestPermission, isSupported, isDenied, isDefault, showPermissionDeniedToast, showPermissionErrorToast, showPermissionGrantedToast]);
+  }, [user, requestPermission, isSupported, isDefault, showPermissionDeniedToast, showPermissionErrorToast, showPermissionGrantedToast]);
 
   return {
     permission,
