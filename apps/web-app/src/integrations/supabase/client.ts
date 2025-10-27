@@ -1,3 +1,4 @@
+// Trigger CI: trivial change for workflow - Oct 27, 2025
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
