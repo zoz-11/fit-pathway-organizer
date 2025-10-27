@@ -19,7 +19,8 @@ const mockNotification = {
 Object.defineProperty(window, 'Notification', {
   value: mockNotification,
   writable: true,
-};
+  configurable: true,
+});
 
 describe('useNotificationPermission', () => {
   beforeEach(() => {
@@ -233,7 +234,10 @@ describe('usePushNotifications', () => {
   });
 
   it('should show denied toast when permission is denied', async () => {
-    mockNotification.requestPermission.mockResolvedValue('denied');
+    mockNotification.requestPermission.mockImplementation(async () => {
+      mockNotification.permission = 'denied';
+      return 'denied';
+    });
 
     renderHook(() => usePushNotifications());
 
