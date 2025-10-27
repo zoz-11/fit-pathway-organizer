@@ -1,0 +1,1 @@
+<content of the updated user_sensitive_data.sql file>
