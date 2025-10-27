@@ -44,6 +44,7 @@ const StatCard = ({
     </CardContent>
   </Card>
 );
+};
 
 export { StatCard };
 export default StatCard;
