@@ -115,7 +115,6 @@ const PaginationEllipsis = ({
   );
 };
 
-
 export {
   Pagination,
   PaginationContent,
