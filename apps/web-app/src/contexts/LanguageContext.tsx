@@ -8,7 +8,7 @@ import React, {
 import enTranslations from "./translations/en.json";
 import arTranslations from "./translations/ar.json";
 
-interface LanguageContextType {
+export interface LanguageContextType {
   language: string;
   setLanguage: (language: string) => void;
   t: (key: string) => string;
