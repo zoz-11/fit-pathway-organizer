@@ -43,7 +43,8 @@ const StatCard = ({
       </div>
     </CardContent>
   </Card>
-);
+  );
+};
 
 export { StatCard };
 export default StatCard;
