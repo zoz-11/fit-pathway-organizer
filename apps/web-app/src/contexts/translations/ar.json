@@ -51,5 +51,27 @@
     "title": "مخططات التقدم",
     "mockDataWarning": "عرض بيانات نموذجية",
     "workoutsCompleted": "تمارين مكتملة"
+  },
+  "carousel": {
+    "previousSlide": "الشريحة السابقة",
+    "nextSlide": "الشريحة التالية"
+  },
+  "workoutDetails": {
+    "exercises": {
+      "pushups": {
+        "name": "تمارين الضغط"
+      },
+      "squats": {
+        "name": "القرفصاء"
+      },
+      "plank": {
+        "name": "اللوح الخشبي"
+      }
+    }
+  },
+  "resendConfirmation": {
+    "checkEmail": "تحقق من بريدك الإلكتروني",
+    "confirmationLink": "أرسلنا رابط تأكيد إلى {email}",
+    "checkSpam": "يرجى التحقق من مجلد الرسائل غير المرغوب فيها"
   }
 }

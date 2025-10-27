@@ -51,5 +51,27 @@
     "title": "Progress Charts",
     "mockDataWarning": "Showing sample data",
     "workoutsCompleted": "Workouts Completed"
+  },
+  "carousel": {
+    "previousSlide": "Previous slide",
+    "nextSlide": "Next slide"
+  },
+  "workoutDetails": {
+    "exercises": {
+      "pushups": {
+        "name": "Push-ups"
+      },
+      "squats": {
+        "name": "Squats"
+      },
+      "plank": {
+        "name": "Plank"
+      }
+    }
+  },
+  "resendConfirmation": {
+    "checkEmail": "Check your email",
+    "confirmationLink": "We sent a confirmation link to {email}",
+    "checkSpam": "Please check your spam folder"
   }
 }
