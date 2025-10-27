@@ -88,15 +88,16 @@ export const useNotificationToasts = () => {
  */
 export const usePushNotifications = () => {
   const { user } = useAuth();
-  const { permission, requestPermission, isSupported, isGranted, isDenied } = useNotificationPermission();
+  const { permission, requestPermission, isSupported, isGranted, isDenied, isDefault } = useNotificationPermission();
   const { showPermissionDeniedToast, showPermissionErrorToast, showPermissionGrantedToast } = useNotificationToasts();
   
   // Use ref to prevent multiple permission requests
   const permissionRequestedRef = useRef(false);
 
   useEffect(() => {
-    // Only request permission if user is authenticated and permission hasn't been requested
-    if (!user || permissionRequestedRef.current || !isSupported) {
+    // Only request permission if user is authenticated, permission is default (not already granted/denied), 
+    // permission hasn't been requested, and notifications are supported
+    if (!user || permissionRequestedRef.current || !isSupported || !isDefault) {
       return;
     }
 
@@ -106,10 +107,22 @@ export const usePushNotifications = () => {
       try {
         const granted = await requestPermission();
         
-        if (!granted && isDenied) {
-          showPermissionDeniedToast();
-        } else if (granted) {
+        if (granted) {
           showPermissionGrantedToast();
+        } else {
+          // Permission was not granted. We need to determine if it was:
+          // 1. Denied by the user (permission state is now 'denied')
+          // 2. Failed due to an error (permission state is still 'default')
+          // We read from Notification.permission directly because the component's
+          // permission state won't update until the next render, but we need the
+          // current value immediately to show the appropriate toast.
+          const currentPermissionState = "Notification" in window ? Notification.permission : null;
+          if (currentPermissionState === 'denied') {
+            showPermissionDeniedToast();
+          } else {
+            // Permission is still default, meaning an error occurred during the request
+            showPermissionErrorToast();
+          }
         }
       } catch (error) {
         console.error("Error requesting notification permission:", error);
@@ -118,13 +131,14 @@ export const usePushNotifications = () => {
     };
 
     requestNotificationPermission();
-  }, [user, requestPermission, isSupported, isDenied, showPermissionDeniedToast, showPermissionErrorToast, showPermissionGrantedToast]);
+  }, [user, requestPermission, isSupported, isDefault, showPermissionDeniedToast, showPermissionErrorToast, showPermissionGrantedToast]);
 
   return {
     permission,
     isSupported,
     isGranted,
     isDenied,
+    isDefault,
     requestPermission,
   };
 };
