@@ -1,0 +1,55 @@
+{
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview"
+  },
+  "sidebar": {
+    "signOut": "Sign Out"
+  },
+  "pagination": {
+    "previousPage": "Go to previous page",
+    "nextPage": "Go to next page",
+    "previous": "Previous",
+    "next": "Next",
+    "pageLink": "Page",
+    "morePages": "More pages"
+  },
+  "statCard": {
+    "trend": {
+      "up": "Up",
+      "down": "Down",
+      "stale": "No change"
+    }
+  },
+  "invitationNotifications": {
+    "toast": {
+      "error": "Error loading invitations"
+    }
+  },
+  "aiChat": {
+    "initialMessage": "Hello! How can I help you today?",
+    "title": "AI Chat Assistant",
+    "placeholder": "Type your message...",
+    "sending": "Sending...",
+    "thinking": "Thinking...",
+    "connectionError": "Connection error",
+    "chatCleared": "Chat cleared",
+    "error": {
+      "serviceError": "Service error",
+      "invalidResponse": "Invalid response",
+      "unknown": "Unknown error",
+      "chatError": "Chat error",
+      "technicalDifficulties": "Technical difficulties"
+    },
+    "toast": {
+      "responseReceived": "Response received",
+      "chatCleared": "Chat has been cleared"
+    }
+  },
+  "progressCharts": {
+    "noData": "No data available",
+    "title": "Progress Charts",
+    "mockDataWarning": "Showing sample data",
+    "workoutsCompleted": "Workouts Completed"
+  }
+}

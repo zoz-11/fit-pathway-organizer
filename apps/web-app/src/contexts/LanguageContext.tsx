@@ -11,7 +11,7 @@ import arTranslations from "./translations/ar.json";
 interface LanguageContextType {
   language: string;
   setLanguage: (language: string) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
@@ -30,7 +30,7 @@ interface LanguageProviderProps {
   children: ReactNode;
 }
 
-const translations: Record<string, Record<string, string>> = {
+const translations: Record<string, Record<string, any>> = {
   en: enTranslations,
   ar: arTranslations,
 };
@@ -65,8 +65,48 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     }
   }, [language]);
 
-  const t = (key: string): string => {
-    return translations[language]?.[key] || translations["en"]?.[key] || key;
+  const t = (key: string, params?: Record<string, string | number>): string => {
+    // Support nested keys with dot notation
+    const keys = key.split('.');
+    let value: any = translations[language];
+    
+    for (const k of keys) {
+      if (value && typeof value === 'object') {
+        value = value[k];
+      } else {
+        value = undefined;
+        break;
+      }
+    }
+    
+    // Fallback to English if not found
+    if (!value) {
+      let enValue: any = translations["en"];
+      for (const k of keys) {
+        if (enValue && typeof enValue === 'object') {
+          enValue = enValue[k];
+        } else {
+          enValue = undefined;
+          break;
+        }
+      }
+      value = enValue;
+    }
+    
+    // If still not found, return the key
+    if (!value) {
+      return key;
+    }
+    
+    // Interpolate parameters if provided
+    if (params && typeof value === 'string') {
+      return value.replace(/\{([^}]+)\}/g, (match, paramKey) => {
+        const paramValue = params[paramKey];
+        return paramValue !== undefined ? String(paramValue) : match;
+      });
+    }
+    
+    return String(value);
   };
 
   const value = {
