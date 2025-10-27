@@ -18,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuthProvider";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SidebarProps {
   onClose?: () => void;
@@ -34,6 +35,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   const { profile, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useLanguage();
   const userRole = profile?.role ?? "athlete";
 
   const handleNavigation = (path: string) => {

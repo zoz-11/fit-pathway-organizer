@@ -10,6 +10,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const useInvitations = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
 
   const { data: invitations, isLoading } = useQuery({
     queryKey: ["invitations", user?.id],
