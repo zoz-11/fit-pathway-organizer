@@ -20,10 +20,6 @@ dist-ssr
 .env.production
 .env*.local
 
-# Sensitive files
-*.json
-sonner.tsx
-
 # Security files
 *.pem
 *.key

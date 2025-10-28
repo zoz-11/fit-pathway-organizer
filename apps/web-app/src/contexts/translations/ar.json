@@ -1,0 +1,33 @@
+{
+  "common": {
+    "submit": "إرسال",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "save": "حفظ",
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجاح",
+    "greeting": "مرحبا، {name}!"
+  },
+  "pagination": {
+    "pageLink": "صفحة",
+    "previousPage": "الصفحة السابقة",
+    "nextPage": "الصفحة التالية",
+    "previous": "السابق",
+    "next": "التالي",
+    "morePages": "المزيد من الصفحات"
+  },
+  "statCard": {
+    "trend": {
+      "up": "↑",
+      "down": "↓",
+      "stale": "→"
+    }
+  },
+  "auth": {
+    "signIn": "تسجيل الدخول",
+    "signOut": "تسجيل الخروج",
+    "signUp": "إنشاء حساب"
+  }
+}
