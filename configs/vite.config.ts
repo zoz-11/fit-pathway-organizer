@@ -17,11 +17,11 @@ export default defineConfig(({ mode }) => ({
   ),
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./apps/web-app/src"),
-      "@components": path.resolve(__dirname, "./packages/ui"),
-      "@hooks": path.resolve(__dirname, "./packages/hooks"),
-      "@i18n": path.resolve(__dirname, "./packages/i18n"),
-      "@types": path.resolve(__dirname, "./packages/types"),
+      "@": path.resolve(__dirname, "../apps/web-app/src"),
+      "@components": path.resolve(__dirname, "../packages/ui"),
+      "@hooks": path.resolve(__dirname, "../packages/hooks"),
+      "@i18n": path.resolve(__dirname, "../packages/i18n"),
+      "@types": path.resolve(__dirname, "../packages/types"),
     },
   },
   build: {
@@ -31,7 +31,9 @@ export default defineConfig(({ mode }) => ({
         if (
           warning.code === "PLUGIN_WARNING" ||
           warning.message?.includes("baseUrl") ||
-          warning.message?.includes("tsconfig")
+          warning.message?.includes("tsconfig") ||
+          warning.message?.includes("TS6310") ||
+          warning.message?.includes("may not disable emit")
         ) {
           return;
         }

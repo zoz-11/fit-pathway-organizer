@@ -25,7 +25,9 @@ export default defineConfig(({ mode }) => ({
         if (
           warning.code === "PLUGIN_WARNING" ||
           warning.message?.includes("baseUrl") ||
-          warning.message?.includes("tsconfig")
+          warning.message?.includes("tsconfig") ||
+          warning.message?.includes("TS6310") ||
+          warning.message?.includes("may not disable emit")
         ) {
           return;
         }
@@ -38,5 +40,6 @@ export default defineConfig(({ mode }) => ({
   },
   esbuild: {
     target: "es2020",
+    logOverride: { 'tsconfig.json': 'silent' },
   },
 }));
