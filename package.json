@@ -10,7 +10,7 @@
     "build:dev": "vite build --mode development --config configs/vite.config.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "jest",
+    "test": "jest --config configs/jest.config.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
