@@ -14,7 +14,7 @@ export default {
     "\\.(css|less|sass|scss)$": "identity-obj-proxy",
   },
   transform: {
-    "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "./tsconfig.json" }],
+    "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "../tsconfig.json" }],
     "^.+\\.js$": "babel-jest",
   },
 };
