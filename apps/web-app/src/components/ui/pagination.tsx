@@ -59,20 +59,15 @@ const PaginationLink = ({
     )}
     {...props}
   />
-)}
+)};
 PaginationLink.displayName = "PaginationLink";
-
-    <PaginationLink {...props}>
-      {children || <span className="sr-only">{t("pagination.pageLink")}</span>}
-    </PaginationLink>
-  )
-}
-PaginationItem.displayName = "PaginationItem"
 
 const PaginationPrevious = ({
   className,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
+}: React.ComponentProps<typeof PaginationLink>) => {
+  const { t } = useLanguage();
+  return (
   <PaginationLink
     aria-label={t("pagination.previousPage")}
     size="default"
@@ -82,13 +77,15 @@ const PaginationPrevious = ({
     <ChevronLeft className="h-4 w-4" />
     <span>{t("pagination.previous")}</span>
   </PaginationLink>
-)
-PaginationPrevious.displayName = "PaginationPrevious"
+)};
+PaginationPrevious.displayName = "PaginationPrevious";
 
 const PaginationNext = ({
   className,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
+}: React.ComponentProps<typeof PaginationLink>) => {
+  const { t } = useLanguage();
+  return (
   <PaginationLink
     aria-label={t("pagination.nextPage")}
     size="default"
@@ -98,13 +95,15 @@ const PaginationNext = ({
     <span>{t("pagination.next")}</span>
     <ChevronRight className="h-4 w-4" />
   </PaginationLink>
-)
-PaginationNext.displayName = "PaginationNext"
+)};
+PaginationNext.displayName = "PaginationNext";
 
 const PaginationEllipsis = ({
   className,
   ...props
-}: React.ComponentProps<"span">) => (
+}: React.ComponentProps<"span">) => {
+  const { t } = useLanguage();
+  return (
   <span
     aria-hidden
     className={cn("flex h-9 w-9 items-center justify-center", className)}
@@ -113,7 +112,8 @@ const PaginationEllipsis = ({
     <MoreHorizontal className="h-4 w-4" />
     <span className="sr-only">{t("pagination.morePages")}</span>
   </span>
-)
+)};
+PaginationEllipsis.displayName = "PaginationEllipsis";
 
 
 export {

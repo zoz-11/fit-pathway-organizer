@@ -8,6 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  root: path.resolve(__dirname, "../apps/web-app"),
   server: {
     host: "::",
     port: 8080,
@@ -17,15 +18,16 @@ export default defineConfig(({ mode }) => ({
   ),
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./apps/web-app/src"),
-      "@components": path.resolve(__dirname, "./packages/ui"),
-      "@hooks": path.resolve(__dirname, "./packages/hooks"),
-      "@i18n": path.resolve(__dirname, "./packages/i18n"),
-      "@types": path.resolve(__dirname, "./packages/types"),
+      "@": path.resolve(__dirname, "../apps/web-app/src"),
+      "@components": path.resolve(__dirname, "../packages/ui"),
+      "@hooks": path.resolve(__dirname, "../packages/hooks"),
+      "@i18n": path.resolve(__dirname, "../packages/i18n"),
+      "@types": path.resolve(__dirname, "../packages/types"),
     },
   },
   build: {
     target: "es2020",
+    outDir: path.resolve(__dirname, "../dist"),
     rollupOptions: {
       onwarn(warning, warn) {
         if (

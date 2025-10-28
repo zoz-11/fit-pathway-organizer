@@ -1,0 +1,33 @@
+{
+  "common": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "greeting": "Hello, {name}!"
+  },
+  "pagination": {
+    "pageLink": "Page",
+    "previousPage": "Previous Page",
+    "nextPage": "Next Page",
+    "previous": "Previous",
+    "next": "Next",
+    "morePages": "More pages"
+  },
+  "statCard": {
+    "trend": {
+      "up": "↑",
+      "down": "↓",
+      "stale": "→"
+    }
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signUp": "Sign Up"
+  }
+}

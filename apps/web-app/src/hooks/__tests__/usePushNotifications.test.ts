@@ -19,7 +19,7 @@ const mockNotification = {
 Object.defineProperty(window, 'Notification', {
   value: mockNotification,
   writable: true,
-};
+});
 
 describe('useNotificationPermission', () => {
   beforeEach(() => {
