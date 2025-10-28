@@ -132,5 +132,4 @@ const App: React.FC = () => {
 };
 
 export default App;
-export { routes };
-export type { RouteConfig };
+export { routes, RouteConfig };

@@ -1,7 +1,7 @@
 /// <reference types="@testing-library/jest-dom" />
 import "@testing-library/jest-dom";
 
-import "../__mocks__/importMeta";
+import "./__mocks__/importMeta";
 
 // Setup DOM environment for testing
 global.window = window as any;

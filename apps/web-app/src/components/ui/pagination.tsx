@@ -45,9 +45,7 @@ const PaginationLink = ({
   isActive,
   size = "icon",
   ...props
-}: PaginationLinkProps) => {
-  const { t } = useLanguage();
-  return (
+}: PaginationLinkProps) => (
   <a
     aria-current={isActive ? "page" : undefined}
     className={cn(
@@ -59,7 +57,7 @@ const PaginationLink = ({
     )}
     {...props}
   />
-)};
+);
 PaginationLink.displayName = "PaginationLink";
 
 const PaginationPrevious = ({
@@ -68,16 +66,17 @@ const PaginationPrevious = ({
 }: React.ComponentProps<typeof PaginationLink>) => {
   const { t } = useLanguage();
   return (
-  <PaginationLink
-    aria-label={t("pagination.previousPage")}
-    size="default"
-    className={cn("gap-1 pl-2.5", className)}
-    {...props}
-  >
-    <ChevronLeft className="h-4 w-4" />
-    <span>{t("pagination.previous")}</span>
-  </PaginationLink>
-)};
+    <PaginationLink
+      aria-label={t("pagination.previousPage")}
+      size="default"
+      className={cn("gap-1 pl-2.5", className)}
+      {...props}
+    >
+      <ChevronLeft className="h-4 w-4" />
+      <span>{t("pagination.previous")}</span>
+    </PaginationLink>
+  );
+};
 PaginationPrevious.displayName = "PaginationPrevious";
 
 const PaginationNext = ({
@@ -86,16 +85,17 @@ const PaginationNext = ({
 }: React.ComponentProps<typeof PaginationLink>) => {
   const { t } = useLanguage();
   return (
-  <PaginationLink
-    aria-label={t("pagination.nextPage")}
-    size="default"
-    className={cn("gap-1 pr-2.5", className)}
-    {...props}
-  >
-    <span>{t("pagination.next")}</span>
-    <ChevronRight className="h-4 w-4" />
-  </PaginationLink>
-)};
+    <PaginationLink
+      aria-label={t("pagination.nextPage")}
+      size="default"
+      className={cn("gap-1 pr-2.5", className)}
+      {...props}
+    >
+      <span>{t("pagination.next")}</span>
+      <ChevronRight className="h-4 w-4" />
+    </PaginationLink>
+  );
+};
 PaginationNext.displayName = "PaginationNext";
 
 const PaginationEllipsis = ({
@@ -104,15 +104,16 @@ const PaginationEllipsis = ({
 }: React.ComponentProps<"span">) => {
   const { t } = useLanguage();
   return (
-  <span
-    aria-hidden
-    className={cn("flex h-9 w-9 items-center justify-center", className)}
-    {...props}
-  >
-    <MoreHorizontal className="h-4 w-4" />
-    <span className="sr-only">{t("pagination.morePages")}</span>
-  </span>
-)};
+    <span
+      aria-hidden
+      className={cn("flex h-9 w-9 items-center justify-center", className)}
+      {...props}
+    >
+      <MoreHorizontal className="h-4 w-4" />
+      <span className="sr-only">{t("pagination.morePages")}</span>
+    </span>
+  );
+};
 PaginationEllipsis.displayName = "PaginationEllipsis";
 
 
