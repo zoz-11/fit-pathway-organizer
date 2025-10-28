@@ -1,33 +1,77 @@
 {
-  "common": {
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "save": "Save",
-    "loading": "Loading...",
-    "error": "Error",
-    "success": "Success",
-    "greeting": "Hello, {name}!"
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview"
+  },
+  "sidebar": {
+    "signOut": "Sign Out"
   },
   "pagination": {
-    "pageLink": "Page",
-    "previousPage": "Previous Page",
-    "nextPage": "Next Page",
+    "previousPage": "Go to previous page",
+    "nextPage": "Go to next page",
     "previous": "Previous",
     "next": "Next",
+    "pageLink": "Page",
     "morePages": "More pages"
   },
   "statCard": {
     "trend": {
-      "up": "↑",
-      "down": "↓",
-      "stale": "→"
+      "up": "Up",
+      "down": "Down",
+      "stale": "No change"
     }
   },
-  "auth": {
-    "signIn": "Sign In",
-    "signOut": "Sign Out",
-    "signUp": "Sign Up"
+  "invitationNotifications": {
+    "toast": {
+      "error": "Error loading invitations"
+    }
+  },
+  "aiChat": {
+    "initialMessage": "Hello! How can I help you today?",
+    "title": "AI Chat Assistant",
+    "placeholder": "Type your message...",
+    "sending": "Sending...",
+    "thinking": "Thinking...",
+    "connectionError": "Connection error",
+    "chatCleared": "Chat cleared",
+    "error": {
+      "serviceError": "Service error",
+      "invalidResponse": "Invalid response",
+      "unknown": "Unknown error",
+      "chatError": "Chat error",
+      "technicalDifficulties": "Technical difficulties"
+    },
+    "toast": {
+      "responseReceived": "Response received",
+      "chatCleared": "Chat has been cleared"
+    }
+  },
+  "progressCharts": {
+    "noData": "No data available",
+    "title": "Progress Charts",
+    "mockDataWarning": "Showing sample data",
+    "workoutsCompleted": "Workouts Completed"
+  },
+  "carousel": {
+    "previousSlide": "Previous slide",
+    "nextSlide": "Next slide"
+  },
+  "workoutDetails": {
+    "exercises": {
+      "pushups": {
+        "name": "Push-ups"
+      },
+      "squats": {
+        "name": "Squats"
+      },
+      "plank": {
+        "name": "Plank"
+      }
+    }
+  },
+  "resendConfirmation": {
+    "checkEmail": "Check your email",
+    "confirmationLink": "We sent a confirmation link to {email}",
+    "checkSpam": "Please check your spam folder"
   }
 }

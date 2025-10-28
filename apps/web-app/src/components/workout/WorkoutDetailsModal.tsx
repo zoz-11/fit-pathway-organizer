@@ -32,7 +32,6 @@ export const WorkoutDetailsModal = ({
   onStartWorkout,
 }: WorkoutDetailsModalProps) => {
   const { t } = useLanguage();
-  const { t } = useLanguage();
 
   const exercises: Exercise[] = [
     {

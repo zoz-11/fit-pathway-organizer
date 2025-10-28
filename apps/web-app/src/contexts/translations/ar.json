@@ -1,33 +1,77 @@
 {
-  "common": {
-    "submit": "إرسال",
-    "cancel": "إلغاء",
-    "delete": "حذف",
-    "edit": "تعديل",
-    "save": "حفظ",
-    "loading": "جاري التحميل...",
-    "error": "خطأ",
-    "success": "نجاح",
-    "greeting": "مرحبا، {name}!"
+  "dashboard": {
+    "title": "لوحة القيادة",
+    "overview": "نظرة عامة"
+  },
+  "sidebar": {
+    "signOut": "تسجيل الخروج"
   },
   "pagination": {
-    "pageLink": "صفحة",
-    "previousPage": "الصفحة السابقة",
-    "nextPage": "الصفحة التالية",
+    "previousPage": "الانتقال إلى الصفحة السابقة",
+    "nextPage": "الانتقال إلى الصفحة التالية",
     "previous": "السابق",
     "next": "التالي",
+    "pageLink": "صفحة",
     "morePages": "المزيد من الصفحات"
   },
   "statCard": {
     "trend": {
-      "up": "↑",
-      "down": "↓",
-      "stale": "→"
+      "up": "أعلى",
+      "down": "أسفل",
+      "stale": "لا تغيير"
     }
   },
-  "auth": {
-    "signIn": "تسجيل الدخول",
-    "signOut": "تسجيل الخروج",
-    "signUp": "إنشاء حساب"
+  "invitationNotifications": {
+    "toast": {
+      "error": "خطأ في تحميل الدعوات"
+    }
+  },
+  "aiChat": {
+    "initialMessage": "مرحبا! كيف يمكنني مساعدتك اليوم؟",
+    "title": "مساعد الدردشة AI",
+    "placeholder": "اكتب رسالتك...",
+    "sending": "إرسال...",
+    "thinking": "التفكير...",
+    "connectionError": "خطأ في الاتصال",
+    "chatCleared": "تم مسح الدردشة",
+    "error": {
+      "serviceError": "خطأ في الخدمة",
+      "invalidResponse": "استجابة غير صالحة",
+      "unknown": "خطأ غير معروف",
+      "chatError": "خطأ في الدردشة",
+      "technicalDifficulties": "صعوبات تقنية"
+    },
+    "toast": {
+      "responseReceived": "تم استلام الرد",
+      "chatCleared": "تم مسح الدردشة"
+    }
+  },
+  "progressCharts": {
+    "noData": "لا توجد بيانات متاحة",
+    "title": "مخططات التقدم",
+    "mockDataWarning": "عرض بيانات نموذجية",
+    "workoutsCompleted": "تمارين مكتملة"
+  },
+  "carousel": {
+    "previousSlide": "الشريحة السابقة",
+    "nextSlide": "الشريحة التالية"
+  },
+  "workoutDetails": {
+    "exercises": {
+      "pushups": {
+        "name": "تمارين الضغط"
+      },
+      "squats": {
+        "name": "القرفصاء"
+      },
+      "plank": {
+        "name": "اللوح الخشبي"
+      }
+    }
+  },
+  "resendConfirmation": {
+    "checkEmail": "تحقق من بريدك الإلكتروني",
+    "confirmationLink": "أرسلنا رابط تأكيد إلى {email}",
+    "checkSpam": "يرجى التحقق من مجلد الرسائل غير المرغوب فيها"
   }
 }

@@ -4,14 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --config configs/vite.config.ts",
-    "build": "vite build --config configs/vite.config.ts",
-    "build:strict": "tsc && vite build --config configs/vite.config.ts",
-    "build:dev": "vite build --mode development --config configs/vite.config.ts",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:dev": "vite build --mode development",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "jest --config configs/jest.config.ts",
-    "typecheck": "tsc --noEmit"
+    "test": "jest"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -67,7 +65,7 @@
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",
-    "vite": "^7.1.12",
+    "vite": "^5.2.0",
     "zod": "^3.25.73"
   },
   "devDependencies": {
