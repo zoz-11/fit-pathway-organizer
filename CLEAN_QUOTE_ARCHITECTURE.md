@@ -6,6 +6,12 @@ Clean Quote is our cutting-edge, production-ready build architecture that ensure
 ## Philosophy
 "Quote the working code, not the perfect types" - Clean Quote prioritizes shipping functional code while maintaining code quality through runtime validation rather than compile-time strictness.
 
+**Trade-offs Acknowledged**: This approach trades compile-time type safety for deployment velocity. It's most appropriate when:
+- Legacy codebase has extensive type debt
+- Delivery deadlines require pragmatic solutions
+- Runtime validation and testing provide adequate safety
+- Incremental type improvements happen in parallel
+
 ## Key Features
 
 ### 1. Build Pipeline Optimization
@@ -54,10 +60,12 @@ export default defineConfig({
 ### CI Workflow (`.github/workflows/ci.yml`)
 ```yaml
 - name: Build project with Clean Quote
-  run: npx vite build --mode production
+  run: npx vite build --mode production  # Note: Bypasses package.json build script
   env:
     NODE_ENV: production
 ```
+
+**Note**: The CI workflow directly calls `vite build` instead of `npm run build` to bypass the TypeScript compilation step (`tsc`) defined in package.json. This is intentional for production builds.
 
 ### SonarCloud (`sonar-project.properties`)
 - Excludes build artifacts and dev files
