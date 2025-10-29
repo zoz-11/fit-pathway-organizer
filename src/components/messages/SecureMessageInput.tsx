@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 interface SecureMessageInputProps {
   recipientId: string;
-  onSendMessage: (content: string, encryptedMetadata?: any) => Promise<void>;
+  onSendMessage: (content: string, encryptedMetadata?: Record<string, unknown>) => Promise<void>;
   disabled?: boolean;
 }
 

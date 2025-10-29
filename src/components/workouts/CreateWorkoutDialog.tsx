@@ -15,11 +15,21 @@ export const CreateWorkoutDialog = () => {
   const [open, setOpen] = useState(false);
   const { createWorkout } = useWorkouts();
 
-  const handleSubmit = async (data: any) => {
+  interface WorkoutFormData {
+    title: string;
+    description: string;
+    exercises: Array<{
+      name: string;
+      sets: number;
+      reps: number;
+    }>;
+  }
+
+  const handleSubmit = async (data: WorkoutFormData) => {
     await createWorkout.mutateAsync({
       name: data.title,
       description: data.description,
-      exercises: data.exercises.map((ex: any) => ({
+      exercises: data.exercises.map((ex) => ({
         name: ex.name,
         sets: ex.sets,
         reps: ex.reps

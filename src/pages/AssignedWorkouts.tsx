@@ -30,7 +30,7 @@ type WorkoutAssignment = {
   completed_at: string | null; // This field was missing in the original type
   athlete: {
     full_name: string | null;
-    [key: string]: any;
+    [key: string]: unknown;
   } | null;
 };
 
@@ -48,9 +48,9 @@ const AssignedWorkouts = () => {
   }
 
   // Ensure assignments is an array before filtering
-  const validAssignments: any[] = Array.isArray(assignments)
+  const validAssignments: WorkoutAssignment[] = Array.isArray(assignments)
     ? assignments.filter(
-        (a): a is any => a && typeof a === "object" && !!a.id
+        (a): a is WorkoutAssignment => a && typeof a === "object" && !!a.id
       )
     : [];
 

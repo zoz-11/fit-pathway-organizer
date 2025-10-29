@@ -1,4 +1,3 @@
-/// <reference types="@testing-library/jest-dom" />
 import '@testing-library/jest-dom';
 
 import './__mocks__/importMeta';
@@ -10,8 +9,12 @@ global.TextDecoder = TextDecoder;
 jest.mock('@/integrations/supabase/client', () => ({
   supabase: {
     auth: {
-      onAuthStateChange: jest.fn(() => ({ subscription: { unsubscribe: jest.fn() } })),
-      getSession: jest.fn(() => Promise.resolve({ data: { session: null } })),
+      onAuthStateChange: jest.fn(() => ({ 
+        data: { 
+          subscription: { unsubscribe: jest.fn() } 
+        } 
+      })),
+      getSession: jest.fn(() => Promise.resolve({ data: { session: null }, error: null })),
     },
     from: jest.fn(() => ({
       select: jest.fn(() => ({
@@ -23,5 +26,6 @@ jest.mock('@/integrations/supabase/client', () => ({
 
 jest.mock('next-themes', () => ({
   useTheme: () => ({ theme: 'light', setTheme: jest.fn() }),
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
 }));
 
