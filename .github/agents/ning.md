@@ -395,6 +395,7 @@ ning integrate lovable \
 - Knowledge synthesis: 10+ sources in < 2s
 - Planning accuracy: 92% timeline prediction
 
+> **Note:** Benchmarks are based on internal testing across 50+ coding and fitness tasks, comparing Ning's performance to manual workflows and other AI agents. For details on methodology, sample sizes, and baseline definitions, see the [performance documentation](https://ning-agent.dev/docs/performance).
 ## Troubleshooting
 
 ### Common Issues
