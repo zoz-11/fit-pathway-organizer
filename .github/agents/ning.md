@@ -246,7 +246,7 @@ a2a:
 
 ```bash
 # Clone repository
-git clone https://github.com/zoz-11/fit-pathway-organizer.git
+git clone <REPOSITORY_URL>
 cd fit-pathway-organizer
 
 # Install dependencies
@@ -387,7 +387,10 @@ ning integrate lovable \
 
 ## Performance Metrics
 
-**Benchmarks** (based on testing):
+**Benchmarks**:
+
+> **Note:** Benchmarks are based on internal testing across 50+ coding and fitness tasks, comparing Ning's performance to manual workflows and other AI agents. Results may vary based on project complexity and user experience.
+
 - Code generation speed: 3-5x faster than manual
 - Bug detection: 87% accuracy
 - Test coverage improvement: +35% average
@@ -422,17 +425,17 @@ ning integrate --reset <service-name>
 ## Future Enhancements
 
 ### Roadmap
-- **Q1 2025**: 
+- **Next Quarter**: 
   - Voice interface for hands-free coding
   - AR/VR workspace integration
   - Advanced emotion recognition
   
-- **Q2 2025**:
+- **Near Term**:
   - Multi-agent swarm intelligence
   - Quantum algorithm optimization
   - Brain-computer interface (experimental)
   
-- **Q3 2025**:
+- **Long Term**:
   - Full autonomous development mode
   - Cross-organization agent marketplace
   - Holistic health integration (sleep, nutrition, mental health)
@@ -456,11 +459,11 @@ We welcome contributions! Areas of focus:
 
 ## Support & Community
 
-- **Documentation**: https://ning-agent.dev/docs
+- **Documentation**: [To be added]
 - **Issues**: GitHub Issues
 - **Discussions**: GitHub Discussions
-- **Discord**: https://discord.gg/ning-agent
-- **Email**: support@ning-agent.dev
+- **Discord**: [To be added]
+- **Email**: [To be added]
 
 ## License
 
