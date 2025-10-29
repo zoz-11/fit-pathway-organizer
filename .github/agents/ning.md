@@ -246,8 +246,8 @@ a2a:
 
 ```bash
 # Clone repository
-git clone https://github.com/zoz-11/fit-pathway-organizer.git
-cd fit-pathway-organizer
+git clone https://github.com/ning-agent/ning.git
+cd ning
 
 # Install dependencies
 npm install
