@@ -27,8 +27,3 @@ instructions: |
   Tools and technologies you should be familiar with:
   - [Tool/Technology 1]
   - [Tool/Technology 2]
-
-# Optional: Add additional configuration as needed
-# model: gpt-4  # Specify model if needed
-# temperature: 0.7  # Adjust creativity/randomness
-# max_tokens: 2000  # Maximum response length
