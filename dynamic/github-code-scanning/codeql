@@ -1,0 +1,47 @@
+name: "CodeQL"
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Detect repository languages
+        id: detect
+        run: |
+          echo "Checking for source files..."
+          LANGUAGES=""
+          if git ls-files '*.js' '*.ts' | grep -q '.'; then LANGUAGES="$LANGUAGES javascript"; fi
+          if git ls-files '*.py' | grep -q '.'; then LANGUAGES="$LANGUAGES python"; fi
+          if git ls-files '*.go' | grep -q '.'; then LANGUAGES="$LANGUAGES go"; fi
+          # Trim leading/trailing whitespace
+          LANGUAGES=$(echo "$LANGUAGES" | xargs)
+          if [ -z "$LANGUAGES" ]; then
+            echo "no_lang=true" > $GITHUB_OUTPUT
+            echo "languages=" > $GITHUB_OUTPUT
+            echo "No supported source files found; skipping CodeQL analysis."
+          else
+            echo "no_lang=false" > $GITHUB_OUTPUT
+            echo "languages=$LANGUAGES" > $GITHUB_OUTPUT
+            echo "Detected languages: $LANGUAGES"
+          fi
+
+      - name: Initialize CodeQL
+        if: steps.detect.outputs.no_lang == 'false'
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ steps.detect.outputs.languages }}
+
+      - name: Autobuild
+        if: steps.detect.outputs.no_lang == 'false'
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Run CodeQL analysis
+        if: steps.detect.outputs.no_lang == 'false'
+        uses: github/codeql-action/analyze@v3
