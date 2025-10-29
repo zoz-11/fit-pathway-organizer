@@ -93,7 +93,6 @@ const Settings = () => {
       }
     } catch (err) {
       // Don't block app if localStorage parsing fails
-      // eslint-disable-next-line no-console
       console.warn('Failed to load dataSharing from localStorage', err);
     }
   }, []);
