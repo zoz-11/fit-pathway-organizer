@@ -395,6 +395,8 @@ ning integrate lovable \
 - Knowledge synthesis: 10+ sources in < 2s
 - Planning accuracy: 92% timeline prediction
 
+> **Note:** Benchmarks are based on internal testing across 50+ coding and fitness tasks, comparing Ning's performance to manual workflows and other AI agents. For details on methodology, sample sizes, and baseline definitions, see the [performance documentation](https://ning-agent.dev/docs/performance).
+
 ## Troubleshooting
 
 ### Common Issues
@@ -422,17 +424,17 @@ ning integrate --reset <service-name>
 ## Future Enhancements
 
 ### Roadmap
-- **Q1 2025**: 
+- **Next Quarter**: 
   - Voice interface for hands-free coding
   - AR/VR workspace integration
   - Advanced emotion recognition
   
-- **Q2 2025**:
+- **Near Term**:
   - Multi-agent swarm intelligence
   - Quantum algorithm optimization
   - Brain-computer interface (experimental)
   
-- **Q3 2025**:
+- **Long Term**:
   - Full autonomous development mode
   - Cross-organization agent marketplace
   - Holistic health integration (sleep, nutrition, mental health)
