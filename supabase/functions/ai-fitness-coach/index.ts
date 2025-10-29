@@ -236,7 +236,6 @@ serve(async (req) => {
           const aiResponse = data.choices[0].message.content;
           usedProvider = providerName;
 
-          let usedProvider: string | null = null;
           await logAudit(supabaseClient, userId, "ai_coach_interaction", {
             message_length: message.length,
             response_length: aiResponse.length,

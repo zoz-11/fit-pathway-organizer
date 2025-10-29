@@ -1,7 +1,11 @@
-/// <reference types="@testing-library/jest-dom" />
 import "@testing-library/jest-dom";
 
 import "./__mocks__/importMeta";
+
+// Polyfill for TextEncoder/TextDecoder (needed for react-router-dom v7)
+import { TextEncoder, TextDecoder } from 'util';
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder as any;
 
 // Setup DOM environment for testing
 global.window = window as any;
