@@ -9,7 +9,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "jest"
+    "test": "jest --config=configs/jest.config.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
