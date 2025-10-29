@@ -11,6 +11,32 @@ After analyzing your repository's branch structure, here's what I found:
   - `main` is **186 commits ahead** of `zoz-11-patch-15`
   - `zoz-11-patch-15` has **1 unique commit** that `main` doesn't have
 
+### Visual Representation
+
+```
+zoz-11-patch-15 (Current Default Branch)
+       |
+       | (1 commit - Initial project setup)
+       |
+       o ed5645a - "Resolve merge conflicts in PR #91"
+       
+       
+main (Should be Default Branch)
+       |
+       | (186 commits with all recent work)
+       |
+       o a6f2e5d - "Switch branch to zoz-11-patch-15"
+       o 1b53a94 - "Execute all planned fixes"
+       o 6e363a4 - "Implement the plan"
+       o f575270 - "Fix tsconfig build error"
+       |
+       ... (182 more commits)
+       |
+       o 7f8b8b9 - "Use tech stack vite_react_shadcn_ts"
+```
+
+**Key Insight**: The `main` branch has evolved significantly with 186 commits of active development, while `zoz-11-patch-15` remains at its initial state with only the foundational commit.
+
 ### The Confusion
 
 Based on your problem statement, you mentioned:
