@@ -21,7 +21,8 @@ dist-ssr
 .env*.local
 
 # Sensitive files
-*.json
+# Note: DO NOT ignore all .json files - we need tsconfig, package.json, etc.
+# *.json - TOO BROAD, commented out
 sonner.tsx
 
 # Security files
