@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -77,23 +77,6 @@ const routes: RouteConfig[] = [
   { path: "/goals", element: Goals, protected: true },
 ];
 
-// Route renderer component
-const RouteRenderer: React.FC<{ config: RouteConfig }> = ({ config }) => {
-  const { path, element: Component, protected: isProtected } = config;
-  
-  return (
-    <Route
-      path={path}
-      element={isProtected ? (
-        <ProtectedRoute>
-          <Component />
-        </ProtectedRoute>
-      ) : (
-        <Component />
-      )}
-    />
-  );
-};
 
 const AppContent: React.FC = () => {
   // Initialize push notifications while inside AuthProvider
@@ -107,9 +90,22 @@ const AppContent: React.FC = () => {
       <SonnerToaster />
       <BrowserRouter>
         <Routes>
-          {routes.map((route) => (
-            <RouteRenderer key={route.path} config={route} />
-          ))}
+          {routes.map((route) => {
+            const Component = route.element;
+            return (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.protected ? (
+                  <ProtectedRoute>
+                    <Component />
+                  </ProtectedRoute>
+                ) : (
+                  <Component />
+                )}
+              />
+            );
+          })}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

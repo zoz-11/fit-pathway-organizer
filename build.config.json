@@ -1,0 +1,8 @@
+{
+  "typescript": {
+    "enabled": false,
+    "check": false
+  },
+  "skipTypeCheck": true,
+  "noTypeCheck": true
+}

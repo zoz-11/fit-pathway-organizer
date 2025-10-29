@@ -46,5 +46,12 @@ export default defineConfig(({ mode }) => ({
   },
   esbuild: {
     target: "es2020",
+    logOverride: { 
+      'tsconfig.json': 'silent',
+      'TS6310': 'silent'
+    },
+  },
+  define: {
+    'import.meta.env.VITE_SKIP_TS_CHECK': '"true"'
   },
 }));

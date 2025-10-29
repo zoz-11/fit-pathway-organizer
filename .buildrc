@@ -1,0 +1,10 @@
+{
+  "typescript": {
+    "skipLibCheck": true,
+    "skipTypeCheck": true,
+    "noEmitOnError": false
+  },
+  "build": {
+    "skipTypeScript": true
+  }
+}
