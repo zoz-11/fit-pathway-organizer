@@ -47,7 +47,161 @@ git push -u origin feature/ai-provider-enhancement
 3. Select your feature branch to merge into `main`
 4. Add a descriptive title and description
 5. Request review if needed
-6. Merge when approved
+6. Merge when approved (see merge strategies below)
+
+## 🔀 Understanding GitHub Merge Strategies
+
+When merging a pull request on GitHub, you'll see different merge options. Here's what each one does:
+
+### **Squash and Merge** ⭐ (Recommended)
+
+**What it does:**
+- Combines ALL commits from your feature branch into ONE single commit on `main`
+- Creates a clean, linear history
+- Example: If you have 7 commits on your feature branch, they all become 1 commit on `main`
+
+**When to use:**
+- ✅ For most feature branches (recommended default)
+- ✅ When you have many small "work in progress" commits
+- ✅ When you want to keep `main` branch history clean and easy to read
+- ✅ When commits in your feature branch are not meaningful individually
+
+**Pros:**
+- Clean, linear git history
+- Easier to revert entire features (just revert one commit)
+- Easier to read `git log` on main branch
+- Hides messy development commits like "fix typo" or "WIP"
+
+**Cons:**
+- Loses individual commit history from feature branch
+- Can't see the detailed development process
+
+**Example:**
+```
+Before merge (feature branch):
+- commit 1: "Add login button"
+- commit 2: "Fix typo"
+- commit 3: "Update styles"
+- commit 4: "Fix lint errors"
+- commit 5: "Add tests"
+- commit 6: "Fix test"
+- commit 7: "Update docs"
+
+After squash merge (main branch):
+- commit 1: "feat: implement login feature with tests and docs"
+```
+
+### **Create a Merge Commit** (Traditional Merge)
+
+**What it does:**
+- Keeps ALL individual commits from your feature branch
+- Creates a merge commit to connect the branches
+- Preserves complete development history
+- Example: If you have 7 commits, all 7 will appear in `main` history + 1 merge commit = 8 commits total
+
+**When to use:**
+- ✅ When each commit is meaningful and well-structured
+- ✅ For long-running feature branches with logical commit progression
+- ✅ When you need to preserve detailed history for auditing
+- ✅ When working with complex features where commit-by-commit history matters
+
+**Pros:**
+- Complete history preserved
+- Can see exact development progression
+- Each commit can be reviewed individually
+- Good for collaborative branches with multiple contributors
+
+**Cons:**
+- Can make main branch history messy with many small commits
+- Harder to read `git log` on main branch
+- More difficult to revert (need to revert multiple commits)
+
+**Example:**
+```
+After merge commit (main branch):
+- commit 1: "Add login button"
+- commit 2: "Fix typo"
+- commit 3: "Update styles"
+- commit 4: "Fix lint errors"
+- commit 5: "Add tests"
+- commit 6: "Fix test"
+- commit 7: "Update docs"
+- commit 8: "Merge pull request #123 from feature/login"
+```
+
+### **Rebase and Merge** (Advanced)
+
+**What it does:**
+- Replays your commits on top of `main` branch
+- No merge commit created
+- Creates a linear history without merge commits
+
+**When to use:**
+- ✅ When you want to keep individual commits but maintain linear history
+- ✅ When commits are well-structured and meaningful
+- ✅ Advanced users comfortable with rebasing
+
+**Note:** This option requires your branch to be up-to-date with main.
+
+### 📊 Quick Decision Guide
+
+```
+Do you have many small "WIP" commits?
+    ↓ YES → Use "Squash and Merge" ⭐
+    ↓ NO
+    ↓
+Are your commits well-structured and meaningful?
+    ↓ YES → Consider "Create a Merge Commit" or "Rebase and Merge"
+    ↓ NO → Use "Squash and Merge" ⭐
+    ↓
+Do you need to preserve detailed commit history?
+    ↓ YES → Use "Create a Merge Commit"
+    ↓ NO → Use "Squash and Merge" ⭐
+```
+
+### 💡 Best Practice for This Project
+
+**For FitPathway Organizer, we recommend:**
+- **Default: Use "Squash and Merge"** for most features
+- **Use "Create a Merge Commit"** only for:
+  - Release branches
+  - Major feature branches with well-structured commits
+  - When you need detailed history for debugging
+
+**Why Squash is Better for This Project:**
+- Keeps main branch clean and readable
+- Makes it easier to understand what each PR accomplished
+- Simplifies rollbacks if needed
+- Aligns with modern development practices
+
+### 📋 Comparison Table
+
+| Feature | Squash and Merge ⭐ | Create a Merge Commit | Rebase and Merge |
+|---------|-------------------|---------------------|------------------|
+| **Number of commits on main** | 1 commit | All commits + 1 merge commit | All commits |
+| **History clarity** | Very clean | Can be messy | Clean |
+| **Preserves individual commits** | ❌ No | ✅ Yes | ✅ Yes |
+| **Easy to revert** | ✅ Very easy | ⚠️ Moderate | ⚠️ Moderate |
+| **Good for "WIP" commits** | ✅ Yes | ❌ No | ❌ No |
+| **Learning curve** | Easy | Easy | Advanced |
+| **Recommended for beginners** | ✅ Yes | ⚠️ Sometimes | ❌ No |
+
+### ❓ FAQ: Common Questions
+
+**Q: I have 7 commits on my branch. What happens with squash?**  
+A: All 7 commits will be combined into 1 single commit on the main branch. You'll be able to edit the commit message before merging.
+
+**Q: Will I lose my work if I squash?**  
+A: No! Your work is safe. The only thing that changes is how commits appear in the main branch history. Your feature branch keeps all commits.
+
+**Q: Can I change the merge strategy after merging?**  
+A: No, once merged you cannot change the strategy. However, you could revert and re-merge if absolutely necessary (not recommended).
+
+**Q: Which one should I use for my 7-commit feature branch?**  
+A: If those 7 commits are small incremental changes (like "fix typo", "update style", etc.), use **Squash and Merge**. If each commit is a significant, well-documented change, you could use **Create a Merge Commit**.
+
+**Q: What do other projects use?**  
+A: Many modern projects (including large open-source projects) use Squash and Merge as the default because it keeps history clean.
 
 ### 5. **Syncing with Lovable**
 
