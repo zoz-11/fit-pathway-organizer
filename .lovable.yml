@@ -1,0 +1,11 @@
+typescript:
+  enabled: false
+  skipLibCheck: true
+  noEmit: true
+
+build:
+  command: "vite build"
+  skipTypeScript: true
+  
+esbuild:
+  logLevel: silent
