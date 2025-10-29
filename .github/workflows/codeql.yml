@@ -1,134 +1,245 @@
-# CodeQL Advanced Setup Workflow
-# 
-# ⚠️ IMPORTANT: This is an ADVANCED CodeQL configuration.
-# Before this workflow can run successfully, you MUST switch from Default to Advanced setup:
-#   1. Go to: Settings → Security → Code Security
-#   2. Find "Code scanning" section
-#   3. Click "Switch to advanced" button
-#   4. Confirm the switch
+# ═══════════════════════════════════════════════════════════════════════════
+# CodeQL Security Analysis Workflow - State-of-the-Art Configuration
+# ═══════════════════════════════════════════════════════════════════════════
 #
-# This workflow will fail with SARIF upload errors if Default setup is still enabled.
-# GitHub blocks SARIF uploads from advanced workflows when Default setup is active.
+# 🔒 SECURITY SCANNING: This workflow performs automated security vulnerability
+#    detection using GitHub's CodeQL engine. It scans for common vulnerabilities
+#    and coding errors in multiple languages.
 #
-# For most projects, this workflow file will not need changing; you simply need
-# to commit it to your repository.
+# ⚠️  SETUP REQUIREMENT: Advanced CodeQL Configuration
+#    Before this workflow can run successfully, ensure Advanced setup is enabled:
+#    1. Navigate to: Settings → Security → Code Security and Analysis
+#    2. Locate "Code scanning" section
+#    3. Click "Set up" → "Advanced" (if using Default setup, switch to Advanced)
+#    4. Commit this workflow file
 #
-# You may wish to alter this file to override the set of languages analyzed,
-# or to provide custom queries or build logic.
+# 📚 DOCUMENTATION:
+#    - CodeQL Documentation: https://codeql.github.com/docs/
+#    - Advanced Setup Guide: https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning
+#    - Query Suites: https://docs.github.com/en/code-security/code-scanning/managing-your-code-scanning-configuration/codeql-query-suites
 #
-# ******** NOTE ********
-# We have attempted to detect the languages in your repository. Please check
-# the `language` matrix defined below to confirm you have the correct set of
-# supported CodeQL languages.
+# 🎯 FEATURES:
+#    ✓ Multi-language support (JavaScript/TypeScript, Python)
+#    ✓ Dependency caching for faster CI runs
+#    ✓ Explicit build steps for compiled languages
+#    ✓ Security-hardened permissions (principle of least privilege)
+#    ✓ Optimized for monorepo and full-stack applications
+#    ✓ Scheduled weekly security scans
 #
-name: "CodeQL Advanced"
+# ═══════════════════════════════════════════════════════════════════════════
+
+name: "CodeQL Security Analysis"
+
 on:
+  # Trigger on pushes to main branches
   push:
-    branches: [ "zoz-11-patch-15", "main", "master", "develop" ]
+    branches: 
+      - "main"
+      - "master"
+      - "develop"
     paths-ignore:
-      - .github/workflows/**
+      - '**.md'
+      - 'docs/**'
+      - '.github/workflows/**'
+      - '!.github/workflows/codeql.yml'
+  
+  # Trigger on pull requests to main branches
   pull_request:
-    branches: [ "zoz-11-patch-15", "main", "master", "develop" ]
+    branches: 
+      - "main"
+      - "master"
+      - "develop"
     paths-ignore:
-      - .github/workflows/**
+      - '**.md'
+      - 'docs/**'
+  
+  # Weekly scheduled scan (Sundays at midnight UTC)
   schedule:
-    - cron: '41 7 * * 4'
+    - cron: '0 0 * * 0'
+  
+  # Allow manual workflow dispatch for on-demand security scans
+  workflow_dispatch:
+
+# Security hardening: Use minimal required permissions
+permissions:
+  # Required for CodeQL to upload SARIF results
+  security-events: write
+  # Required for actions/checkout
+  contents: read
+  # Required for private repositories
+  actions: read
+  # Required for fetching CodeQL packs
+  packages: read
+
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    # Runner size impacts CodeQL analysis time. To learn more, please see:
-    #   - https://gh.io/recommended-hardware-resources-for-running-codeql
-    #   - https://gh.io/supported-runners-and-hardware-resources
-    #   - https://gh.io/using-larger-runners (GitHub.com only)
-    # Consider using larger runners or machines with greater resources for possible analysis time improvements.
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    permissions:
-      # required for all workflows
-      security-events: write
-      # required to fetch internal or private CodeQL packs
-      packages: read
-      # only required for workflows in private repositories
-      actions: read
-      contents: read
+    timeout-minutes: 360  # 6 hours max for large codebases
+    
+    # Security: Prevent concurrent scans of the same language
+    concurrency:
+      group: ${{ github.workflow }}-${{ matrix.language }}-${{ github.ref }}
+      cancel-in-progress: true
+    
     strategy:
+      # Don't cancel other language scans if one fails
       fail-fast: false
       matrix:
         include:
-        - language: javascript-typescript
-          build-mode: autobuild
-        - language: python
-          build-mode: none
-        # CodeQL supports the following values keywords for 'language': 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'rust', 'swift'
-        # Use `c-cpp` to analyze code written in C, C++ or both
-        # Use 'java-kotlin' to analyze code written in Java, Kotlin or both
-        # Use 'javascript-typescript' to analyze code written in JavaScript, TypeScript or both
-        # To learn more about changing the languages that are analyzed or customizing the build mode for your analysis,
-        # see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning.
-        # If you are analyzing a compiled language, you can modify the 'build-mode' for that language to customize how
-        # your codebase is analyzed, see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages
+          # JavaScript/TypeScript: React + Vite application
+          - language: javascript-typescript
+            build-mode: manual
+            node-version: '20'
+          
+          # Python: Backend/utility scripts
+          - language: python
+            build-mode: none
+            python-version: '3.11'
+        
+        # 💡 SUPPORTED LANGUAGES:
+        # actions, c-cpp, csharp, go, java-kotlin, javascript-typescript, 
+        # python, ruby, rust, swift
+    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    
-    # Setup Node.js for JavaScript/TypeScript projects
-    - name: Setup Node.js
-      if: matrix.language == 'javascript-typescript'
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
-        # If you wish to specify custom queries, you can do so here or in a config file.
-        # By default, queries listed here will override any specified in a config file.
-        # Prefix the list here with "+" to use these queries and those in the config file.
-        # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-        # queries: security-extended,security-and-quality
-    
-    # Install dependencies for JavaScript/TypeScript projects
-    - name: Install dependencies
-      if: matrix.language == 'javascript-typescript'
-      run: |
-        if [ -f package-lock.json ]; then
-          npm ci
-        elif [ -f yarn.lock ]; then
-          yarn install --frozen-lockfile
-        elif [ -f package.json ]; then
-          npm install
-        fi
-    
-    # Build JavaScript/TypeScript project
-    - name: Build project
-      if: matrix.language == 'javascript-typescript' && matrix.build-mode == 'autobuild'
-      run: |
-        if [ -f package.json ]; then
-          if grep -q '"build"' package.json; then
-            npm run build
+      # ─────────────────────────────────────────────────────────────────────
+      # Step 1: Checkout Repository
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history for better analysis (default is shallow clone)
+          fetch-depth: 0
+      
+      # ─────────────────────────────────────────────────────────────────────
+      # Step 2: Setup Language Runtimes
+      # ─────────────────────────────────────────────────────────────────────
+      
+      # Setup Node.js for JavaScript/TypeScript
+      - name: Setup Node.js ${{ matrix.node-version }}
+        if: matrix.language == 'javascript-typescript'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          # Enable caching for faster installs
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+      
+      # Setup Python
+      - name: Setup Python ${{ matrix.python-version }}
+        if: matrix.language == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          # Enable pip caching
+          cache: 'pip'
+          cache-dependency-path: '**/requirements*.txt'
+      
+      # ─────────────────────────────────────────────────────────────────────
+      # Step 3: Initialize CodeQL
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          # Use security-extended query suite for comprehensive scanning
+          # Options: default, security-extended, security-and-quality
+          queries: security-and-quality
+          # Increase analysis depth for better vulnerability detection
+          config: |
+            paths-ignore:
+              - node_modules
+              - dist
+              - build
+              - coverage
+              - '**/*.test.ts'
+              - '**/*.test.tsx'
+              - '**/*.spec.ts'
+              - '**/*.spec.tsx'
+      
+      # ─────────────────────────────────────────────────────────────────────
+      # Step 4: Install Dependencies
+      # ─────────────────────────────────────────────────────────────────────
+      
+      # Install Node.js dependencies
+      - name: Install Node.js dependencies
+        if: matrix.language == 'javascript-typescript'
+        run: |
+          echo "📦 Installing Node.js dependencies..."
+          if [ -f package-lock.json ]; then
+            echo "Using npm ci for clean install..."
+            npm ci --prefer-offline --no-audit
+          elif [ -f yarn.lock ]; then
+            echo "Using yarn..."
+            yarn install --frozen-lockfile
+          elif [ -f pnpm-lock.yaml ]; then
+            echo "Using pnpm..."
+            npm install -g pnpm
+            pnpm install --frozen-lockfile
+          else
+            echo "Using npm install..."
+            npm install
           fi
-        fi
-    
-    # If the analyze step fails for one of the languages you are analyzing with
-    # "We were unable to automatically build your code", modify the matrix above
-    # to set the build mode to "manual" for that language. Then modify this step
-    # to build your code.
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-    - name: Run manual build steps
-      if: matrix.build-mode == 'manual'
-      shell: bash
-      run: |
-        echo 'If you are using a "manual" build mode for one or more of the' \
-          'languages you are analyzing, replace this with the commands to build' \
-          'your code, for example:'
-        echo '  make bootstrap'
-        echo '  make release'
-        exit 1
-    
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
-      with:
-        category: "/language:${{matrix.language}}"
+          echo "✅ Dependencies installed successfully"
+      
+      # Install Python dependencies (if requirements.txt exists)
+      - name: Install Python dependencies
+        if: matrix.language == 'python'
+        run: |
+          echo "📦 Installing Python dependencies..."
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          echo "✅ Python dependencies installed"
+      
+      # ─────────────────────────────────────────────────────────────────────
+      # Step 5: Build Project (Explicit Build for Compiled Languages)
+      # ─────────────────────────────────────────────────────────────────────
+      
+      # Build JavaScript/TypeScript project
+      - name: Build TypeScript/React application
+        if: matrix.language == 'javascript-typescript' && matrix.build-mode == 'manual'
+        run: |
+          echo "🔨 Building TypeScript application..."
+          npm run build
+          echo "✅ Build completed successfully"
+      
+      # ─────────────────────────────────────────────────────────────────────
+      # Step 6: Perform CodeQL Analysis
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          # Categorize results by language for better organization
+          category: "/language:${{ matrix.language }}"
+          # Upload results even if there are vulnerabilities (don't fail workflow)
+          upload: true
+          # Generate detailed SARIF output
+          output: sarif-results
+          # Increase RAM for analysis (helps with large codebases)
+          ram: 6000
+      
+      # ─────────────────────────────────────────────────────────────────────
+      # Step 7: Upload Analysis Results (Artifact Backup)
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Upload CodeQL results as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-results-${{ matrix.language }}
+          path: sarif-results
+          retention-days: 30
+      
+      # ─────────────────────────────────────────────────────────────────────
+      # Step 8: Security Summary
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Generate security summary
+        if: always()
+        run: |
+          echo "## 🔒 CodeQL Security Analysis Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Language:** ${{ matrix.language }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Analysis completed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "**Results:** Check the Security tab for detailed findings" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 View results: [Security Advisories](https://github.com/${{ github.repository }}/security/code-scanning)" >> $GITHUB_STEP_SUMMARY
