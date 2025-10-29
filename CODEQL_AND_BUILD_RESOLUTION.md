@@ -17,9 +17,9 @@ This document summarizes the resolution of CodeQL and build issues in the fit-pa
 - **Vulnerabilities Fixed**:
   - ✅ **Critical**: form-data unsafe random function (GHSA-fjxv-7rqg-78g4)
 - **Remaining Vulnerabilities** (require breaking changes):
-  - ⚠️ **Moderate**: esbuild (GHSA-67mh-4wv8-2f99) - requires vite upgrade to v7.x
+  - ⚠️ **Moderate**: esbuild (GHSA-67mh-4wv8-2f99) - fix pending in a future vite release (v7.x or later; not yet available as of January 2025)
   - ⚠️ **Moderate**: vite - depends on vulnerable esbuild version
-- **Recommendation**: Monitor for stable vite 7.x release and upgrade in a separate PR
+- **Recommendation**: Monitor for the release of a stable vite version that resolves the esbuild vulnerability and upgrade in a separate PR
 
 ### Issue #78: Handle All Build Requests
 - **Status**: ✅ Resolved
