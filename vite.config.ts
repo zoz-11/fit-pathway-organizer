@@ -30,6 +30,7 @@ const skipTypeCheck = () => ({
 });
 
 export default defineConfig(({ mode }) => ({
+  root: "./apps/web-app",
   server: {
     host: "::",
     port: 8080,
@@ -51,7 +52,21 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: "es2020",
     minify: 'esbuild',
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'radix-vendor': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-toast',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-select',
+          ],
+          'query-vendor': ['@tanstack/react-query'],
+          'supabase-vendor': ['@supabase/supabase-js'],
+        },
+      },
       onwarn(warning, warn) {
         // Suppress all TypeScript-related warnings
         if (
