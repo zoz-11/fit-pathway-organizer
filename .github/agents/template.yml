@@ -1,0 +1,34 @@
+# Custom Agent Template
+# 
+# This is a template for creating GitHub Copilot custom agents.
+# Replace the placeholders with your actual agent configuration.
+
+name: my-custom-agent
+description: Brief description of what this agent does
+
+# The instructions field contains the main logic and behavior of your agent
+instructions: |
+  You are a specialized assistant for [specific task/domain].
+  
+  Your responsibilities include:
+  - [Responsibility 1]
+  - [Responsibility 2]
+  - [Responsibility 3]
+  
+  When working on tasks:
+  1. [Step or guideline 1]
+  2. [Step or guideline 2]
+  3. [Step or guideline 3]
+  
+  Best practices to follow:
+  - [Best practice 1]
+  - [Best practice 2]
+  
+  Tools and technologies you should be familiar with:
+  - [Tool/Technology 1]
+  - [Tool/Technology 2]
+
+# Optional: Add additional configuration as needed
+# model: gpt-4  # Specify model if needed
+# temperature: 0.7  # Adjust creativity/randomness
+# max_tokens: 2000  # Maximum response length
