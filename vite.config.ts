@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // Explicitly set root directory (best practice)
+  // Explicitly set root directory (best practice for preventing EISDIR errors)
   root: './',
   
   server: {
@@ -64,7 +64,7 @@ export default defineConfig(({ mode }) => ({
     },
     // Enable minification for production
     minify: 'esbuild',
-    // Generate source maps for debugging (but not inline)
+    // Generate source maps for debugging (hidden sourcemaps available for error tracking tools)
     sourcemap: mode === 'production' ? 'hidden' : true,
     // Report compressed size
     reportCompressedSize: true,
