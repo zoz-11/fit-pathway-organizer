@@ -55,7 +55,7 @@ jobs:
       matrix:
         include:
         - language: javascript-typescript
-          build-mode: autobuild
+          build-mode: none
         - language: python
           build-mode: none
         # CodeQL supports the following values keywords for 'language': 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'rust', 'swift'
@@ -70,13 +70,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    # Setup Node.js for JavaScript/TypeScript projects
-    - name: Setup Node.js
-      if: matrix.language == 'javascript-typescript'
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-    
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v4
@@ -88,28 +81,6 @@ jobs:
         # Prefix the list here with "+" to use these queries and those in the config file.
         # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         # queries: security-extended,security-and-quality
-    
-    # Install dependencies for JavaScript/TypeScript projects
-    - name: Install dependencies
-      if: matrix.language == 'javascript-typescript'
-      run: |
-        if [ -f package-lock.json ]; then
-          npm ci
-        elif [ -f yarn.lock ]; then
-          yarn install --frozen-lockfile
-        elif [ -f package.json ]; then
-          npm install
-        fi
-    
-    # Build JavaScript/TypeScript project
-    - name: Build project
-      if: matrix.language == 'javascript-typescript' && matrix.build-mode == 'autobuild'
-      run: |
-        if [ -f package.json ]; then
-          if grep -q '"build"' package.json; then
-            npm run build
-          fi
-        fi
     
     # If the analyze step fails for one of the languages you are analyzing with
     # "We were unable to automatically build your code", modify the matrix above
