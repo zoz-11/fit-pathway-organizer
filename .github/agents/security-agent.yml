@@ -1,0 +1,104 @@
+name: Security Agent
+description: Autonomous agent for security vulnerability detection and remediation
+
+triggers:
+  - workflow_run:
+      workflows: ["CodeQL Security Scan"]
+      types: [completed]
+  - schedule:
+      - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM
+  - workflow_dispatch:
+
+capabilities:
+  - name: scan_dependencies
+    description: Check for vulnerable dependencies
+    actions:
+      - run npm audit
+      - analyze CodeQL results
+      - check OWASP top 10
+      - scan for secrets
+  
+  - name: fix_vulnerabilities
+    description: Automatically fix security issues
+    actions:
+      - update vulnerable packages
+      - apply security patches
+      - remove unused dependencies
+      - update to safe versions
+  
+  - name: prevent_regressions
+    description: Ensure fixes don't break functionality
+    actions:
+      - run test suite
+      - verify build succeeds
+      - check for breaking changes
+      - validate functionality
+
+decision_tree:
+  - condition: vulnerabilities_found
+    actions:
+      - assess_severity
+      - check_fix_availability
+      - apply_fixes_if_safe
+      - run_regression_tests
+      - create_security_pr
+  
+  - condition: codeql_alerts
+    actions:
+      - analyze_code_patterns
+      - identify_vulnerable_code
+      - apply_secure_coding_fixes
+      - verify_with_rescan
+  
+  - condition: secrets_detected
+    actions:
+      - alert_immediately
+      - rotate_credentials
+      - update_env_examples
+      - add_to_gitignore
+
+auto_fix_rules:
+  - severity: critical
+    action: immediate_fix_and_alert
+    requires_approval: false
+  
+  - severity: high
+    action: auto_fix_with_tests
+    requires_approval: false
+  
+  - severity: moderate
+    action: auto_fix_if_safe
+    requires_approval: true
+  
+  - severity: low
+    action: schedule_batch_fix
+    requires_approval: true
+
+collaboration:
+  - agent: build_agent
+    when: dependencies_updated
+    action: verify_build
+  
+  - agent: test_agent
+    when: security_fix_applied
+    action: run_full_test_suite
+  
+  - agent: integration_agent
+    when: credentials_rotated
+    action: update_deployment_secrets
+
+reporting:
+  success: "Security vulnerabilities resolved: {vuln_count} fixed"
+  failure: "Critical vulnerabilities require immediate attention"
+  metrics:
+    - total_vulnerabilities
+    - critical_count
+    - high_count
+    - moderate_count
+    - low_count
+    - fixed_count
+  alerts:
+    - type: critical
+      channel: immediate_notification
+    - type: high
+      channel: daily_summary

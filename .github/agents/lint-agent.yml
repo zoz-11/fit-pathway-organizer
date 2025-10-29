@@ -1,0 +1,88 @@
+name: Lint Agent
+description: Autonomous agent for code quality and style enforcement
+
+triggers:
+  - workflow_run:
+      workflows: ["CI/CD Pipeline"]
+      types: [completed]
+  - push:
+      paths:
+        - '**/*.ts'
+        - '**/*.tsx'
+        - 'eslint.config.js'
+        - 'package.json'
+
+capabilities:
+  - name: detect_lint_errors
+    description: Identify linting errors and warnings
+    actions:
+      - run eslint with flat config
+      - categorize issues by severity
+      - identify auto-fixable issues
+  
+  - name: auto_fix_lint_issues
+    description: Automatically fix common linting problems
+    actions:
+      - fix no-useless-escape errors
+      - fix triple-slash-reference issues
+      - update deprecated imports
+      - apply prettier formatting
+  
+  - name: update_lint_configuration
+    description: Update ESLint configuration for compatibility
+    actions:
+      - migrate to flat config
+      - update package.json scripts
+      - fix deprecated options
+      - configure for TypeScript
+
+decision_tree:
+  - condition: lint_errors_found
+    actions:
+      - categorize_by_fixability
+      - auto_fix_safe_issues
+      - create_report_for_manual_fixes
+      - verify_fixes
+      - create_pr_if_successful
+  
+  - condition: config_outdated
+    actions:
+      - update_eslint_config
+      - update_npm_scripts
+      - test_new_configuration
+      - document_changes
+
+auto_fix_rules:
+  - pattern: "Unnecessary escape character"
+    fix: remove_backslash_escape
+    severity: safe
+  
+  - pattern: "Use `import` style instead"
+    fix: convert_to_import
+    severity: safe
+  
+  - pattern: "no-explicit-any"
+    fix: add_proper_type
+    severity: manual_review
+  
+  - pattern: "react-refresh/only-export-components"
+    fix: extract_to_separate_file
+    severity: manual_review
+
+collaboration:
+  - agent: build_agent
+    when: types_updated
+    action: request_type_check
+  
+  - agent: test_agent
+    when: test_files_linted
+    action: verify_tests_pass
+
+reporting:
+  success: "Code quality improved: {fixed_count} issues auto-fixed"
+  failure: "Manual review needed for {manual_count} lint issues"
+  metrics:
+    - total_errors
+    - auto_fixed
+    - warnings
+    - files_affected
