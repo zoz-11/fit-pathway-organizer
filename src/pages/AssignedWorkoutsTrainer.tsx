@@ -19,10 +19,16 @@ type WorkoutAssignment = {
 const AssignedWorkoutsTrainer = () => {
   const { assignments, isLoading } = useWorkoutAssignments();
 
+  interface Assignment {
+    id: string;
+    status: string;
+    [key: string]: unknown;
+  }
+
   // Filter out invalid or malformed assignment objects and assert the type
   const validAssignments = Array.isArray(assignments)
     ? assignments.filter(
-        (a): a is any =>
+        (a): a is Assignment =>
           a && typeof a === "object" && !!a.id && !!a.status,
       )
     : [];

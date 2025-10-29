@@ -13,7 +13,7 @@ interface MealItem {
 interface MealCompletionProps {
   mealName: string;
   foods: MealItem[];
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<{ className?: string }>;
   color: string;
 }
 

@@ -132,7 +132,7 @@ const Settings = () => {
         const { data: factors, error: listError } = await supabase.auth.mfa.listFactors();
         if (listError) throw listError;
 
-        const totpFactor = factors?.totp?.find((factor: any) => factor.factorType === 'totp');
+        const totpFactor = factors?.totp?.find((factor: { factorType: string; id: string }) => factor.factorType === 'totp');
         if (totpFactor) {
           const { error } = await supabase.auth.mfa.unenroll({ factorId: totpFactor.id });
           if (error) throw error;
@@ -147,7 +147,7 @@ const Settings = () => {
     } finally {
       setTwoFactorLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {

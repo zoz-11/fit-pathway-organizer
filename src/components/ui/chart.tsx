@@ -100,26 +100,35 @@ ${colorConfig
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
 
+interface TooltipPayload {
+  value: number;
+  name: string;
+  dataKey: string;
+  color?: string;
+  fill?: string;
+  [key: string]: unknown;
+}
+
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
     active?: boolean;
-    payload?: any[];
-    label?: any;
+    payload?: TooltipPayload[];
+    label?: string | number;
     className?: string;
     indicator?: "dot" | "line" | "dashed";
     hideLabel?: boolean;
     hideIndicator?: boolean;
     labelFormatter?: (
       label: string | number,
-      payload?: any[]
+      payload?: TooltipPayload[]
     ) => React.ReactNode;
     formatter?: (
       value: number,
       name: string,
-      item: any,
+      item: TooltipPayload,
       index: number,
-      payload: any[]
+      payload: TooltipPayload[]
     ) => React.ReactNode;
     labelClassName?: string;
     nameKey?: string;
@@ -272,10 +281,17 @@ ChartTooltipContent.displayName = "ChartTooltipContent";
 
 const ChartLegend = RechartsPrimitive.Legend;
 
+interface LegendPayload {
+  value?: string;
+  dataKey?: string;
+  color?: string;
+  [key: string]: unknown;
+}
+
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
-    payload?: any[];
+    payload?: LegendPayload[];
     verticalAlign?: string;
     hideIcon?: boolean;
     nameKey?: string;
@@ -300,7 +316,7 @@ const ChartLegendContent = React.forwardRef<
           className,
         )}
       >
-        {payload.map((item: any, index: number) => {
+        {payload.map((item: LegendPayload, index: number) => {
           const key = `${nameKey || item.dataKey || "value"}`;
           const itemConfig = getPayloadConfigFromPayload(config, item, key);
 

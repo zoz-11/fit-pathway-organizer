@@ -19,7 +19,7 @@ interface Workout {
   status: string;
 }
 
-const hasGoogleRefreshToken = (profile: any) => {
+const hasGoogleRefreshToken = (profile: Record<string, unknown> | null) => {
   return profile?.google_refresh_token;
 };
 

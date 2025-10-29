@@ -14,7 +14,7 @@ export interface AuthenticatedUser {
   id: string;
   email: string;
   role: 'trainer' | 'athlete';
-  profile: any;
+  profile: Record<string, unknown>;
 }
 
 export const validateAuth = async (
