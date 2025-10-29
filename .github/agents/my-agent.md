@@ -19,12 +19,18 @@ FitPathway Ultra Agent is designed to be the ultimate assistant for your project
 - Security and Traceability: Tracks all actions for compliance/logging/reversibility.
 
 ## Integrated Knowledge Sources
-- Lovable.dev Documentation
-- GitHub Copilot Agent Documentation
-- Apple Developer Docset
-- wger fitness app repo
-- A2A Protocol Guide
-- Best Practice Frameworks
+- [Lovable.dev Documentation](https://docs.lovable.dev)
+- [Getting Started with Lovable.dev](https://docs.lovable.dev/introduction/getting-started)
+- [LovableLabs Docs GitHub](https://github.com/lovablelabs/docs)
+- [Lovable Integrations Guide](https://docs.lovable.dev/integrations/introduction)
+- [Lovable Build Documentation Case](https://lovable.dev/solutions/use-case/website-documentation)
+- [GitHub Copilot Agent Documentation](https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent)
+- [VS Code Copilot Agent Guide](https://code.visualstudio.com/docs/copilot/copilot-coding-agent)
+- [Copilot Features - GitHub](https://github.com/features/copilot)
+- [Apple Developer Docset Download](https://gist.github.com/fzwo/01d62cebd21032683d87f51d094575d3?permalink_comment_id=4270112)
+- [wger Open-Source Fitness App](https://github.com/wger-project/wger)
+- [A2A Protocol Guide](https://a2aprotocol.ai/blog/2025-full-guide-a2a-protocol)
+- [Open Source Agent Frameworks Guide](https://www.firecrawl.dev/blog/best-open-source-agent-frameworks-2025)
 
 ## Typical Workflow Example
 1. Authenticate and assign tasks/issues.
