@@ -4,6 +4,41 @@
 
 **URL**: https://lovable.dev/projects/5ed9908e-fa3d-4618-b22f-017633a2f3af
 
+## 🤖 A2A Intelligent Agent System
+
+This project features an advanced **Agent-to-Agent (A2A) autonomous system** that monitors, detects, and fixes issues without manual intervention.
+
+### What is A2A?
+
+The A2A system consists of 5 specialized AI agents working together:
+
+- 🏗️ **Build Agent** - Ensures successful compilation
+- 🧪 **Test Agent** - Maintains test suite health  
+- 🎨 **Lint Agent** - Enforces code quality
+- 🔒 **Security Agent** - Identifies vulnerabilities
+- 🔄 **Integration Agent** - Manages Lovable.dev sync
+
+### How It Works
+
+The agents autonomously:
+1. Monitor all code changes via GitHub Actions
+2. Detect issues in build, tests, linting, and security
+3. Apply automated fixes when safe
+4. Create PRs for human review when needed
+5. Coordinate with each other to ensure fixes don't break anything
+
+### Benefits
+
+✅ **Automatic issue detection and resolution**  
+✅ **Always buildable, tested code**  
+✅ **Security vulnerabilities addressed promptly**  
+✅ **Lovable.dev integration maintained**  
+✅ **More time for feature development**
+
+**Learn more**: See [docs/A2A_AGENT_SYSTEM.md](docs/A2A_AGENT_SYSTEM.md) for the complete guide.
+
+---
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
