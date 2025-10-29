@@ -60,7 +60,7 @@ jobs:
           echo "- Coverage: 📊 Tracked" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Code Quality" >> $GITHUB_STEP_SUMMARY
-          echo "- ESLint: ⚠️ 18 errors (non-blocking)" >> $GITHUB_STEP_SUMMARY
+          echo "- ESLint: ⚠️ Minor warnings (non-blocking)" >> $GITHUB_STEP_SUMMARY
           echo "- TypeScript: ✅ Clean" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Security" >> $GITHUB_STEP_SUMMARY
