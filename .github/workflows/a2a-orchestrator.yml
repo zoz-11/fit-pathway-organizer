@@ -17,6 +17,8 @@ jobs:
   orchestrate:
     name: Orchestrate Agents
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       build_status: ${{ steps.build-agent.outputs.status }}
       test_status: ${{ steps.test-agent.outputs.status }}
@@ -190,6 +192,8 @@ jobs:
     needs: [orchestrate, auto-fix]
     if: always()
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Agent Health Report
         run: |
