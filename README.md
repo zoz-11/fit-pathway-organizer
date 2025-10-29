@@ -1,5 +1,9 @@
 # Welcome to your Lovable project
 
+> **⚠️ Branch Notice**: If you're experiencing issues switching branches or setting up the repository, please see:
+> - [QUICK_FIX.md](./QUICK_FIX.md) - Immediate solution for branch switching issues
+> - [BRANCH_MANAGEMENT_GUIDE.md](./BRANCH_MANAGEMENT_GUIDE.md) - Comprehensive branch management guide
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/5ed9908e-fa3d-4618-b22f-017633a2f3af

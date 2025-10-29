@@ -1,5 +1,7 @@
 # Git Workflow & Deployment Guide for FitPathway Organizer
 
+> **📌 Important**: This repository uses `main` as the default branch. For information about branch management and switching branches, see [BRANCH_MANAGEMENT_GUIDE.md](./BRANCH_MANAGEMENT_GUIDE.md) or [QUICK_FIX.md](./QUICK_FIX.md).
+
 ## 🚀 Quick Start: Git Best Practices
 
 ### 1. **Feature Branch Workflow**
