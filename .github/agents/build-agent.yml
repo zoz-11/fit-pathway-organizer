@@ -1,0 +1,76 @@
+name: Build Agent
+description: Autonomous agent for detecting and fixing build issues
+
+triggers:
+  - workflow_run:
+      workflows: ["CI/CD Pipeline"]
+      types: [completed]
+      branches: [main, develop, 'copilot/**']
+  - schedule:
+      - cron: '0 */6 * * *'  # Every 6 hours
+
+capabilities:
+  - name: detect_build_errors
+    description: Scan build logs for compilation errors
+    actions:
+      - analyze TypeScript errors
+      - check for missing dependencies
+      - verify configuration files
+  
+  - name: fix_typescript_errors
+    description: Automatically fix common TypeScript issues
+    actions:
+      - add missing type definitions
+      - fix import statements
+      - update tsconfig.json
+      - resolve module errors
+  
+  - name: update_dependencies
+    description: Fix dependency-related build issues
+    actions:
+      - run npm install for missing packages
+      - update package-lock.json
+      - resolve version conflicts
+      - fix peer dependency warnings
+
+decision_tree:
+  - condition: build_failed
+    actions:
+      - analyze_error_logs
+      - identify_root_cause
+      - apply_fix
+      - verify_fix
+      - create_pr_if_successful
+  
+  - condition: build_succeeded
+    actions:
+      - monitor_for_warnings
+      - optimize_build_performance
+      - update_documentation
+
+auto_fix_rules:
+  - pattern: "Cannot find module"
+    fix: install_missing_dependency
+  
+  - pattern: "Type .* is not assignable"
+    fix: add_type_assertion
+  
+  - pattern: "Property .* does not exist"
+    fix: update_type_definition
+
+collaboration:
+  - agent: test_agent
+    when: build_fixed
+    action: trigger_test_run
+  
+  - agent: lint_agent
+    when: typescript_updated
+    action: request_lint_check
+
+reporting:
+  success: "Build errors fixed: {error_count} issues resolved"
+  failure: "Build errors require human intervention: {error_details}"
+  metrics:
+    - build_time
+    - error_count
+    - fix_success_rate

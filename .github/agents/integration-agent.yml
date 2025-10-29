@@ -1,0 +1,119 @@
+name: Integration Agent
+description: Autonomous agent for managing third-party integrations and deployments
+
+triggers:
+  - workflow_run:
+      workflows: ["CI/CD Pipeline"]
+      types: [completed]
+      branches: [main]
+  - push:
+      branches: [main]
+      paths:
+        - '.env.example'
+        - 'supabase/**'
+        - '.github/workflows/**'
+
+capabilities:
+  - name: manage_lovable_sync
+    description: Ensure Lovable.dev stays in sync
+    actions:
+      - verify webhook configuration
+      - check sync status
+      - trigger manual sync if needed
+      - monitor deployment health
+  
+  - name: manage_github_workflows
+    description: Maintain CI/CD pipeline health
+    actions:
+      - update workflow configurations
+      - fix deprecated actions
+      - optimize workflow performance
+      - manage secrets and variables
+  
+  - name: coordinate_deployments
+    description: Orchestrate deployment processes
+    actions:
+      - trigger deployment workflows
+      - verify deployment success
+      - rollback on failure
+      - update documentation
+
+decision_tree:
+  - condition: lovable_sync_failed
+    actions:
+      - check_webhook_status
+      - verify_repository_access
+      - trigger_manual_sync
+      - alert_if_persistent
+  
+  - condition: deployment_failed
+    actions:
+      - analyze_failure_logs
+      - check_environment_variables
+      - verify_build_artifacts
+      - attempt_rollback
+      - notify_team
+  
+  - condition: workflow_outdated
+    actions:
+      - update_github_actions
+      - test_new_workflow
+      - migrate_configuration
+      - document_changes
+
+coordination_matrix:
+  on_build_success:
+    - trigger: lovable_sync
+    - trigger: deployment_pipeline
+    - notify: team_channel
+  
+  on_security_fix:
+    - trigger: emergency_deployment
+    - update: environment_secrets
+    - notify: security_team
+  
+  on_test_pass:
+    - trigger: staging_deployment
+    - create: release_notes
+    - update: documentation
+
+auto_actions:
+  - event: main_branch_push
+    conditions:
+      - all_tests_pass
+      - no_security_issues
+      - build_succeeds
+    actions:
+      - sync_to_lovable
+      - deploy_to_staging
+      - notify_success
+  
+  - event: security_vulnerability
+    conditions:
+      - severity: critical
+    actions:
+      - immediate_fix
+      - emergency_deployment
+      - notify_all_stakeholders
+
+collaboration:
+  - agent: build_agent
+    when: deployment_ready
+    action: verify_build_artifacts
+  
+  - agent: test_agent
+    when: pre_deployment
+    action: run_smoke_tests
+  
+  - agent: security_agent
+    when: deployment_requested
+    action: verify_no_vulnerabilities
+
+reporting:
+  success: "Integration health: All systems operational"
+  failure: "Integration issues detected: {issue_details}"
+  metrics:
+    - lovable_sync_status
+    - deployment_success_rate
+    - workflow_execution_time
+    - integration_uptime

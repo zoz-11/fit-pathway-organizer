@@ -1,0 +1,84 @@
+name: Test Agent
+description: Autonomous agent for maintaining test suite health
+
+triggers:
+  - workflow_run:
+      workflows: ["CI/CD Pipeline"]
+      types: [completed]
+  - push:
+      paths:
+        - 'src/**/*.test.tsx'
+        - 'src/**/*.test.ts'
+        - 'jest.config.ts'
+        - 'setupTests.ts'
+
+capabilities:
+  - name: detect_test_failures
+    description: Identify failing tests and their root causes
+    actions:
+      - parse test output
+      - categorize failures
+      - analyze error patterns
+  
+  - name: fix_test_configuration
+    description: Fix test setup and configuration issues
+    actions:
+      - create missing tsconfig.jest.json
+      - update jest.config.ts
+      - fix setupTests.ts
+      - configure test environment
+  
+  - name: update_test_files
+    description: Update and fix broken test files
+    actions:
+      - fix import statements
+      - update component selectors
+      - fix async test timing
+      - add missing test utilities
+
+decision_tree:
+  - condition: tests_failed
+    actions:
+      - categorize_failures
+      - check_configuration
+      - fix_configuration_if_needed
+      - rerun_tests
+      - create_pr_if_fixed
+  
+  - condition: configuration_missing
+    actions:
+      - create_tsconfig_jest
+      - update_jest_config
+      - install_test_dependencies
+      - verify_setup
+
+auto_fix_rules:
+  - pattern: "Cannot find module '@testing-library"
+    fix: install_testing_library
+  
+  - pattern: "tsconfig.jest.json not found"
+    fix: create_jest_tsconfig
+  
+  - pattern: "ReferenceError: .* is not defined"
+    fix: add_to_setup_file
+  
+  - pattern: "Timeout"
+    fix: increase_test_timeout
+
+collaboration:
+  - agent: build_agent
+    when: test_config_updated
+    action: request_build_verification
+  
+  - agent: lint_agent
+    when: test_files_modified
+    action: request_lint_check
+
+reporting:
+  success: "Test suite health restored: {test_count} tests passing"
+  failure: "Test failures require investigation: {failure_details}"
+  metrics:
+    - total_tests
+    - passing_tests
+    - failing_tests
+    - test_coverage
