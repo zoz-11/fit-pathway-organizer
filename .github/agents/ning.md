@@ -456,11 +456,11 @@ We welcome contributions! Areas of focus:
 
 ## Support & Community
 
-- **Documentation**: https://ning-agent.dev/docs
+- **Documentation**: [To be added / placeholder]
 - **Issues**: GitHub Issues
 - **Discussions**: GitHub Discussions
-- **Discord**: https://discord.gg/ning-agent
-- **Email**: support@ning-agent.dev
+- **Discord**: [To be added / placeholder]
+- **Email**: [To be added / placeholder]
 
 ## License
 
