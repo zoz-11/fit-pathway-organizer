@@ -129,8 +129,8 @@ kubectl >= 1.22
 
 ### Installation
 ```bash
-# Clone the repository
-git clone https://github.com/zoz-11/fit-pathway-organizer.git
+# Clone the repository (replace <your-username> with your GitHub username or fork)
+git clone https://github.com/<your-username>/fit-pathway-organizer.git
 cd fit-pathway-organizer
 
 # Install dependencies
@@ -229,12 +229,12 @@ This agent incorporates research from:
 
 ## 🤝 Contributing
 
-We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please open an issue or pull request to get started.
 
 ### Development Setup
 ```bash
 # Fork and clone
-git clone https://github.com/yourusername/fit-pathway-organizer.git
+git clone https://github.com/<your-username>/fit-pathway-organizer.git
 
 # Create feature branch
 git checkout -b feature/amazing-feature
@@ -252,7 +252,7 @@ npm test
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
@@ -263,10 +263,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Documentation**: [docs.fit-coding-agent.com](https://docs.fit-coding-agent.com)
-- **Community**: [Discord Server](https://discord.gg/fit-coding-agent)
+- **Documentation**: [docs.fit-coding-agent.com](https://docs.fit-coding-agent.com) _(example, replace with your documentation URL)_
+- **Community**: [Discord Server](https://discord.gg/fit-coding-agent) _(example, replace with your community link)_
 - **Issues**: [GitHub Issues](https://github.com/zoz-11/fit-pathway-organizer/issues)
-- **Email**: support@fit-coding-agent.com
+- **Email**: support@fit-coding-agent.com _(example, replace with your support email)_
 
 ---
 
