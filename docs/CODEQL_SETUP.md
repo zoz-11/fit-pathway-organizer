@@ -5,10 +5,12 @@ This repository uses **CodeQL Advanced Setup** for code security scanning.
 ## Current Configuration
 
 The CodeQL workflow (`.github/workflows/codeql.yml`) is configured to:
-- Analyze **JavaScript/TypeScript** and **Python** code using `build-mode: none` (interpreted languages, no compilation required)
+- Analyze **JavaScript/TypeScript** and **Python** code with explicit build steps for TypeScript
 - Run on pushes and PRs to branches: `zoz-11-patch-15`, `main`, `master`, `develop`
-- Perform weekly scheduled scans (Thursdays at 7:41 UTC)
-- Automatically detect and scan code without requiring build steps (CodeQL extracts directly from source code)
+- Perform weekly scheduled scans (Sundays at midnight UTC)
+- Use enhanced security-and-quality query suite for comprehensive vulnerability detection
+- Include dependency caching for faster CI runs
+- Generate detailed SARIF results with 30-day artifact retention
 
 ## ⚠️ Important: Switch to Advanced Setup Required
 

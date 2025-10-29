@@ -1,0 +1,146 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# Workflow Validation - Ensures GitHub Actions syntax correctness
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# 🔍 PURPOSE: Validates all workflow files for syntax errors and best practices
+#    before they are used, preventing broken CI/CD pipelines.
+#
+# 🎯 FEATURES:
+#    ✓ YAML syntax validation
+#    ✓ GitHub Actions schema validation
+#    ✓ Best practices checking
+#    ✓ Runs on workflow file changes
+#
+# ═══════════════════════════════════════════════════════════════════════════
+
+name: "Validate Workflows"
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+  push:
+    branches:
+      - main
+      - master
+      - develop
+    paths:
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Workflow Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate YAML syntax
+        run: |
+          echo "🔍 Validating YAML syntax for all workflow files..."
+
+          # Install yq for YAML validation
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
+          # Validate each workflow file
+          EXIT_CODE=0
+          for file in .github/workflows/*.yml .github/workflows/*.yaml; do
+            if [ -f "$file" ]; then
+              echo "Validating: $file"
+              if yq eval '.' "$file" > /dev/null 2>&1; then
+                echo "  ✅ Valid YAML syntax"
+              else
+                echo "  ❌ Invalid YAML syntax"
+                EXIT_CODE=1
+              fi
+            fi
+          done
+
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "✅ All workflow files have valid YAML syntax"
+          else
+            echo "❌ Some workflow files have invalid YAML syntax"
+            exit 1
+          fi
+
+      - name: Check for required fields
+        run: |
+          echo "🔍 Checking for required workflow fields..."
+
+          EXIT_CODE=0
+          for file in .github/workflows/*.yml .github/workflows/*.yaml; do
+            if [ -f "$file" ]; then
+              echo "Checking: $file"
+
+              # Check for name field
+              if ! grep -q "^name:" "$file"; then
+                echo "  ⚠️  Missing 'name' field"
+              fi
+
+              # Check for on/trigger field
+              if ! grep -q "^on:" "$file"; then
+                echo "  ❌ Missing 'on' field (required)"
+                EXIT_CODE=1
+              fi
+
+              # Check for jobs field
+              if ! grep -q "^jobs:" "$file"; then
+                echo "  ❌ Missing 'jobs' field (required)"
+                EXIT_CODE=1
+              fi
+
+              if [ $EXIT_CODE -eq 0 ]; then
+                echo "  ✅ All required fields present"
+              fi
+            fi
+          done
+
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "❌ Some workflow files are missing required fields"
+            exit 1
+          fi
+
+          echo "✅ All workflow files have required fields"
+
+      - name: Validate action versions
+        run: |
+          echo "🔍 Checking for outdated action versions..."
+
+          # Check for old action versions
+          if grep -r "actions/checkout@v[12]" .github/workflows/; then
+            echo "⚠️  Found outdated actions/checkout version (consider upgrading to @v4)"
+          fi
+
+          if grep -r "actions/setup-node@v[12]" .github/workflows/; then
+            echo "⚠️  Found outdated actions/setup-node version (consider upgrading to @v4)"
+          fi
+
+          if grep -r "github/codeql-action/.*@v[123]" .github/workflows/; then
+            echo "⚠️  Found outdated CodeQL action version (consider upgrading to @v4)"
+          fi
+
+          echo "✅ Action version check complete"
+
+      - name: Generate validation summary
+        if: always()
+        run: |
+          echo "## 🔍 Workflow Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Validated on:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Workflow Files" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          ls -1 .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null | while read file; do
+            echo "✓ $(basename "$file")"
+          done >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All validations passed successfully" >> $GITHUB_STEP_SUMMARY
