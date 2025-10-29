@@ -287,7 +287,7 @@ integrations:
   
 personalization:
   coding_style: auto_detect
-  preferred_frameworks: [react, fastapi, postgres]
+  preferred_frameworks: [react, fastapi, postgresql]
   fitness_goals: [strength, flexibility, endurance]
 ```
 
