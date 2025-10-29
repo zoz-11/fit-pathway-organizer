@@ -21,8 +21,8 @@ dist-ssr
 .env*.local
 
 # Sensitive files
-*.json
-sonner.tsx
+# Add specific files that should be ignored here, not wildcards like *.json
+# Example: secrets.json, private-config.json
 
 # Security files
 *.pem
