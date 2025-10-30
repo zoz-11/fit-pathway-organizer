@@ -1,33 +1,30 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "skipLibCheck": true,
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    /* Linting */
+    "moduleResolution": "Node",
     "strict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true,
-    /* Path Aliases */
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./apps/web-app/src/*"],
       "@components/*": ["./packages/ui/*"],
-      "@hooks/*": ["./packages/hooks/*"],
-      "@i18n/*": ["./packages/i18n/*"],
-      "@types/*": ["./packages/types/*"]
+      "@hooks/*": ["./packages/hooks/*"]
     }
   },
-  "include": ["apps/web-app/src", "packages"],
-  "exclude": ["**/__tests__", "**/*.test.ts", "**/*.test.tsx"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "apps/**/*",
+    "packages/**/*",
+    "configs/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/dist",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
 }
