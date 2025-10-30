@@ -7,6 +7,7 @@ import { AuthProvider } from "@/hooks/useAuthProvider";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { useClickabilityFixes } from "./hooks/useClickabilityFixes";
 import "./styles/clickability-fixes.css";
 import { usePushNotifications } from "./hooks/usePushNotifications";
@@ -115,15 +116,21 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <LanguageProvider>
-          <AuthProvider>
-            <AppContent />
-          </AuthProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ErrorBoundary>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+            <LanguageProvider>
+              <ErrorBoundary>
+                <AuthProvider>
+                  <AppContent />
+                </AuthProvider>
+              </ErrorBoundary>
+            </LanguageProvider>
+          </ThemeProvider>
+        </ErrorBoundary>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 };
 

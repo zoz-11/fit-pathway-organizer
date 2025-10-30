@@ -145,11 +145,43 @@ serve(async (req) => {
 
     const { userId, title, body, data } = parsedRequest.data;
 
+    // Authorization check: Only trainers can send to their athletes, users can send to themselves
+    if (userId !== user.id) {
+      // Check if sender is a trainer and recipient is their athlete
+      const { data: relationship, error: relationshipError } = await supabaseClient
+        .from('trainer_athletes')
+        .select('id')
+        .eq('trainer_id', user.id)
+        .eq('athlete_id', userId)
+        .eq('status', 'accepted')
+        .single();
+
+      if (relationshipError || !relationship) {
+        await logSecurityEvent(
+          supabaseClient,
+          user.id,
+          'push_notification_unauthorized_recipient',
+          { 
+            targetUserId: userId,
+            ipAddress: req.headers.get("x-forwarded-for")
+          },
+          'high'
+        );
+        return new Response(
+          JSON.stringify({ error: "Unauthorized: You can only send notifications to yourself or your athletes" }),
+          {
+            status: 403,
+            headers: { "Content-Type": "application/json", ...corsHeaders },
+          }
+        );
+      }
+    }
+
     // Sanitize title and body
     const sanitizedTitle = sanitizeHtml(title);
     const sanitizedBody = sanitizeHtml(body);
 
-    // Fetch device tokens for the user
+    // Fetch device tokens for the user with RLS
     const { data: deviceTokens, error: fetchError } = await supabaseClient
       .from("device_tokens")
       .select("token")

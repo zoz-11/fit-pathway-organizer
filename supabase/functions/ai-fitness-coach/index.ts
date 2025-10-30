@@ -202,7 +202,6 @@ serve(async (req) => {
     - Proper form and technique
     - Progressive overload principles
 
-    Note for backend routing: prefer providers in this order — ['groq', 'openrouter']; remove the 'lovable' provider from consideration. This prompt assumes Groq is prioritized, then OpenRouter, and that the 'lovable' provider should not be used for handling requests.
     - Nutrition guidance
     - Recovery and rest importance
     - Motivation and mindset
@@ -214,8 +213,8 @@ serve(async (req) => {
       { role: "user", content: message },
     ];
 
-    // Try providers in order of preference
-    const providerOrder = ["lovable", "groq", "openrouter"];
+    // Try providers in order of preference (Groq first as it's most generous)
+    const providerOrder = ["groq", "openrouter"];
     let lastError = null;
     let usedProvider = null;
 
@@ -236,7 +235,6 @@ serve(async (req) => {
           const aiResponse = data.choices[0].message.content;
           usedProvider = providerName;
 
-          let usedProvider: string | null = null;
           await logAudit(supabaseClient, userId, "ai_coach_interaction", {
             message_length: message.length,
             response_length: aiResponse.length,
