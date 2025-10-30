@@ -7,6 +7,7 @@ import { SecurityAlert } from "@/components/ui/SecurityAlert";
 import { Send, Shield } from "lucide-react";
 import { z } from "zod";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SecureMessageInputProps {
   recipientId: string;
@@ -29,6 +30,16 @@ export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
     setError(null);
 
     try {
+      // Get current user ID for secure encryption
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      
+      if (!user) {
+        setError("Authentication required");
+        return;
+      }
+
       // Validate input
       const validatedData = MessageInputSchema.parse({
         content,
@@ -41,8 +52,10 @@ export const SecureMessageInput: React.FC<SecureMessageInputProps> = ({
       let encryptedMetadata = {};
 
       if (useEncryption) {
+        // Use secure encryption with user ID (version 1)
         const encrypted = await MessageEncryption.encryptMessage(
           validatedData.content,
+          user.id
         );
         finalContent = encrypted.encryptedContent;
         encryptedMetadata = encrypted.metadata;

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuthProvider";
 import { v4 as uuidv4 } from "uuid";
+import { MessageEncryption } from "@/lib/encryption";
 
 // Mock data for messages
 const MOCK_MESSAGES = {
@@ -101,7 +102,29 @@ export const useMessages = (participantId?: string) => {
         .order("created_at", { ascending: true });
 
       if (error) throw error;
-      return data;
+      
+      // Decrypt messages if they have encrypted_metadata
+      const decryptedMessages = await Promise.all(
+        (data || []).map(async (msg: any) => {
+          if (msg.encrypted_metadata && msg.encrypted_metadata.algorithm !== "none") {
+            try {
+              // Decrypt using sender's ID (the one who encrypted it)
+              const decryptedContent = await MessageEncryption.decryptMessage(
+                msg.content,
+                msg.encrypted_metadata,
+                msg.sender_id
+              );
+              return { ...msg, content: decryptedContent };
+            } catch (error) {
+              console.error("Failed to decrypt message:", error);
+              return msg; // Return original if decryption fails
+            }
+          }
+          return msg;
+        })
+      );
+      
+      return decryptedMessages;
     },
     enabled: !!user && !!participantId,
   });
