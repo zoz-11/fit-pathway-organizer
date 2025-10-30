@@ -133,37 +133,39 @@ export const AiChatAssistant = () => {
   };
 
   return (
-    <Card className="h-[500px] flex flex-col">
+    <Card className="h-[500px] flex flex-col" role="region" aria-label={t("aiChat.ariaLabel")}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center">
-          <MessageCircle className="h-5 w-5 me-2 text-blue-600" />
+          <MessageCircle className="h-5 w-5 me-2 text-blue-600" aria-hidden="true" />
           <CardTitle>{t("aiChat.title")}</CardTitle>
         </div>
         <div className="flex gap-2">
           {error && (
-            <div className="flex items-center text-red-500 text-sm">
-              <AlertCircle className="h-4 w-4 me-1" />
+            <div className="flex items-center text-red-500 text-sm" role="alert" aria-live="polite">
+              <AlertCircle className="h-4 w-4 me-1" aria-hidden="true" />
               <span>{t("aiChat.connectionError")}</span>
             </div>
           )}
-          <Button variant="ghost" size="sm-icon" onClick={clearChat}>
-            <RefreshCw className="h-4 w-4" />
+          <Button variant="ghost" size="sm-icon" onClick={clearChat} aria-label={t("aiChat.clearChatAriaLabel")}>
+            <RefreshCw className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col p-0">
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4">
+        <ScrollArea className="flex-1 p-4" aria-label={t("aiChat.messagesAriaLabel")}>
+          <div className="space-y-4" role="log" aria-live="polite" aria-atomic="false">
             {messages.map((message, index) => (
               <div
                 key={index}
                 className={`flex items-start gap-2 ${
                   message.role === "user" ? "justify-end" : "justify-start"
                 }`}
+                role="article"
+                aria-label={message.role === "user" ? t("aiChat.userMessage") : t("aiChat.assistantMessage")}
               >
                 {message.role === "assistant" && (
-                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                    <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0" aria-label={t("aiChat.botIcon")}>
+                    <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
                   </div>
                 )}
                 <div
@@ -181,19 +183,19 @@ export const AiChatAssistant = () => {
                   </p>
                 </div>
                 {message.role === "user" && (
-                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
-                    <User className="h-4 w-4 text-white" />
+                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0" aria-label={t("aiChat.userIcon")}>
+                    <User className="h-4 w-4 text-white" aria-hidden="true" />
                   </div>
                 )}
               </div>
             ))}
             {isLoading && (
-              <div className="flex items-start gap-2 justify-start">
-                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                  <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <div className="flex items-start gap-2 justify-start" role="status" aria-live="polite">
+                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0" aria-label={t("aiChat.botIcon")}>
+                  <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
                 </div>
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 flex items-center gap-1">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-600 dark:text-gray-400" aria-label={t("aiChat.thinkingAriaLabel")}>
                     {t("aiChat.thinking")}
                   </span>
                   <span className="animate-pulse text-sm text-gray-600 dark:text-gray-400">
@@ -210,7 +212,7 @@ export const AiChatAssistant = () => {
             )}
           </div>
         </ScrollArea>
-        <div className="p-4 border-t bg-gray-50 dark:bg-gray-900/50 mt-4">
+        <div className="p-4 border-t bg-gray-50 dark:bg-gray-900/50 mt-4" role="form" aria-label={t("aiChat.formAriaLabel")}>
           <div className="flex gap-3">
             <Input
               value={input}
@@ -219,13 +221,19 @@ export const AiChatAssistant = () => {
               placeholder={t("aiChat.placeholder")}
               disabled={isLoading}
               className="flex-1 bg-white dark:bg-gray-800"
+              aria-label={t("aiChat.inputAriaLabel")}
+              aria-required="true"
+              aria-invalid={!input.trim()}
             />
             <Button
               size="default"
               type="submit"
               disabled={isLoading || !input.trim()}
               className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+              aria-label={t("aiChat.sendAriaLabel")}
+              onClick={sendMessage}
             >
+              <Send className="h-4 w-4 me-2" aria-hidden="true" />
               {isLoading ? t("aiChat.sending") : t("aiChat.send")}
             </Button>
           </div>

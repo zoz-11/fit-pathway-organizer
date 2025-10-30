@@ -114,15 +114,19 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   };
 
   return (
-    <div className="h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+    <aside 
+      className="h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col" 
+      aria-label={t("sidebar.ariaLabel")}
+      role="navigation"
+    >
       <div className="flex items-center justify-between p-4 lg:hidden">
         <span className="text-lg font-semibold dark:text-white">Menu</span>
-        <Button size="sm" variant="ghost" onClick={onClose}>
-          <X className="h-4 w-4" />
+        <Button size="sm" variant="ghost" onClick={onClose} aria-label={t("sidebar.closeAriaLabel")}>
+          <X className="h-4 w-4" aria-hidden="true" />
         </Button>
       </div>
 
-      <nav className="flex-1 px-4 py-6 space-y-2">
+      <nav className="flex-1 px-4 py-6 space-y-2" role="menu">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
@@ -142,8 +146,11 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
                 e.stopPropagation();
                 handleNavigation(item.path);
               }}
+              role="menuitem"
+              aria-label={`${t("sidebar.navigateTo")} ${item.label}`}
+              aria-current={isActive ? "page" : undefined}
             >
-              <Icon className="h-5 w-5 flex-shrink-0" />
+              <Icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
               <span className="truncate">{item.label}</span>
             </Button>
           );
@@ -152,20 +159,22 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
           variant="ghost"
           className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
           onClick={handleSignOut}
+          role="menuitem"
+          aria-label={t("sidebar.signOutAriaLabel")}
         >
-          <LogOut className="h-4 w-4 me-2" />
+          <LogOut className="h-4 w-4 me-2" aria-hidden="true" />
           {t("sidebar.signOut")}
         </Button>
       </nav>
 
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+      <footer className="p-4 border-t border-gray-200 dark:border-gray-700" role="contentinfo">
         <div className="text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400">
             FitPathway Organizer
           </p>
           <p className="text-xs text-gray-400 dark:text-gray-500">v1.0.0</p>
         </div>
-      </div>
-    </div>
+      </footer>
+    </aside>
   );
 };

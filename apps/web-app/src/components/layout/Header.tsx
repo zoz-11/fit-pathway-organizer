@@ -63,10 +63,11 @@ export const Header = ({ children }: HeaderProps) => {
               <Button
                 variant="ghost"
                 className="flex items-center space-x-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+                aria-label={t("header.account.ariaLabel")}
               >
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={undefined} />
-                  <AvatarFallback className="bg-gradient-to-r from-blue-500 to-green-500 text-white">
+                  <AvatarImage src={undefined} alt={t("header.avatar.alt", { name: profile?.full_name ?? user?.email })} />
+                  <AvatarFallback className="bg-gradient-to-r from-blue-500 to-green-500 text-white" aria-label={t("header.avatar.fallbackLabel")}>
                     {profile?.full_name
                       ? profile.full_name
                           .split(" ")
@@ -86,7 +87,7 @@ export const Header = ({ children }: HeaderProps) => {
               </Button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end" className="w-56" aria-label={t("header.menu.ariaLabel")}>
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">
@@ -113,8 +114,8 @@ export const Header = ({ children }: HeaderProps) => {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut}>
-                <LogOut className="me-2 h-4 w-4" />
+              <DropdownMenuItem onClick={handleSignOut} aria-label={t("header.account.logoutAriaLabel")}>
+                <LogOut className="me-2 h-4 w-4" aria-hidden="true" />
                 <span>{t("header.account.logout")}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

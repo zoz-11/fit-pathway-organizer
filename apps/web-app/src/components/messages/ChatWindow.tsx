@@ -68,18 +68,20 @@ export const ChatWindow = ({
   }
 
   return (
-    <Card className="flex flex-col h-[500px]">
+    <Card className="flex flex-col h-[500px]" role="region" aria-label={t("chatWindow.ariaLabel", { participantName })}>
       <CardHeader>
-        <CardTitle>{t("chatWindow.title", { participantName })}</CardTitle>
+        <CardTitle id="chat-title">{t("chatWindow.title", { participantName })}</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden p-4">
-        <ScrollArea className="h-full pr-4">
-          <div className="space-y-4">
+        <ScrollArea className="h-full pr-4" aria-labelledby="chat-title">
+          <div className="space-y-4" role="log" aria-live="polite" aria-atomic="false">
             {messages && messages.length > 0 ? (
               messages.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex ${msg.sender_id === user?.id ? "justify-end" : "justify-start"}`}
+                  role="article"
+                  aria-label={msg.sender_id === user?.id ? t("chatWindow.sentMessage") : t("chatWindow.receivedMessage")}
                 >
                   <div
                     className={`max-w-[70%] p-3 rounded-lg ${
@@ -109,15 +111,17 @@ export const ChatWindow = ({
         </ScrollArea>
       </CardContent>
       <CardFooter>
-        <form onSubmit={handleSendMessage} className="flex w-full space-x-2">
+        <form onSubmit={handleSendMessage} className="flex w-full space-x-2" aria-label={t("chatWindow.formAriaLabel")}>
           <Input
             placeholder={t("chatWindow.placeholder")}
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             className="flex-1"
+            aria-label={t("chatWindow.inputAriaLabel")}
+            aria-required="true"
           />
-          <Button type="submit" size="icon">
-            <Send className="h-4 w-4" />
+          <Button type="submit" size="icon" aria-label={t("chatWindow.sendAriaLabel")} disabled={!newMessage.trim()}>
+            <Send className="h-4 w-4" aria-hidden="true" />
           </Button>
         </form>
       </CardFooter>
