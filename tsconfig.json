@@ -6,7 +6,25 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./apps/web-app/src/*"],
+      "@components/*": ["./packages/ui/*"],
+      "@hooks/*": ["./packages/hooks/*"]
+    }
   },
-  "files": []
+  "include": [
+    "apps/**/*",
+    "packages/**/*",
+    "configs/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/dist",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
 }
