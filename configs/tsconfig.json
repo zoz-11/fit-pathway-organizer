@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "noEmit": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["../apps/web-app/src/*"],
+      "@components/*": ["../packages/ui/*"],
+      "@hooks/*": ["../packages/hooks/*"],
+      "@i18n/*": ["../packages/i18n/*"],
+      "@types/*": ["../packages/types/*"]
+    }
+  },
+  "include": [
+    "../apps/web-app/src",
+    "../packages",
+    "../configs"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/__tests__",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.d.ts",
+    "**/dist"
+  ]
+}

@@ -15,7 +15,7 @@ build:
   ignoreTypeErrors: true
   skipReferences: true
   skipTypecheck: true
-  tsconfig: "tsconfig.vite.json"
+  tsconfig: "configs/tsconfig.json"
   
 typecheck:
   enabled: false
