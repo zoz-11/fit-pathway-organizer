@@ -38,6 +38,33 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_logs_archive: {
+        Row: {
+          action: string
+          archived_at: string | null
+          created_at: string
+          details: Json | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          archived_at?: string | null
+          created_at: string
+          details?: Json | null
+          id: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          archived_at?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       exercise_completions: {
         Row: {
           athlete_id: string
@@ -531,6 +558,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      archive_old_audit_logs: { Args: never; Returns: number }
       get_current_user_role: { Args: never; Returns: string }
       get_user_primary_role: {
         Args: { _user_id: string }
