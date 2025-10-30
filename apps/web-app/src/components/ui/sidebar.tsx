@@ -106,6 +106,8 @@ const SidebarProvider = React.forwardRef<
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        collapsed: state === "collapsed",
+        setCollapsed: (value: boolean) => setOpen(!value),
       }),
       [
         state,

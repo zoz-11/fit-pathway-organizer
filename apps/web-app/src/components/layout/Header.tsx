@@ -66,7 +66,7 @@ export const Header = ({ children }: HeaderProps) => {
                 aria-label={t("header.account.ariaLabel")}
               >
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={undefined} alt={t("header.avatar.alt", { name: profile?.full_name ?? user?.email })} />
+                  <AvatarImage src={profile?.avatar_url || undefined} alt={t("header.avatar.alt", { name: profile?.full_name ?? user?.email ?? "User" })} />
                   <AvatarFallback className="bg-gradient-to-r from-blue-500 to-green-500 text-white" aria-label={t("header.avatar.fallbackLabel")}>
                     {profile?.full_name
                       ? profile.full_name

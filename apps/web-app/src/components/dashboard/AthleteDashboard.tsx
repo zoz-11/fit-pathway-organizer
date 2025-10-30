@@ -181,7 +181,7 @@ export const AthleteDashboard: React.FC = () => {
           <CardTitle>{t("dashboard.athlete.progress.title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <ProgressCharts />
+          <ProgressCharts userId={profile?.id || ""} />
         </CardContent>
       </Card>
 
@@ -191,7 +191,14 @@ export const AthleteDashboard: React.FC = () => {
           <DialogHeader>
             <DialogTitle>{t("assignedWorkouts.videoTutorials")}</DialogTitle>
           </DialogHeader>
-          {selectedVideoUrl && <VideoPlayer videoUrl={selectedVideoUrl} />}
+          {selectedVideoUrl && (
+            <VideoPlayer
+              videoUrl={selectedVideoUrl}
+              title={t("assignedWorkouts.videoTutorials")}
+              isOpen={videoModalOpen}
+              onClose={() => setVideoModalOpen(false)}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </div>

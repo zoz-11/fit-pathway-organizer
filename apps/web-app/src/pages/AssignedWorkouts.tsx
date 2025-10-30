@@ -248,7 +248,12 @@ const AssignedWorkouts = () => {
               <DialogTitle>{t("assignedWorkouts.videoPreview")}</DialogTitle>
             </DialogHeader>
             {selectedVideoUrl && (
-              <VideoPlayer url={selectedVideoUrl} />
+              <VideoPlayer
+                videoUrl={selectedVideoUrl}
+                title={t("assignedWorkouts.videoPreview")}
+                isOpen={videoModalOpen}
+                onClose={() => setVideoModalOpen(false)}
+              />
             )}
           </DialogContent>
         </Dialog>

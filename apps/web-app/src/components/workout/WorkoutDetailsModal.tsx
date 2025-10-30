@@ -162,7 +162,12 @@ export const WorkoutDetailsModal = ({
                   Close
                 </Button>
               </div>
-              <VideoPlayer url={playingVideo} />
+              <VideoPlayer
+                videoUrl={playingVideo}
+                title={t("assignedWorkouts.videoPreview")}
+                isOpen={!!playingVideo}
+                onClose={() => setPlayingVideo(null)}
+              />
             </div>
           )}
 
