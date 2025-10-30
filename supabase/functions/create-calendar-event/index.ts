@@ -1,6 +1,12 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { z } from "npm:zod@3.23.4";
+import {
+  checkRateLimit,
+  logAudit,
+  logSecurityEvent,
+  sanitizeHtml,
+} from "../_shared/security-utils.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -78,11 +84,36 @@ serve(async (req) => {
     } = await supabaseClient.auth.getUser();
 
     if (userError || !user) {
+      await logSecurityEvent(
+        supabaseClient,
+        undefined,
+        "calendar_event_unauthorized",
+        { ipAddress: req.headers.get("x-forwarded-for") },
+        "low",
+      );
       return new Response(
         JSON.stringify({ error: "User not authenticated." }),
         {
           status: 401,
           headers: { "Content-Type": "application/json", ...corsHeaders },
+        },
+      );
+    }
+
+    // Rate limiting check
+    if (checkRateLimit(user.id, 10)) {
+      await logSecurityEvent(
+        supabaseClient,
+        user.id,
+        "calendar_event_rate_limit_exceeded",
+        { ipAddress: req.headers.get("x-forwarded-for") },
+        "medium",
+      );
+      return new Response(
+        JSON.stringify({ error: "Too Many Requests: Please try again later." }),
+        {
+          status: 429,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         },
       );
     }
@@ -121,6 +152,10 @@ serve(async (req) => {
     const parsedEvent = CreateCalendarEventSchema.safeParse(requestBody);
 
     if (!parsedEvent.success) {
+      await logAudit(supabaseClient, user.id, "calendar_event_validation_failed", {
+        errors: parsedEvent.error.issues,
+        ipAddress: req.headers.get("x-forwarded-for"),
+      });
       return new Response(
         JSON.stringify({
           error: "Invalid event data",
@@ -133,7 +168,13 @@ serve(async (req) => {
       );
     }
 
-    const event = parsedEvent.data;
+    const event = {
+      ...parsedEvent.data,
+      summary: sanitizeHtml(parsedEvent.data.summary),
+      description: parsedEvent.data.description
+        ? sanitizeHtml(parsedEvent.data.description)
+        : undefined,
+    };
 
     const calendarResponse = await fetch(
       "https://www.googleapis.com/calendar/v3/calendars/primary/events",
@@ -151,6 +192,10 @@ serve(async (req) => {
 
     if (calendarData.error) {
       console.error("Error creating calendar event:", calendarData.error);
+      await logAudit(supabaseClient, user.id, "calendar_event_creation_failed", {
+        error: calendarData.error.message,
+        ipAddress: req.headers.get("x-forwarded-for"),
+      });
       return new Response(
         JSON.stringify({
           error:
@@ -162,6 +207,12 @@ serve(async (req) => {
         },
       );
     }
+
+    await logAudit(supabaseClient, user.id, "calendar_event_created", {
+      eventId: calendarData.id,
+      summary: event.summary,
+      ipAddress: req.headers.get("x-forwarded-for"),
+    });
 
     return new Response(
       JSON.stringify({

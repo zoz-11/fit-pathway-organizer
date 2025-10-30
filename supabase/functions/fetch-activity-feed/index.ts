@@ -1,38 +1,17 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { z } from "npm:zod@3.23.4";
+import {
+  checkRateLimit,
+  logAudit,
+  logSecurityEvent,
+} from "../_shared/security-utils.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
-
-// Helper function for audit logging
-import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-
-// Helper function for audit logging
-async function logAudit(
-  supabaseClient: SupabaseClient,
-  userId: string | undefined,
-  action: string,
-  details: Record<string, unknown>,
-) {
-  try {
-    const { error } = await supabaseClient.from("audit_logs").insert([
-      {
-        user_id: userId,
-        action: action,
-        details: details,
-      },
-    ]);
-    if (error) {
-      console.error("Error inserting audit log:", error);
-    }
-  } catch (e) {
-    console.error("Exception while logging audit:", e);
-  }
-}
 
 const FetchActivityFeedSchema = z.object({
   limit: z.number().int().min(1).max(100).default(10),
@@ -59,14 +38,35 @@ serve(async (req) => {
       data: { user },
     } = await supabaseClient.auth.getUser();
     if (!user) {
-      await logAudit(supabaseClient, undefined, "Fetch Activity Feed Failed", {
-        reason: "Unauthorized: No active session",
-        ipAddress: req.headers.get("x-forwarded-for"),
-      });
+      await logSecurityEvent(
+        supabaseClient,
+        undefined,
+        "activity_feed_unauthorized",
+        { ipAddress: req.headers.get("x-forwarded-for") },
+        "low",
+      );
       return new Response(
         JSON.stringify({ error: "Unauthorized: No active session" }),
         {
           status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    // Rate limiting check
+    if (checkRateLimit(user.id, 30)) {
+      await logSecurityEvent(
+        supabaseClient,
+        user.id,
+        "activity_feed_rate_limit_exceeded",
+        { ipAddress: req.headers.get("x-forwarded-for") },
+        "medium",
+      );
+      return new Response(
+        JSON.stringify({ error: "Too Many Requests: Please try again later." }),
+        {
+          status: 429,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         },
       );
