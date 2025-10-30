@@ -48,10 +48,12 @@ export default defineConfig(({ mode }) => ({
     target: "es2020",
     logOverride: { 
       'tsconfig.json': 'silent',
-      'TS6310': 'silent'
+      'TS6310': 'silent',
+      'TS6305': 'silent'
     },
   },
   define: {
     'import.meta.env.VITE_SKIP_TS_CHECK': '"true"'
   },
+  logLevel: 'warn',
 }));

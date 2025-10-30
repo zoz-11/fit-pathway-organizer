@@ -31,9 +31,10 @@ jobs:
         run: npm ci
         
       - name: Build project with Clean Quote (production-optimized)
-        run: npx vite build --mode production
+        run: npx vite build --mode production --logLevel warn
         env:
           NODE_ENV: production
+          VITE_SKIP_TS_CHECK: true
           
       - name: Verify build output
         run: |

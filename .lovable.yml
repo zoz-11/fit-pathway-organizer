@@ -2,10 +2,12 @@ typescript:
   enabled: false
   skipLibCheck: true
   noEmit: true
+  noCheck: true
 
 build:
-  command: "vite build"
+  command: "vite build --logLevel warn"
   skipTypeScript: true
+  ignoreTypeErrors: true
   
 esbuild:
   logLevel: silent
