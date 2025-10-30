@@ -128,16 +128,15 @@ serve(async (req) => {
 
     // Fetch completed workouts for the target user within the date range
     let query = supabaseClient
-      .from("workout_schedules")
-      .select("scheduled_date, status")
-      .eq("athlete_id", targetUserId)
-      .eq("status", "completed");
+      .from("exercise_completions")
+      .select("completed_at")
+      .eq("athlete_id", targetUserId);
 
     if (startDate) {
-      query = query.gte("scheduled_date", startDate);
+      query = query.gte("completed_at", startDate);
     }
     if (endDate) {
-      query = query.lte("scheduled_date", endDate);
+      query = query.lte("completed_at", endDate);
     }
 
     const { data: completedWorkouts, error: fetchError } = await query;
@@ -156,9 +155,9 @@ serve(async (req) => {
     const aggregatedData: { date: string; count: number }[] = [];
     const dateMap = new Map<string, number>();
 
-    completedWorkouts.forEach((workout) => {
-      if (workout.scheduled_date) {
-        const date = new Date(workout.scheduled_date)
+    completedWorkouts.forEach((row) => {
+      if (row.completed_at) {
+        const date = new Date(row.completed_at)
           .toISOString()
           .split("T")[0]; // YYYY-MM-DD
         dateMap.set(date, (dateMap.get(date) || 0) + 1);
