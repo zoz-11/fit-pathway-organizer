@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Dumbbell, PlayCircle, Trophy } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Calendar, Dumbbell, PlayCircle, Trophy, Video, Play } from "lucide-react";
 import { useAuth } from "@/hooks/useAuthProvider";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { ProgressCharts } from "./ProgressCharts";
+import { VideoPlayer } from "@/components/video/VideoPlayer";
+import { useTodayWorkouts } from "@/hooks/useWorkouts";
 
 interface StatCardProps {
   title: string;
@@ -37,6 +41,10 @@ export const AthleteDashboard: React.FC = () => {
   const { profile } = useAuth();
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [selectedVideoUrl, setSelectedVideoUrl] = useState("");
+
+  const todayWorkouts = useTodayWorkouts(profile?.id);
 
   const handleViewUpcomingWorkout = () => {
     navigate("/schedule");
@@ -109,17 +117,83 @@ export const AthleteDashboard: React.FC = () => {
       ))}
       </div>
 
-      {/* Placeholder for future athlete-specific widgets */}
+      {/* Today's Workouts */}
       <Card className="animate-fade-in transition-all duration-300 hover:shadow-lg" style={{ animationDelay: "0.6s" }}>
+        <CardHeader>
+          <CardTitle>{t("dashboard.athlete.todaysWorkouts")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {todayWorkouts.data && todayWorkouts.data.length > 0 ? (
+            <div className="space-y-4">
+              {todayWorkouts.data.map((workout: any) => (
+                <div key={workout.id} className="p-4 border rounded-lg space-y-2">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className="font-semibold">{workout.title}</h4>
+                      <p className="text-sm text-muted-foreground">{workout.description}</p>
+                    </div>
+                    {workout.workout_exercises?.some((we: any) => we.exercises?.youtube_link) && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          const firstVideoExercise = workout.workout_exercises.find((we: any) => we.exercises?.youtube_link);
+                          if (firstVideoExercise?.exercises?.youtube_link) {
+                            setSelectedVideoUrl(firstVideoExercise.exercises.youtube_link);
+                            setVideoModalOpen(true);
+                          }
+                        }}
+                      >
+                        <Play className="h-4 w-4 mr-1" />
+                        {t("assignedWorkouts.watchVideos")}
+                      </Button>
+                    )}
+                  </div>
+                  {workout.workout_exercises && workout.workout_exercises.length > 0 && (
+                    <div className="text-xs text-muted-foreground">
+                      {workout.workout_exercises.length} {t("createWorkoutForm.exercises")}
+                      {workout.workout_exercises.filter((we: any) => we.exercises?.youtube_link).length > 0 && (
+                        <span className="ml-2">
+                          <Video className="inline h-3 w-3 mr-1" />
+                          {workout.workout_exercises.filter((we: any) => we.exercises?.youtube_link).length} {t("workoutLibrary.videoAvailable")}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+              <Button 
+                onClick={() => navigate("/assigned-workouts")}
+                className="w-full"
+              >
+                {t("dashboard.viewAllWorkouts")}
+              </Button>
+            </div>
+          ) : (
+            <p className="text-muted-foreground">{t("dashboard.noWorkoutsToday")}</p>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Progress Charts */}
+      <Card className="animate-fade-in transition-all duration-300 hover:shadow-lg" style={{ animationDelay: "0.7s" }}>
         <CardHeader>
           <CardTitle>{t("dashboard.athlete.progress.title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">
-            {t("dashboard.athlete.progress.description")}
-          </p>
+          <ProgressCharts />
         </CardContent>
       </Card>
+
+      {/* Video Modal */}
+      <Dialog open={videoModalOpen} onOpenChange={setVideoModalOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>{t("assignedWorkouts.videoTutorials")}</DialogTitle>
+          </DialogHeader>
+          {selectedVideoUrl && <VideoPlayer videoUrl={selectedVideoUrl} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

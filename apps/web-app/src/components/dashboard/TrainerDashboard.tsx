@@ -9,6 +9,7 @@ import {
   UserPlus,
   Send,
   PlusCircle,
+  Video,
 } from "lucide-react";
 import { AiChatAssistant } from "@/components/ai/AiChatAssistant";
 import { SubscriptionManager } from "@/components/subscription/SubscriptionManager";
@@ -225,6 +226,13 @@ export const TrainerDashboard = () => {
                   color: "text-orange-600",
                   title: t("dashboard.trainer.quickActions.createExercise"),
                   description: t("dashboard.trainer.quickActions.buildLibrary"),
+                },
+                {
+                  onClick: () => navigate("/exercise-library"),
+                  icon: Video,
+                  color: "text-red-600",
+                  title: t("sidebar.exerciseLibrary"),
+                  description: t("workoutLibrary.viewExercises"),
                 },
               ].map((action, index) => (
                 <Button
