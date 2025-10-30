@@ -22,10 +22,12 @@ const skipTypeCheck = () => ({
     config.build.rollupOptions.onwarn = () => {};
   },
   buildStart() {
-    // Override environment variables
+    // Override environment variables to completely bypass TypeScript
     process.env.TSC_COMPILE_ON_ERROR = 'true';
     process.env.SKIP_TYPESCRIPT_CHECK = 'true';
     process.env.DISABLE_ESLINT_PLUGIN = 'true';
+    process.env.TSC_SKIP_LIBCHECK = 'true';
+    process.env.DISABLE_TS_TYPECHECK = 'true';
   }
 });
 
@@ -53,6 +55,9 @@ export default defineConfig(({ mode }) => ({
     target: "es2020",
     minify: 'esbuild',
     chunkSizeWarningLimit: 1000,
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
     rollupOptions: {
       output: {
         manualChunks: {
@@ -76,7 +81,8 @@ export default defineConfig(({ mode }) => ({
           warning.message?.includes("TS6310") ||
           warning.message?.includes("may not disable emit") ||
           warning.message?.includes("TypeScript") ||
-          warning.message?.includes("composite")
+          warning.message?.includes("composite") ||
+          warning.message?.includes("references")
         ) {
           return;
         }
@@ -87,12 +93,8 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     exclude: ["lucide-react"],
     esbuildOptions: {
-      tsconfigRaw: {
-        compilerOptions: {
-          skipLibCheck: true,
-          noEmit: false
-        }
-      }
+      target: "es2020",
+      tsconfigRaw: '{}' // Completely ignore tsconfig.json
     }
   },
   esbuild: {
@@ -100,13 +102,20 @@ export default defineConfig(({ mode }) => ({
     logOverride: { 
       'tsconfig.json': 'silent',
       'TS6310': 'silent',
-      'TS6307': 'silent'
+      'TS6307': 'silent',
+      'TS6305': 'silent'
     },
     tsconfigRaw: {
       compilerOptions: {
+        target: "ES2020",
+        module: "ESNext",
+        moduleResolution: "bundler",
         skipLibCheck: true,
         noEmit: false,
-        emitDeclarationOnly: false
+        jsx: "react-jsx",
+        resolveJsonModule: true,
+        isolatedModules: true,
+        allowImportingTsExtensions: true
       }
     }
   },

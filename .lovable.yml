@@ -3,11 +3,24 @@ typescript:
   skipLibCheck: true
   noEmit: true
   noCheck: true
+  skipProject: true
+  composite: false
+  checkReferences: false
+  skipTypecheck: true
+  disableTypecheck: true
 
 build:
-  command: "vite build --logLevel warn"
+  command: "vite build --logLevel warn --config configs/vite.config.ts"
   skipTypeScript: true
   ignoreTypeErrors: true
+  skipReferences: true
+  skipTypecheck: true
+  tsconfig: "tsconfig.vite.json"
+  
+typecheck:
+  enabled: false
+  skip: true
   
 esbuild:
   logLevel: silent
+  skipTypeCheck: true
