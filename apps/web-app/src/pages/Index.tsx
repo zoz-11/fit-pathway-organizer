@@ -10,13 +10,13 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 flex items-center justify-center animate-fade-in">
         <div className="text-center space-y-4">
           <div className="relative">
-            <div className="animate-spin rounded-full h-12 w-12 border-2 border-primary border-t-transparent mx-auto"></div>
-            <div className="absolute inset-0 h-12 w-12 border-2 border-primary/20 rounded-full mx-auto animate-pulse" />
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent mx-auto"></div>
+            <div className="absolute inset-0 h-16 w-16 border-4 border-primary/20 rounded-full mx-auto animate-pulse" />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 animate-fade-in" style={{ animationDelay: "0.2s" }}>
             <h2 className="text-xl font-semibold">{t("index.title")}</h2>
             <p className="text-muted-foreground">{t("index.loading")}</p>
           </div>

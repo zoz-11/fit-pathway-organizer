@@ -43,9 +43,9 @@ export const AthleteDashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6 p-4 md:p-6 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between" style={{ animationDelay: "0.1s" }}>
         <div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             {t("dashboard.athlete.title")}
@@ -57,42 +57,60 @@ export const AthleteDashboard: React.FC = () => {
         </div>
         <Button
           onClick={handleViewUpcomingWorkout}
-          className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 w-full md:w-auto"
+          className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 w-full md:w-auto transition-all duration-300 hover:scale-105 hover:shadow-lg"
         >
           {t("dashboard.athlete.viewWorkout")}
         </Button>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title={t("dashboard.athlete.stats.workoutsCompleted")}
-          value="24"
-          icon={Dumbbell}
-          description={t("dashboard.athlete.stats.workoutsDescription")}
-        />
-        <StatCard
-          title={t("dashboard.athlete.stats.nextWorkout")}
-          value={t("athleteDashboard.legDay")}
-          icon={Calendar}
-          description={t("dashboard.athlete.stats.nextWorkoutDescription")}
-        />
-        <StatCard
-          title={t("dashboard.athlete.stats.currentProgram")}
-          value={t("athleteDashboard.hypertrophy")}
-          icon={PlayCircle}
-          description={t("dashboard.athlete.stats.programDescription")}
-        />
-        <StatCard
-          title={t("dashboard.athlete.stats.achievements")}
-          value="5"
-          icon={Trophy}
-          description={t("dashboard.athlete.stats.achievementsDescription")}
-        />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">{[
+        {
+          title: t("dashboard.athlete.stats.workoutsCompleted"),
+          value: "24",
+          icon: Dumbbell,
+          description: t("dashboard.athlete.stats.workoutsDescription"),
+        },
+        {
+          title: t("dashboard.athlete.stats.nextWorkout"),
+          value: t("athleteDashboard.legDay"),
+          icon: Calendar,
+          description: t("dashboard.athlete.stats.nextWorkoutDescription"),
+        },
+        {
+          title: t("dashboard.athlete.stats.currentProgram"),
+          value: t("athleteDashboard.hypertrophy"),
+          icon: PlayCircle,
+          description: t("dashboard.athlete.stats.programDescription"),
+        },
+        {
+          title: t("dashboard.athlete.stats.achievements"),
+          value: "5",
+          icon: Trophy,
+          description: t("dashboard.athlete.stats.achievementsDescription"),
+        },
+      ].map((stat, index) => (
+        <div
+          key={stat.title}
+          className="animate-fade-in"
+          style={{ animationDelay: `${0.2 + index * 0.1}s` }}
+        >
+          <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              <stat.icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <p className="text-xs text-muted-foreground">{stat.description}</p>
+            </CardContent>
+          </Card>
+        </div>
+      ))}
       </div>
 
       {/* Placeholder for future athlete-specific widgets */}
-      <Card>
+      <Card className="animate-fade-in transition-all duration-300 hover:shadow-lg" style={{ animationDelay: "0.6s" }}>
         <CardHeader>
           <CardTitle>{t("dashboard.athlete.progress.title")}</CardTitle>
         </CardHeader>
