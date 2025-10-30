@@ -7,15 +7,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, MinusCircle } from "lucide-react";
+import { PlusCircle, MinusCircle, Youtube } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+const YOUTUBE_URL_REGEX = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+(&.*)?$/;
 
 const exerciseSchema = z.object({
   name: z.string().min(1, "Exercise name is required"),
   sets: z.number().min(1, "Sets must be at least 1"),
   reps: z.string().min(1, "Reps are required"),
   rest: z.number().min(0, "Rest time must be 0 or more").optional(),
+  workoutType: z.string().optional(),
+  youtubeLink: z.string().regex(YOUTUBE_URL_REGEX, "Invalid YouTube URL").optional().or(z.literal("")),
 });
 
 const workoutSchema = z.object({
@@ -49,7 +54,7 @@ export const CreateWorkoutForm = ({
     defaultValues: {
       title: "",
       description: "",
-      exercises: [{ name: "", sets: 3, reps: "10-12", rest: 60 }],
+      exercises: [{ name: "", sets: 3, reps: "10-12", rest: 60, workoutType: "", youtubeLink: "" }],
     },
   });
 
@@ -107,7 +112,7 @@ export const CreateWorkoutForm = ({
             variant="outline"
             size="sm"
             onClick={() =>
-              append({ name: "", sets: 3, reps: "10-12", rest: 60 })
+              append({ name: "", sets: 3, reps: "10-12", rest: 60, workoutType: "", youtubeLink: "" })
             }
           >
             <PlusCircle className="h-4 w-4 me-2" />
@@ -212,6 +217,57 @@ export const CreateWorkoutForm = ({
                   {errors.exercises?.[index]?.rest && (
                     <p className="text-sm text-red-600">
                       {errors.exercises[index]?.rest?.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="md:col-span-2 space-y-2">
+                  <Label htmlFor={`exercises.${index}.workoutType`}>
+                    {t("createWorkoutForm.exercises.workoutType.label")}
+                  </Label>
+                  <Select
+                    value={fields[index].workoutType}
+                    onValueChange={(value) => {
+                      const currentValues = fields[index];
+                      const updatedExercise = { ...currentValues, workoutType: value };
+                      // Update the form value
+                      const exercises = [...(control._formValues.exercises || [])];
+                      exercises[index] = updatedExercise;
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("createWorkoutForm.exercises.workoutType.placeholder")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="bodyweight">{t("exerciseLibrary.workoutTypes.bodyweight")}</SelectItem>
+                      <SelectItem value="machine">{t("exerciseLibrary.workoutTypes.machine")}</SelectItem>
+                      <SelectItem value="barbell">{t("exerciseLibrary.workoutTypes.barbell")}</SelectItem>
+                      <SelectItem value="dumbbell">{t("exerciseLibrary.workoutTypes.dumbbell")}</SelectItem>
+                      <SelectItem value="cable">{t("exerciseLibrary.workoutTypes.cable")}</SelectItem>
+                      <SelectItem value="resistance_band">{t("exerciseLibrary.workoutTypes.resistance_band")}</SelectItem>
+                      <SelectItem value="other">{t("exerciseLibrary.workoutTypes.other")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="md:col-span-2 space-y-2">
+                  <Label htmlFor={`exercises.${index}.youtubeLink`}>
+                    {t("createWorkoutForm.exercises.youtubeLink.label")}
+                  </Label>
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Youtube className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-red-600" />
+                      <Input
+                        id={`exercises.${index}.youtubeLink`}
+                        {...register(`exercises.${index}.youtubeLink`)}
+                        placeholder={t("createWorkoutForm.exercises.youtubeLink.placeholder")}
+                        className="pl-10"
+                      />
+                    </div>
+                  </div>
+                  {errors.exercises?.[index]?.youtubeLink && (
+                    <p className="text-sm text-red-600">
+                      {t("createWorkoutForm.exercises.youtubeLink.invalid")}
                     </p>
                   )}
                 </div>

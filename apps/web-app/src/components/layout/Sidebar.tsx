@@ -51,13 +51,13 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
     {
       icon: Dumbbell,
       label: "Exercise Library",
-      path: "/exercises",
+      path: "/exercise-library",
       role: "trainer",
     },
     {
       icon: Dumbbell,
       label: "Workout Library",
-      path: "/workout-library",
+      path: "/workouts",
       role: "trainer",
     },
     {

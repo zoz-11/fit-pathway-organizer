@@ -22,6 +22,7 @@ import Progress from "./pages/Progress";
 import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
 import WorkoutLibrary from "./pages/WorkoutLibrary";
+import ExerciseLibrary from "./pages/ExerciseLibrary";
 import Achievements from "./pages/Achievements";
 import AssignedWorkoutsTrainer from "./pages/AssignedWorkoutsTrainer";
 import AssignedWorkouts from "./pages/AssignedWorkouts";
@@ -63,6 +64,8 @@ const routes: RouteConfig[] = [
   
   // Protected routes
   { path: "/", element: Index, protected: true },
+  { path: "/workouts", element: WorkoutLibrary, protected: true },
+  { path: "/exercise-library", element: ExerciseLibrary, protected: true },
   { path: "/schedule", element: Schedule, protected: true },
   { path: "/assigned-workouts", element: AssignedWorkouts, protected: true },
   { path: "/assigned-workouts-trainer", element: AssignedWorkoutsTrainer, protected: true },

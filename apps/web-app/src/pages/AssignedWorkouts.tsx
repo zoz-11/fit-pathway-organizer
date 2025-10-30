@@ -3,7 +3,10 @@ import { PageLayout } from "@/components/layout/PageLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWorkoutAssignments } from "@/hooks/useWorkoutAssignments";
-import { Calendar, CheckCircle, Dumbbell } from "lucide-react";
+import { Calendar, CheckCircle, Dumbbell, Video, Play } from "lucide-react";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { VideoPlayer } from "@/components/video/VideoPlayer";
 import {
   Bar,
   BarChart,
@@ -38,6 +41,8 @@ type WorkoutAssignment = {
 const AssignedWorkouts = () => {
   const { assignments, isLoading, markAsComplete } = useWorkoutAssignments();
   const { t } = useLanguage();
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [selectedVideoUrl, setSelectedVideoUrl] = useState<string>("");
 
   if (isLoading) {
     return (
@@ -159,21 +164,34 @@ const AssignedWorkouts = () => {
                     key={assignment.id}
                     className="p-4 border rounded-lg flex items-center justify-between"
                   >
-                    <div>
-                      <h3 className="font-semibold">{assignment.title}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {t("assignedWorkouts.scheduled.due")}{" "}
-                        {new Date(
-                          assignment.scheduled_date,
-                        ).toLocaleDateString()}
-                      </p>
-                    </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold">{assignment.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {t("assignedWorkouts.scheduled.due")}{" "}
+                      {new Date(
+                        assignment.scheduled_date,
+                      ).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedVideoUrl("https://www.youtube.com/watch?v=IODxDxX7oi4");
+                        setVideoModalOpen(true);
+                      }}
+                    >
+                      <Play className="h-4 w-4 me-2" />
+                      {t("assignedWorkouts.videoPreview")}
+                    </Button>
                     <Button
                       onClick={() => markAsComplete.mutate(assignment.id)}
                     >
                       <CheckCircle className="h-4 w-4 me-2 dropdown-item-icon" />
                       {t("assignedWorkouts.scheduled.markAsComplete")}
                     </Button>
+                  </div>
                   </div>
                 ))
               ) : (
@@ -222,6 +240,18 @@ const AssignedWorkouts = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Video Modal */}
+        <Dialog open={videoModalOpen} onOpenChange={setVideoModalOpen}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>{t("assignedWorkouts.videoPreview")}</DialogTitle>
+            </DialogHeader>
+            {selectedVideoUrl && (
+              <VideoPlayer url={selectedVideoUrl} />
+            )}
+          </DialogContent>
+        </Dialog>
       </PageLayout>
     </AppLayout>
   );

@@ -47,3 +47,27 @@ export const useExercisesByCategory = (category?: ExerciseCategory) => {
     enabled: !!category,
   });
 };
+
+export const useExercisesByWorkoutType = (workoutType?: string) => {
+  return useQuery({
+    queryKey: ["exercises", "workoutType", workoutType],
+    queryFn: async () => {
+      if (!workoutType) return [];
+
+      const { data, error } = await supabase
+        .from("exercises")
+        .select("*")
+        .eq("is_public", true)
+        .eq("workout_type", workoutType)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching exercises by workout type:", error);
+        throw error;
+      }
+
+      return data;
+    },
+    enabled: !!workoutType,
+  });
+};

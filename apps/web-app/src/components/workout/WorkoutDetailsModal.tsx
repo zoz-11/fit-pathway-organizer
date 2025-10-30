@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Play, Clock, Target, Flame } from "lucide-react";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { VideoPlayer } from "@/components/video/VideoPlayer";
+import { useState } from "react";
 
 interface Exercise {
   name: string;
@@ -32,6 +34,7 @@ export const WorkoutDetailsModal = ({
   onStartWorkout,
 }: WorkoutDetailsModalProps) => {
   const { t } = useLanguage();
+  const [playingVideo, setPlayingVideo] = useState<string | null>(null);
 
   const exercises: Exercise[] = [
     {
@@ -98,10 +101,7 @@ export const WorkoutDetailsModal = ({
     e.preventDefault();
     e.stopPropagation();
     if (exercise.videoUrl) {
-      toast.info(t("workoutDetails.toast.openVideo", { exerciseName: exercise.name }));
-      console.log(`Simulating video playback for: ${exercise.videoUrl}`);
-      // In a real app, this would open a video modal or navigate to a demo page
-      // For now, we'll just log the URL and show a toast.
+      setPlayingVideo(exercise.videoUrl);
     } else {
       toast.error(t("workoutDetails.toast.noVideo", { exerciseName: exercise.name }));
     }
@@ -152,6 +152,19 @@ export const WorkoutDetailsModal = ({
               <p className="text-lg font-bold text-purple-600">{t("workoutDetails.targetValue")}</p>
             </div>
           </div>
+
+          {/* Video Player Section */}
+          {playingVideo && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">{t("assignedWorkouts.videoPreview")}</h3>
+                <Button variant="ghost" size="sm" onClick={() => setPlayingVideo(null)}>
+                  Close
+                </Button>
+              </div>
+              <VideoPlayer url={playingVideo} />
+            </div>
+          )}
 
           {/* Exercise List */}
           <div className="space-y-4">

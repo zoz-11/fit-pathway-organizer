@@ -3,7 +3,8 @@ import { PageLayout } from "@/components/layout/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CreateWorkoutDialog } from "@/components/workouts/CreateWorkoutDialog";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, Video, BookOpen } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { useWorkouts } from "@/hooks/useWorkouts";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -34,15 +35,27 @@ const WorkoutLibrary = () => {
         title={t("workoutLibrary.title")}
         description={t("workoutLibrary.description")}
       >
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center">
+          <Button variant="outline" onClick={() => window.location.href = "/exercise-library"}>
+            <BookOpen className="h-4 w-4 mr-2" />
+            {t("exerciseLibrary.title")}
+          </Button>
           <CreateWorkoutDialog />
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {workouts && workouts.length > 0 ? (
             workouts.map((workout) => (
-              <Card key={workout.id}>
+              <Card key={workout.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
-                  <CardTitle>{workout.title}</CardTitle>
+                  <div className="flex items-start justify-between">
+                    <CardTitle>{workout.title}</CardTitle>
+                    {workout.description && (
+                      <Badge variant="secondary" className="shrink-0">
+                        <Video className="h-3 w-3 mr-1" />
+                        {t("workoutLibrary.videoIndicator")}
+                      </Badge>
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <p className="text-sm text-muted-foreground">

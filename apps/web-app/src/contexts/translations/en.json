@@ -7,340 +7,216 @@
     "recentWorkouts": "Recent Workouts",
     "upcomingSchedule": "Upcoming Schedule"
   },
-  "sidebar": {
+  "auth": {
+    "signIn": "Sign In",
     "signOut": "Sign Out",
-    "ariaLabel": "Main navigation",
-    "closeAriaLabel": "Close menu",
-    "navigateTo": "Navigate to",
-    "signOutAriaLabel": "Sign out of your account"
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "createAccount": "Create Account",
+    "name": "Full Name",
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "passwordMismatch": "Passwords must match",
+    "signInWithGoogle": "Sign in with Google",
+    "error": "Authentication Error",
+    "success": "Success!",
+    "resetLinkSent": "Password reset link sent to your email.",
+    "passwordReset": "Password reset successfully.",
+    "createAccountSuccess": "Account created successfully!",
+    "signOutSuccess": "Signed out successfully!"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "workouts": "Workouts",
+    "schedule": "Schedule",
+    "assignedWorkouts": "Assigned Workouts",
+    "progress": "Progress",
+    "achievements": "Achievements",
+    "settings": "Settings",
+    "logout": "Logout"
   },
   "header": {
-    "appName": "FitPathway Organizer",
-    "notifications": {
-      "ariaLabel": "View notifications"
-    },
-    "account": {
-      "title": "My Account",
-      "profile": "Profile",
-      "settings": "Settings",
-      "logout": "Log out",
-      "ariaLabel": "Account menu",
-      "logoutAriaLabel": "Log out from your account"
-    },
-    "avatar": {
-      "alt": "Avatar for {name}",
-      "fallbackLabel": "User avatar"
-    },
-    "menu": {
-      "ariaLabel": "Account menu"
-    }
+    "search": "Search...",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
   },
-  "auth": {
-    "title": "FitPathway Organizer",
-    "welcome": "Welcome to your fitness journey",
-    "signIn": "Sign In",
-    "signUp": "Sign Up",
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile Settings",
+    "account": "Account Settings",
+    "notifications": "Notifications",
+    "language": "Language",
+    "theme": "Theme",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "success": "Settings saved successfully!",
+    "error": "Failed to save settings."
+  },
+  "profileSettings": {
+    "title": "Profile Settings",
+    "name": "Full Name",
     "email": "Email",
-    "emailPlaceholder": "your@email.com",
-    "password": "Password",
-    "passwordPlaceholder": "Enter your password",
-    "fullName": "Full Name",
-    "fullNamePlaceholder": "John Doe",
-    "confirmPassword": "Confirm Password",
-    "confirmPasswordPlaceholder": "Confirm your password",
-    "role": "I am a",
-    "trainer": "Trainer",
-    "athlete": "Athlete",
-    "forgotPassword": "Forgot password?",
-    "noAccount": "Don't have an account?",
-    "haveAccount": "Already have an account?",
-    "emailConfirmed": "Email confirmed! Please sign in.",
-    "errors": {
-      "emailRequired": "Email is required",
-      "passwordRequired": "Password is required",
-      "passwordMismatch": "Passwords don't match",
-      "signInFailed": "Sign in failed",
-      "signUpFailed": "Sign up failed"
-    },
-    "success": {
-      "checkEmail": "Check your email for confirmation link",
-      "signedIn": "Successfully signed in"
-    }
+    "updateProfile": "Update Profile",
+    "updating": "Updating...",
+    "success": "Profile updated successfully!",
+    "error": "Failed to update profile."
   },
-  "messages": {
-    "title": "Messages",
-    "newChat": "New Chat",
-    "searchPlaceholder": "Search conversations...",
-    "trainerBadge": "Trainer",
-    "noConversations": "No conversations yet",
-    "selectConversation": "Select a conversation to start messaging",
-    "sendMessage": "Send message",
-    "typePlaceholder": "Type a message...",
-    "messagesSent": "Message sent",
-    "messagesError": "Failed to send message"
+  "accountSettings": {
+    "title": "Account Settings",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "updatePassword": "Update Password",
+    "updating": "Updating...",
+    "success": "Password updated successfully!",
+    "error": "Failed to update password.",
+    "passwordRequirements": "Password must be at least 8 characters long."
   },
-  "members": {
-    "title": "Members",
-    "description": "Manage your athletes",
-    "athlete": "Athlete",
-    "search": {
-      "placeholder": "Search members..."
-    },
-    "filter": {
-      "status": {
-        "placeholder": "Filter by status",
-        "all": "All Members",
-        "active": "Active",
-        "pending": "Pending"
+  "notificationsSettings": {
+    "title": "Notifications",
+    "emailNotifications": "Email Notifications",
+    "pushNotifications": "Push Notifications",
+    "workoutReminders": "Workout Reminders",
+    "newFeatures": "New Features & Updates",
+    "optOut": "Opt out of all notifications"
+  },
+  "languageSettings": {
+    "title": "Language",
+    "selectLanguage": "Select Language"
+  },
+  "themeSettings": {
+    "title": "Theme",
+    "selectTheme": "Select Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "progress": {
+    "title": "Progress",
+    "description": "Track your fitness journey and see how far you've come.",
+    "weight": "Weight",
+    "bodyFat": "Body Fat",
+    "muscleMass": "Muscle Mass",
+    "caloriesBurned": "Calories Burned",
+    "stepsTaken": "Steps Taken",
+    "distanceCovered": "Distance Covered",
+    "workoutCompleted": "Workouts Completed",
+    "personalBests": "Personal Bests",
+    "viewDetails": "View Details",
+    "noDataAvailable": "No data available for the selected period."
+  },
+  "achievements": {
+    "title": "Achievements",
+    "description": "Celebrate your milestones and unlock new achievements.",
+    "totalPoints": "Total Points",
+    "level": "Level",
+    "nextLevel": "Next Level",
+    "viewAll": "View All Achievements",
+    "noAchievements": "No achievements unlocked yet. Keep up the great work!",
+    "achievementDetails": "Achievement Details",
+    "criteria": "Criteria",
+    "reward": "Reward",
+    "points": "Points",
+    "congratulations": "Congratulations!",
+    "unlocked": "You've unlocked a new achievement:"
+  },
+  "createWorkoutForm": {
+    "titleLabel": "Workout Title",
+    "titlePlaceholder": "e.g., Upper Body Strength",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Brief description of the workout",
+    "exercises": {
+      "title": "Exercises",
+      "add": "Add Exercise",
+      "exerciseNumber": "Exercise {{number}}",
+      "name": {
+        "label": "Exercise Name",
+        "placeholder": "e.g., Bench Press"
+      },
+      "sets": {
+        "label": "Sets",
+        "placeholder": "3"
+      },
+      "reps": {
+        "label": "Reps",
+        "placeholder": "10-12"
+      },
+      "rest": {
+        "label": "Rest (seconds)",
+        "placeholder": "60"
+      },
+      "workoutType": {
+        "label": "Workout Type",
+        "placeholder": "Select type"
+      },
+      "youtubeLink": {
+        "label": "YouTube Video Link",
+        "placeholder": "https://www.youtube.com/watch?v=...",
+        "preview": "Preview Video",
+        "invalid": "Invalid YouTube URL"
       }
     },
-    "actions": {
-      "viewProgress": "View Progress",
-      "sendMessage": "Send Message",
-      "remove": "Remove Athlete"
-    },
-    "invite": {
-      "title": "Invite Athlete",
-      "description": "Send an invitation to a new athlete",
-      "emailLabel": "Athlete Email",
-      "emailPlaceholder": "athlete@example.com",
-      "button": "Invite Athlete",
-      "cancel": "Cancel",
-      "send": "Send Invitation",
-      "success": "Invitation sent successfully",
-      "error": "Failed to send invitation"
-    },
-    "remove": {
-      "title": "Remove Athlete",
-      "description": "Are you sure you want to remove {name}?",
-      "cancel": "Cancel",
-      "confirm": "Remove",
-      "success": "Athlete removed successfully",
-      "error": "Failed to remove athlete"
+    "createButton": "Create Workout",
+    "creatingButton": "Creating...",
+    "toasts": {
+      "success": "Workout created successfully",
+      "error": "Failed to create workout"
     }
   },
-  "workouts": {
-    "title": "Workouts",
-    "library": "Workout Library",
-    "assigned": "Assigned Workouts",
-    "create": "Create Workout",
-    "assign": "Assign Workout",
-    "edit": "Edit Workout",
-    "delete": "Delete Workout",
-    "noWorkouts": "No workouts found",
-    "name": "Workout Name",
-    "description": "Description",
-    "duration": "Duration",
-    "difficulty": "Difficulty",
-    "category": "Category",
-    "exercises": "Exercises",
-    "addExercise": "Add Exercise",
-    "save": "Save Workout",
-    "cancel": "Cancel",
-    "success": {
-      "created": "Workout created successfully",
-      "updated": "Workout updated successfully",
-      "deleted": "Workout deleted successfully",
-      "assigned": "Workout assigned successfully"
-    },
-    "errors": {
-      "createFailed": "Failed to create workout",
-      "updateFailed": "Failed to update workout",
-      "deleteFailed": "Failed to delete workout",
-      "assignFailed": "Failed to assign workout"
-    }
+  "workoutLibrary": {
+    "title": "Workout Library",
+    "description": "Browse and manage your workout templates",
+    "noWorkouts": "No workouts found. Create your first workout to get started.",
+    "videoIndicator": "Video available",
+    "exerciseCount": "{{count}} exercises"
   },
-  "exercises": {
-    "title": "Exercises",
-    "library": "Exercise Library",
-    "create": "Create Exercise",
-    "edit": "Edit Exercise",
-    "delete": "Delete Exercise",
-    "name": "Exercise Name",
-    "description": "Description",
-    "muscleGroups": "Muscle Groups",
-    "equipment": "Equipment",
-    "instructions": "Instructions",
-    "videoUrl": "Video URL",
-    "difficulty": "Difficulty Level",
+  "exerciseLibrary": {
+    "title": "Exercise Library",
+    "description": "Browse and manage exercise demonstrations with videos",
+    "createExercise": "Create Exercise",
+    "noExercises": "No exercises found",
+    "filters": {
+      "all": "All",
+      "category": "Category",
+      "workoutType": "Workout Type",
+      "search": "Search exercises..."
+    },
+    "workoutTypes": {
+      "bodyweight": "Bodyweight",
+      "machine": "Machine",
+      "barbell": "Barbell",
+      "dumbbell": "Dumbbell",
+      "cable": "Cable",
+      "resistance_band": "Resistance Band",
+      "other": "Other"
+    },
     "categories": {
       "strength": "Strength",
       "cardio": "Cardio",
       "flexibility": "Flexibility",
-      "balance": "Balance"
-    }
-  },
-  "schedule": {
-    "title": "Schedule",
-    "today": "Today",
-    "week": "Week",
-    "month": "Month",
-    "noEvents": "No scheduled events",
-    "addEvent": "Add Event",
-    "eventDetails": "Event Details"
-  },
-  "progress": {
-    "title": "Progress",
-    "overview": "Overview",
-    "charts": "Progress Charts",
-    "stats": "Statistics",
-    "noData": "No progress data available",
-    "weight": "Weight",
-    "bodyFat": "Body Fat %",
-    "measurements": "Measurements",
-    "photos": "Progress Photos"
-  },
-  "profile": {
-    "title": "Profile",
-    "editProfile": "Edit Profile",
-    "personalInfo": "Personal Information",
-    "fullName": "Full Name",
-    "email": "Email",
-    "phone": "Phone",
-    "dateOfBirth": "Date of Birth",
-    "location": "Location",
-    "fitnessInfo": "Fitness Information",
-    "fitnessLevel": "Fitness Level",
-    "goals": "Goals",
-    "emergencyContact": "Emergency Contact",
-    "emergencyName": "Emergency Contact Name",
-    "emergencyPhone": "Emergency Contact Phone",
-    "save": "Save Changes",
-    "cancel": "Cancel",
-    "success": "Profile updated successfully",
-    "error": "Failed to update profile"
-  },
-  "settings": {
-    "title": "Settings",
-    "account": "Account Settings",
-    "notifications": "Notifications",
-    "privacy": "Privacy",
-    "language": "Language",
-    "theme": "Theme",
-    "light": "Light",
-    "dark": "Dark",
-    "system": "System",
-    "save": "Save Settings",
-    "success": "Settings saved successfully"
-  },
-  "goals": {
-    "title": "Goals",
-    "create": "Create Goal",
-    "edit": "Edit Goal",
-    "delete": "Delete Goal",
-    "name": "Goal Name",
-    "description": "Description",
-    "target": "Target",
-    "deadline": "Deadline",
-    "progress": "Progress",
-    "completed": "Completed",
-    "active": "Active",
-    "noGoals": "No goals set yet"
-  },
-  "achievements": {
-    "title": "Achievements",
-    "unlocked": "Unlocked",
-    "locked": "Locked",
-    "progress": "Progress",
-    "noAchievements": "No achievements yet"
-  },
-  "dietPlan": {
-    "title": "Diet Plan",
-    "meals": "Meals",
-    "breakfast": "Breakfast",
-    "lunch": "Lunch",
-    "dinner": "Dinner",
-    "snacks": "Snacks",
-    "calories": "Calories",
-    "protein": "Protein",
-    "carbs": "Carbs",
-    "fat": "Fat",
-    "water": "Water Intake",
-    "addMeal": "Add Meal",
-    "noPlan": "No diet plan available"
-  },
-  "pagination": {
-    "previousPage": "Go to previous page",
-    "nextPage": "Go to next page",
-    "previous": "Previous",
-    "next": "Next",
-    "pageLink": "Page",
-    "morePages": "More pages"
-  },
-  "statCard": {
-    "trend": {
-      "up": "Up",
-      "down": "Down",
-      "stale": "No change"
-    }
-  },
-  "invitationNotifications": {
-    "toast": {
-      "error": "Error loading invitations"
-    }
-  },
-  "aiChat": {
-    "initialMessage": "Hello! How can I help you today?",
-    "title": "AI Chat Assistant",
-    "placeholder": "Type your message...",
-    "sending": "Sending...",
-    "thinking": "Thinking...",
-    "connectionError": "Connection error",
-    "chatCleared": "Chat cleared",
-    "error": {
-      "serviceError": "Service error",
-      "invalidResponse": "Invalid response",
-      "unknown": "Unknown error",
-      "chatError": "Chat error",
-      "technicalDifficulties": "Technical difficulties"
+      "balance": "Balance",
+      "sports": "Sports"
     },
-    "toast": {
-      "responseReceived": "Response received",
-      "chatCleared": "Chat has been cleared"
+    "card": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "playVideo": "Play Video",
+      "noVideo": "No video available",
+      "duration": "{{minutes}} min",
+      "difficulty": "Difficulty: {{level}}/5"
     }
   },
-  "progressCharts": {
-    "noData": "No data available",
-    "title": "Progress Charts",
-    "mockDataWarning": "Showing sample data",
-    "workoutsCompleted": "Workouts Completed"
-  },
-  "carousel": {
-    "previousSlide": "Previous slide",
-    "nextSlide": "Next slide"
-  },
-  "workoutDetails": {
-    "exercises": {
-      "pushups": {
-        "name": "Push-ups"
-      },
-      "squats": {
-        "name": "Squats"
-      },
-      "plank": {
-        "name": "Plank"
-      }
-    }
-  },
-  "resendConfirmation": {
-    "checkEmail": "Check your email",
-    "confirmationLink": "We sent a confirmation link to {email}",
-    "checkSpam": "Please check your spam folder"
-  },
-  "common": {
-    "loading": "Loading...",
-    "error": "Error",
-    "success": "Success",
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "create": "Create",
-    "search": "Search",
-    "filter": "Filter",
-    "close": "Close",
-    "confirm": "Confirm",
-    "yes": "Yes",
-    "no": "No"
+  "assignedWorkouts": {
+    "title": "My Workouts",
+    "description": "View and track your assigned workouts",
+    "loading": "Loading workouts...",
+    "videoPreview": "Watch Videos",
+    "viewExercises": "View Exercises",
+    "startWorkout": "Start Workout"
   }
 }
