@@ -2,18 +2,20 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const StatCard = ({
-  title,
-  value,
-  icon: Icon,
-  description,
-  trend = null,
-}: {
+interface StatCardProps {
   title: string;
   value: string;
   icon: React.ComponentType<{ className?: string }>;
   description: string;
   trend?: { value: number; label: string } | null;
+}
+
+const StatCard = React.memo<StatCardProps>(({
+  title,
+  value,
+  icon: Icon,
+  description,
+  trend = null,
 }) => {
   const { t } = useLanguage();
   return (
@@ -44,7 +46,9 @@ const StatCard = ({
     </CardContent>
   </Card>
   );
-};
+});
+
+StatCard.displayName = "StatCard";
 
 export { StatCard };
 export default StatCard;

@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuthProvider";
 
@@ -6,9 +7,7 @@ export const useTrainerAthletes = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const { data: athletes, isLoading } = useQuery({
-    queryKey: ["trainer-athletes", user?.id],
-    queryFn: async () => {
+  const fetchAthletes = useCallback(async () => {
       if (!user) return [];
 
       const { data, error } = await supabase
@@ -23,7 +22,11 @@ export const useTrainerAthletes = () => {
 
       if (error) throw error;
       return data?.map((item) => item.profiles).filter(Boolean) || [];
-    },
+  }, [user]);
+
+  const { data: athletes, isLoading } = useQuery({
+    queryKey: ["trainer-athletes", user?.id],
+    queryFn: fetchAthletes,
     enabled: !!user,
   });
 

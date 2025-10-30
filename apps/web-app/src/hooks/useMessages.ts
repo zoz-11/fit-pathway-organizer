@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuthProvider";
 import { v4 as uuidv4 } from "uuid";
@@ -65,9 +66,7 @@ export const useMessages = (participantId?: string) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const { data: messages, isLoading } = useQuery({
-    queryKey: ["messages", user?.id, participantId],
-    queryFn: async () => {
+  const fetchMessages = useCallback(async () => {
       if (!user || !participantId) return [];
 
       // Use mock data if enabled
@@ -125,7 +124,11 @@ export const useMessages = (participantId?: string) => {
       );
       
       return decryptedMessages;
-    },
+  }, [user, participantId]);
+
+  const { data: messages, isLoading } = useQuery({
+    queryKey: ["messages", user?.id, participantId],
+    queryFn: fetchMessages,
     enabled: !!user && !!participantId,
   });
 

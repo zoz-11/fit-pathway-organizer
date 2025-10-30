@@ -1,11 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuthProvider";
 
 export const useScheduledWorkouts = (userId?: string) => {
-  return useQuery({
-    queryKey: ["scheduledWorkouts", userId],
-    queryFn: async () => {
+  const fetchScheduledWorkouts = useCallback(async () => {
       if (!userId) return [];
 
       const { data, error } = await supabase
@@ -28,7 +27,11 @@ export const useScheduledWorkouts = (userId?: string) => {
       }
 
       return data ?? [];
-    },
+  }, [userId]);
+
+  return useQuery({
+    queryKey: ["scheduledWorkouts", userId],
+    queryFn: fetchScheduledWorkouts,
     enabled: !!userId,
   });
 };
@@ -37,9 +40,7 @@ export const useWorkouts = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const { data: workouts, isLoading } = useQuery({
-    queryKey: ["workouts", user?.id],
-    queryFn: async () => {
+  const fetchWorkouts = useCallback(async () => {
       if (!user) return [];
 
       const { data, error } = await supabase
@@ -49,7 +50,11 @@ export const useWorkouts = () => {
 
       if (error) throw error;
       return data;
-    },
+  }, [user]);
+
+  const { data: workouts, isLoading } = useQuery({
+    queryKey: ["workouts", user?.id],
+    queryFn: fetchWorkouts,
     enabled: !!user,
   });
 
@@ -103,9 +108,7 @@ export const useWorkouts = () => {
 };
 
 export const useTodayWorkouts = (userId?: string) => {
-  return useQuery({
-    queryKey: ["workouts", "today", userId],
-    queryFn: async () => {
+  const fetchTodayWorkouts = useCallback(async () => {
       if (!userId) return [];
 
       const today = new Date().toISOString().split("T")[0];
@@ -131,7 +134,11 @@ export const useTodayWorkouts = (userId?: string) => {
       }
 
       return data ?? [];
-    },
+  }, [userId]);
+
+  return useQuery({
+    queryKey: ["workouts", "today", userId],
+    queryFn: fetchTodayWorkouts,
     enabled: !!userId,
   });
 };
