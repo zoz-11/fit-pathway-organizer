@@ -1,11 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { z } from "npm:zod@3.23.4";
-import {
-  initializeApp,
-  cert,
-} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-admin-app.js";
-import { getMessaging } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-admin-messaging.js";
+import { initializeApp, cert } from "npm:firebase-admin@12.0.0/app";
+import { getMessaging } from "npm:firebase-admin@12.0.0/messaging";
 
 // Initialize Firebase Admin SDK
 const firebaseAdminConfig = {
@@ -35,31 +32,12 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// Helper function for audit logging
-import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-
-// Helper function for audit logging
-async function logAudit(
-  supabaseClient: SupabaseClient,
-  userId: string | undefined,
-  action: string,
-  details: Record<string, unknown>,
-) {
-  try {
-    const { error } = await supabaseClient.from("audit_logs").insert([
-      {
-        user_id: userId,
-        action: action,
-        details: details,
-      },
-    ]);
-    if (error) {
-      console.error("Error inserting audit log:", error);
-    }
-  } catch (e) {
-    console.error("Exception while logging audit:", e);
-  }
-}
+import {
+  checkRateLimit,
+  logAudit,
+  logSecurityEvent,
+  sanitizeHtml,
+} from "../_shared/security-utils.ts";
 
 const SendPushNotificationSchema = z.object({
   userId: z.string().uuid(),
@@ -80,17 +58,76 @@ serve(async (req) => {
   );
 
   try {
+    // Get authenticated user
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      await logSecurityEvent(
+        supabaseClient,
+        undefined,
+        "push_notification_unauthorized",
+        { ipAddress: req.headers.get("x-forwarded-for") },
+        "medium",
+      );
+      return new Response(
+        JSON.stringify({ error: "Authorization required" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        },
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const {
+      data: { user },
+      error: userError,
+    } = await supabaseClient.auth.getUser(token);
+
+    if (userError || !user) {
+      await logSecurityEvent(
+        supabaseClient,
+        undefined,
+        "push_notification_invalid_token",
+        { ipAddress: req.headers.get("x-forwarded-for") },
+        "medium",
+      );
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication token" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        },
+      );
+    }
+
+    // Rate limiting check
+    if (checkRateLimit(user.id, 10)) {
+      await logSecurityEvent(
+        supabaseClient,
+        user.id,
+        "push_notification_rate_limit_exceeded",
+        { ipAddress: req.headers.get("x-forwarded-for") },
+        "medium",
+      );
+      return new Response(
+        JSON.stringify({ error: "Too Many Requests: Please try again later." }),
+        {
+          status: 429,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
     const requestBody = await req.json();
     const parsedRequest = SendPushNotificationSchema.safeParse(requestBody);
 
     if (!parsedRequest.success) {
       await logAudit(
         supabaseClient,
-        undefined,
-        "Send Push Notification Failed",
+        user.id,
+        "push_notification_validation_failed",
         {
-          reason: "Invalid request body",
-          details: parsedRequest.error.issues,
+          errors: parsedRequest.error.issues,
           ipAddress: req.headers.get("x-forwarded-for"),
         },
       );
@@ -107,6 +144,10 @@ serve(async (req) => {
     }
 
     const { userId, title, body, data } = parsedRequest.data;
+
+    // Sanitize title and body
+    const sanitizedTitle = sanitizeHtml(title);
+    const sanitizedBody = sanitizeHtml(body);
 
     // Fetch device tokens for the user
     const { data: deviceTokens, error: fetchError } = await supabaseClient
@@ -152,7 +193,7 @@ serve(async (req) => {
     const tokens = deviceTokens.map((dt) => dt.token);
 
     const messages = tokens.map((token) => ({
-      notification: { title, body },
+      notification: { title: sanitizedTitle, body: sanitizedBody },
       data: data,
       token: token,
     }));
@@ -200,9 +241,10 @@ serve(async (req) => {
       );
     }
 
-    await logAudit(supabaseClient, userId, "Push Notification Sent", {
+    await logAudit(supabaseClient, user.id, "push_notification_sent", {
       targetUserId: userId,
-      title: title,
+      title: sanitizedTitle,
+      successCount,
       ipAddress: req.headers.get("x-forwarded-for"),
     });
 
@@ -215,10 +257,6 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error("Error in send-push-notification function:", error);
-    await logAudit(supabaseClient, undefined, "Send Push Notification Failed", {
-      error: (error as Error).message,
-      ipAddress: req.headers.get("x-forwarded-for"),
-    });
     return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 500,
       headers: { "Content-Type": "application/json", ...corsHeaders },
