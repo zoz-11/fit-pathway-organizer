@@ -20,7 +20,7 @@ interface AthleteProfile {
 interface Workout {
   id: string;
   title: string;
-  status: string;
+  status: string | null;
   scheduled_date: string;
 }
 

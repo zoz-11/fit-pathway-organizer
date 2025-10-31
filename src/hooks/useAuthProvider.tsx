@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw error;
       }
       window.location.href = '/auth';
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error signing out:', error);
       handleApiError(error, 'Failed to sign out.');
     }

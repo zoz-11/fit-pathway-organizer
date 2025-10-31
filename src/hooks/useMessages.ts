@@ -98,7 +98,11 @@ export const useMessages = (participantId?: string) => {
   });
 
   const sendMessage = useMutation({
-    mutationFn: async ({ recipientId, content }: { recipientId: string; content: string }) => {
+    mutationFn: async ({ recipientId, content, encryptedMetadata }: { 
+      recipientId: string; 
+      content: string;
+      encryptedMetadata?: any;
+    }) => {
       if (!user) throw new Error("User not authenticated");
 
       // Use mock data if enabled

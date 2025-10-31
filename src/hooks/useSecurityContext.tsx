@@ -39,7 +39,7 @@ export const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setIsSecureSession(secure);
       
       if (user?.id) {
-        auditLogger.log('session_status_check', {
+        auditLogger.logSecurityEvent('session_status_check', {
           userId: user.id,
           sessionAge,
           expiringBool: isExpiringSoon,
@@ -52,7 +52,7 @@ export const SecurityProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [session, user]);
 
   const logSecurityEvent = useCallback((event: string, details?: Record<string, unknown>) => {
-    auditLogger.log(event, details);
+    auditLogger.logSecurityEvent(event, details);
   }, []);
 
   const refreshSecurityStatus = useCallback(() => {

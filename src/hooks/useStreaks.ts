@@ -38,7 +38,7 @@ export const useStreaks = () => {
       // Filter out null updated_at and convert to Date objects
       const dates = completedWorkouts
         .filter(w => w.updated_at !== null)
-        .map(w => new Date(w.updated_at))
+        .map(w => new Date(w.updated_at!))
         .sort((a, b) => b.getTime() - a.getTime()); // Sort descending
 
       let currentStreak = 0;
