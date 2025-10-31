@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
@@ -7,20 +8,17 @@ import { z } from "npm:zod@3.23.4";
 import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 // Helper function for audit logging
-async function logAudit(
-  supabaseClient: SupabaseClient,
-  userId: string | undefined,
-  action: string,
-  details: Record<string, unknown>,
-) {
+async function logAudit(supabaseClient: SupabaseClient, userId: string | undefined, action: string, details: Record<string, unknown>) {
   try {
-    const { error } = await supabaseClient.from("audit_logs").insert([
-      {
-        user_id: userId,
-        action: action,
-        details: details,
-      },
-    ]);
+    const { error } = await supabaseClient
+      .from('audit_logs')
+      .insert([
+        {
+          user_id: userId,
+          action: action,
+          details: details,
+        },
+      ]);
     if (error) {
       console.error("Error inserting audit log:", error);
     }
@@ -31,16 +29,11 @@ async function logAudit(
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 const CreateSubscriptionSchema = z.object({
-  planType: z.union([
-    z.literal("basic"),
-    z.literal("premium"),
-    z.literal("enterprise"),
-  ]),
+  planType: z.union([z.literal("basic"), z.literal("premium"), z.literal("enterprise")]),
 });
 
 serve(async (req) => {
@@ -50,7 +43,7 @@ serve(async (req) => {
 
   const supabaseClient = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
   );
 
   try {
@@ -59,51 +52,32 @@ serve(async (req) => {
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
     if (!user?.email) {
-      await logAudit(
-        supabaseClient,
-        undefined,
-        "Subscription Creation Failed",
-        {
-          reason: "Unauthorized: No user email",
-          ipAddress: req.headers.get("x-forwarded-for"),
-        },
-      );
+      await logAudit(supabaseClient, undefined, 'Subscription Creation Failed', { reason: 'Unauthorized: No user email', ipAddress: req.headers.get('x-forwarded-for') });
       throw new Error("User not authenticated");
     }
 
-    await logAudit(supabaseClient, user.id, "Subscription Creation Attempt", {
-      email: user.email,
-      ipAddress: req.headers.get("x-forwarded-for"),
-    });
+    await logAudit(supabaseClient, user.id, 'Subscription Creation Attempt', { email: user.email, ipAddress: req.headers.get('x-forwarded-for') });
 
     let planType: "basic" | "premium" | "enterprise";
     try {
-      const parsedBody = await CreateSubscriptionSchema.parseAsync(
-        await req.json(),
-      );
+      const parsedBody = await CreateSubscriptionSchema.parseAsync(await req.json());
       planType = parsedBody.planType;
     } catch (error) {
       return new Response(
-        JSON.stringify({
-          error: "Invalid request body",
-          details: error.issues,
-        }),
+        JSON.stringify({ error: 'Invalid request body', details: error.issues }),
         {
           status: 400,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        },
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        }
       );
     }
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2023-10-16",
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
+      apiVersion: "2023-10-16" 
     });
 
     // Check for existing customer
-    const customers = await stripe.customers.list({
-      email: user.email,
-      limit: 1,
-    });
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
@@ -113,7 +87,7 @@ serve(async (req) => {
     const plans = {
       basic: { amount: 999, name: "Basic Plan" }, // $9.99
       premium: { amount: 1999, name: "Premium Plan" }, // $19.99
-      enterprise: { amount: 4999, name: "Enterprise Plan" }, // $49.99
+      enterprise: { amount: 4999, name: "Enterprise Plan" } // $49.99
     };
 
     const selectedPlan = plans[planType as keyof typeof plans];
@@ -138,23 +112,14 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/subscription-cancel`,
     });
 
-    await logAudit(
-      supabaseClient,
-      user.id,
-      "Subscription Checkout Session Created",
-      { email: user.email, planType: planType, sessionId: session.id },
-    );
+    await logAudit(supabaseClient, user.id, 'Subscription Checkout Session Created', { email: user.email, planType: planType, sessionId: session.id });
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
     console.error("Error creating subscription:", error);
-    await logAudit(supabaseClient, user?.id, "Subscription Creation Failed", {
-      error: error.message,
-      email: user?.email,
-      planType: planType,
-    });
+    await logAudit(supabaseClient, user?.id, 'Subscription Creation Failed', { error: error.message, email: user?.email, planType: planType });
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

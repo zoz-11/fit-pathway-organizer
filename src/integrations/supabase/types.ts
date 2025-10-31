@@ -38,33 +38,6 @@ export type Database = {
         }
         Relationships: []
       }
-      audit_logs_archive: {
-        Row: {
-          action: string
-          archived_at: string | null
-          created_at: string
-          details: Json | null
-          id: string
-          user_id: string | null
-        }
-        Insert: {
-          action: string
-          archived_at?: string | null
-          created_at: string
-          details?: Json | null
-          id: string
-          user_id?: string | null
-        }
-        Update: {
-          action?: string
-          archived_at?: string | null
-          created_at?: string
-          details?: Json | null
-          id?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       exercise_completions: {
         Row: {
           athlete_id: string
@@ -193,7 +166,6 @@ export type Database = {
           content: string
           created_at: string | null
           encrypted_metadata: Json | null
-          encryption_version: number | null
           id: string
           is_read: boolean | null
           recipient_id: string
@@ -203,7 +175,6 @@ export type Database = {
           content: string
           created_at?: string | null
           encrypted_metadata?: Json | null
-          encryption_version?: number | null
           id?: string
           is_read?: boolean | null
           recipient_id: string
@@ -213,7 +184,6 @@ export type Database = {
           content?: string
           created_at?: string | null
           encrypted_metadata?: Json | null
-          encryption_version?: number | null
           id?: string
           is_read?: boolean | null
           recipient_id?: string
@@ -251,7 +221,7 @@ export type Database = {
           join_date: string | null
           location: string | null
           phone: string | null
-          role: string | null
+          role: Database["public"]["Enums"]["user_role"]
           subscription_expiry: string | null
           subscription_status:
             | Database["public"]["Enums"]["subscription_status"]
@@ -273,7 +243,7 @@ export type Database = {
           join_date?: string | null
           location?: string | null
           phone?: string | null
-          role?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           subscription_expiry?: string | null
           subscription_status?:
             | Database["public"]["Enums"]["subscription_status"]
@@ -295,7 +265,7 @@ export type Database = {
           join_date?: string | null
           location?: string | null
           phone?: string | null
-          role?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
           subscription_expiry?: string | null
           subscription_status?:
             | Database["public"]["Enums"]["subscription_status"]
@@ -355,33 +325,6 @@ export type Database = {
           },
         ]
       }
-      user_encryption_keys: {
-        Row: {
-          created_at: string
-          id: string
-          key_version: number
-          salt: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          key_version?: number
-          salt: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          key_version?: number
-          salt?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       user_roles: {
         Row: {
           created_at: string
@@ -402,39 +345,6 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      user_sensitive_data: {
-        Row: {
-          created_at: string | null
-          date_of_birth: string | null
-          emergency_contact_name: string | null
-          emergency_contact_phone: string | null
-          id: string
-          phone: string | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          date_of_birth?: string | null
-          emergency_contact_name?: string | null
-          emergency_contact_phone?: string | null
-          id?: string
-          phone?: string | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          date_of_birth?: string | null
-          emergency_contact_name?: string | null
-          emergency_contact_phone?: string | null
-          id?: string
-          phone?: string | null
-          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -558,8 +468,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      archive_old_audit_logs: { Args: never; Returns: number }
-      get_current_user_role: { Args: never; Returns: string }
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_user_primary_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -571,8 +483,14 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_admin: { Args: { user_id?: string }; Returns: boolean }
-      user_owns_profile: { Args: { profile_id: string }; Returns: boolean }
+      is_admin: {
+        Args: { user_id?: string }
+        Returns: boolean
+      }
+      user_owns_profile: {
+        Args: { profile_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "trainer" | "athlete"

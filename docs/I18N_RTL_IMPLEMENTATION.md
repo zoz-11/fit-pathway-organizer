@@ -5,7 +5,6 @@ This document describes the RTL/LTR text direction implementation for the Fit Pa
 ## Overview
 
 The application supports multiple languages with proper text directionality:
-
 - **Arabic (ar)**: Right-to-Left (RTL) direction
 - **English (en)**: Left-to-Right (LTR) direction
 
@@ -16,20 +15,16 @@ The application supports multiple languages with proper text directionality:
 The core RTL/LTR enforcement logic is implemented in `src/contexts/LanguageContext.tsx` within the `LanguageProvider` component's `useEffect` hook (lines 494-502).
 
 #### RTL Direction for Arabic
-
 When Arabic is selected (`language === 'ar'`):
-
 ```typescript
-if (language === "ar") {
-  document.documentElement.dir = "rtl";
-  document.documentElement.lang = "ar";
+if (language === 'ar') {
+  document.documentElement.dir = 'rtl';
+  document.documentElement.lang = 'ar';
 }
 ```
 
 #### LTR Direction for English
-
 For all other languages (currently English):
-
 ```typescript
 else {
   document.documentElement.dir = 'ltr';
@@ -40,7 +35,6 @@ else {
 ### Global Application
 
 The directionality is applied globally through:
-
 1. **App.tsx**: Wraps the entire application with `<LanguageProvider>`
 2. **DOM Level**: Sets `dir` attribute on the root `<html>` element
 3. **Automatic**: All components automatically inherit the text direction
@@ -59,7 +53,6 @@ The Settings page (`src/pages/Settings.tsx`) provides a language selector that a
 ## Testing
 
 To test RTL/LTR enforcement:
-
 1. Navigate to Settings page
 2. Change language to Arabic → UI should display RTL
 3. Change language to English → UI should display LTR

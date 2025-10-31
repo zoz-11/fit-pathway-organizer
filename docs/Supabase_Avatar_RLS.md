@@ -40,8 +40,8 @@ RLS should be enabled by default on storage buckets, but you can verify:
 
 ```sql
 -- Verify RLS is enabled on storage.objects
-SELECT tablename, rowsecurity
-FROM pg_tables
+SELECT tablename, rowsecurity 
+FROM pg_tables 
 WHERE schemaname = 'storage' AND tablename = 'objects';
 ```
 
@@ -116,7 +116,6 @@ avatars/{user_id}/profile-pic.png
 ```
 
 For example:
-
 ```
 avatars/550e8400-e29b-41d4-a716-446655440000/avatar.jpg
 ```
@@ -162,13 +161,13 @@ WITH CHECK (
 ```javascript
 // Example: Upload avatar using Supabase JS client
 const { data, error } = await supabase.storage
-  .from("avatars")
+  .from('avatars')
   .upload(`${user.id}/avatar.jpg`, file);
 
 if (error) {
-  console.error("Upload failed:", error);
+  console.error('Upload failed:', error);
 } else {
-  console.log("Upload successful:", data);
+  console.log('Upload successful:', data);
 }
 ```
 
@@ -177,10 +176,10 @@ if (error) {
 ```javascript
 // Get public URL for an avatar
 const { data } = supabase.storage
-  .from("avatars")
+  .from('avatars')
   .getPublicUrl(`${userId}/avatar.jpg`);
 
-console.log("Public URL:", data.publicUrl);
+console.log('Public URL:', data.publicUrl);
 ```
 
 ## Troubleshooting

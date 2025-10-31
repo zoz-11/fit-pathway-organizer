@@ -34,10 +34,10 @@ For deployments using Supabase Edge Functions:
 **Accessing in Edge Functions:**
 
 ```typescript
-const apiKey = Deno.env.get("OPENROUTER_API_KEY");
+const apiKey = Deno.env.get('OPENROUTER_API_KEY');
 
 if (!apiKey) {
-  throw new Error("OPENROUTER_API_KEY is not configured");
+  throw new Error('OPENROUTER_API_KEY is not configured');
 }
 ```
 
@@ -84,12 +84,10 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ### Production Environment
 
 **Supabase Edge Functions:**
-
 - Configure via Supabase Dashboard → Edge Functions → Environment Variables
 - Variables are automatically available via `Deno.env.get()`
 
 **Other Hosting Platforms:**
-
 - **Vercel**: Project Settings → Environment Variables
 - **Netlify**: Site Settings → Environment Variables
 - **Railway**: Project → Variables
@@ -102,8 +100,8 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 If using Express.js for your backend:
 
 ```typescript
-import express from "express";
-import dotenv from "dotenv";
+import express from 'express';
+import dotenv from 'dotenv';
 
 // Load environment variables
 dotenv.config();
@@ -117,13 +115,13 @@ app.use((req, res, next) => {
 });
 
 // Route handler
-app.post("/api/generate", async (req, res) => {
+app.post('/api/generate', async (req, res) => {
   const apiKey = req.apiKey;
-
+  
   if (!apiKey) {
-    return res.status(500).json({ error: "API key not configured" });
+    return res.status(500).json({ error: 'API key not configured' });
   }
-
+  
   // Use apiKey for OpenRouter API calls
   // ...
 });
@@ -132,40 +130,35 @@ app.post("/api/generate", async (req, res) => {
 ### Supabase Edge Functions Example
 
 ```typescript
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
 serve(async (req) => {
   // Retrieve API key from environment
-  const apiKey = Deno.env.get("OPENROUTER_API_KEY");
-
+  const apiKey = Deno.env.get('OPENROUTER_API_KEY');
+  
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: "API key not configured" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: 'API key not configured' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
-
+  
   // Make API call to OpenRouter
-  const response = await fetch(
-    "https://openrouter.ai/api/v1/chat/completions",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "anthropic/claude-3-sonnet",
-        messages: [
-          /* ... */
-        ],
-      }),
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
     },
-  );
-
+    body: JSON.stringify({
+      model: 'anthropic/claude-3-sonnet',
+      messages: [/* ... */],
+    }),
+  });
+  
   const data = await response.json();
   return new Response(JSON.stringify(data), {
-    headers: { "Content-Type": "application/json" },
+    headers: { 'Content-Type': 'application/json' },
   });
 });
 ```
@@ -177,14 +170,12 @@ Create a reusable validation function:
 ```typescript
 // utils/validateEnv.ts
 export function validateEnvironment() {
-  const required = ["OPENROUTER_API_KEY", "SUPABASE_URL", "SUPABASE_ANON_KEY"];
-
-  const missing = required.filter((key) => !process.env[key]);
-
+  const required = ['OPENROUTER_API_KEY', 'SUPABASE_URL', 'SUPABASE_ANON_KEY'];
+  
+  const missing = required.filter(key => !process.env[key]);
+  
   if (missing.length > 0) {
-    throw new Error(
-      `Missing required environment variables: ${missing.join(", ")}`,
-    );
+    throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
   }
 }
 
@@ -197,22 +188,20 @@ validateEnvironment();
 ### 1. Never Expose API Keys to Frontend
 
 ❌ **Bad Practice:**
-
 ```typescript
 // Frontend code - NEVER do this!
-const apiKey = "sk-or-v1-...";
-fetch("https://openrouter.ai/api/v1/chat/completions", {
-  headers: { Authorization: `Bearer ${apiKey}` },
+const apiKey = 'sk-or-v1-...';
+fetch('https://openrouter.ai/api/v1/chat/completions', {
+  headers: { 'Authorization': `Bearer ${apiKey}` }
 });
 ```
 
 ✅ **Good Practice:**
-
 ```typescript
 // Frontend code - call your own backend
-fetch("/api/generate", {
-  method: "POST",
-  body: JSON.stringify({ prompt: "Generate pathway..." }),
+fetch('/api/generate', {
+  method: 'POST',
+  body: JSON.stringify({ prompt: 'Generate pathway...' })
 });
 
 // Backend handles API key
@@ -227,15 +216,15 @@ fetch("/api/generate", {
 ### 3. Implement Rate Limiting
 
 ```typescript
-import rateLimit from "express-rate-limit";
+import rateLimit from 'express-rate-limit';
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
-  message: "Too many requests from this IP",
+  message: 'Too many requests from this IP'
 });
 
-app.use("/api/", limiter);
+app.use('/api/', limiter);
 ```
 
 ### 4. Monitor API Usage
@@ -265,7 +254,6 @@ secrets.json
 ### 6. Use Secrets Management for Team Collaboration
 
 For teams:
-
 - **1Password**: Share secrets via secure vaults
 - **AWS Secrets Manager**: For AWS deployments
 - **HashiCorp Vault**: For enterprise solutions
@@ -292,17 +280,14 @@ For teams:
 **Symptoms:** Application throws error about missing OPENROUTER_API_KEY
 
 **Solutions:**
-
 1. Verify the environment variable is set:
-
    ```bash
    # Development
    echo $OPENROUTER_API_KEY
-
+   
    # In Node.js
    console.log(process.env.OPENROUTER_API_KEY);
    ```
-
 2. Check `.env` file exists and contains the key
 3. Restart your development server after adding the key
 4. For Supabase: Verify the secret is set in the dashboard and redeploy Edge Functions
@@ -312,7 +297,6 @@ For teams:
 **Symptoms:** API returns 401 Unauthorized
 
 **Solutions:**
-
 1. Verify the key is valid in your OpenRouter dashboard
 2. Check for extra spaces or newlines in the key
 3. Ensure the key hasn't expired or been revoked
@@ -323,7 +307,6 @@ For teams:
 **Symptoms:** Works locally but fails in production
 
 **Solutions:**
-
 1. Verify environment variables are set in your hosting platform
 2. Check for typos in variable names (they're case-sensitive)
 3. Redeploy after setting environment variables
@@ -334,11 +317,10 @@ For teams:
 **Symptoms:** Environment variables are undefined
 
 **Solutions:**
-
 1. Ensure `dotenv` is installed: `npm install dotenv`
 2. Load dotenv at the top of your entry file:
    ```typescript
-   import dotenv from "dotenv";
+   import dotenv from 'dotenv';
    dotenv.config();
    ```
 3. Verify `.env` is in the correct directory (project root)

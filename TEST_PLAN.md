@@ -3,7 +3,6 @@
 ## 🧪 Test Categories
 
 ### 1. **Authentication Tests**
-
 - [ ] User registration (Trainer role)
 - [ ] User registration (Athlete role)
 - [ ] Login with valid credentials
@@ -14,7 +13,6 @@
 - [ ] Role-based access control
 
 ### 2. **Profile Management Tests**
-
 - [ ] Update profile information
 - [ ] Upload profile picture
 - [ ] Change fitness level
@@ -23,7 +21,6 @@
 - [ ] Subscription status display
 
 ### 3. **Trainer-Athlete Relationship Tests**
-
 - [ ] Trainer invites athlete
 - [ ] Athlete accepts invitation
 - [ ] Athlete rejects invitation
@@ -32,7 +29,6 @@
 - [ ] View assigned trainer (Athlete)
 
 ### 4. **Workout Management Tests**
-
 - [ ] Create new workout (Trainer)
 - [ ] Edit existing workout
 - [ ] Delete workout
@@ -43,7 +39,6 @@
 - [ ] View workout history
 
 ### 5. **Exercise Library Tests**
-
 - [ ] Browse public exercises
 - [ ] Search exercises by category
 - [ ] Filter by muscle group
@@ -54,7 +49,6 @@
 - [ ] Delete custom exercise
 
 ### 6. **AI Chat Assistant Tests**
-
 - [ ] Send message to AI
 - [ ] Receive AI response
 - [ ] Handle rate limiting gracefully
@@ -65,7 +59,6 @@
 - [ ] Show error messages
 
 ### 7. **Progress Tracking Tests**
-
 - [ ] View progress charts
 - [ ] Filter by date range
 - [ ] Export progress data
@@ -74,7 +67,6 @@
 - [ ] Progress comparison
 
 ### 8. **Messaging System Tests**
-
 - [ ] Send message to trainer/athlete
 - [ ] Receive messages
 - [ ] Mark messages as read
@@ -83,7 +75,6 @@
 - [ ] Message notifications
 
 ### 9. **Diet Plan Tests**
-
 - [ ] View assigned diet plan
 - [ ] Create diet plan (Trainer)
 - [ ] Edit diet plan
@@ -91,7 +82,6 @@
 - [ ] Nutrition calculator
 
 ### 10. **Schedule Management Tests**
-
 - [ ] View workout calendar
 - [ ] Reschedule workout
 - [ ] Set recurring workouts
@@ -99,7 +89,6 @@
 - [ ] Reminder notifications
 
 ### 11. **Subscription Tests**
-
 - [ ] View subscription status
 - [ ] Upgrade subscription
 - [ ] Cancel subscription
@@ -107,7 +96,6 @@
 - [ ] Payment processing
 
 ### 12. **Security Tests**
-
 - [ ] Session timeout
 - [ ] Concurrent session handling
 - [ ] XSS prevention
@@ -117,7 +105,6 @@
 - [ ] Audit log generation
 
 ### 13. **Performance Tests**
-
 - [ ] Page load times < 3s
 - [ ] API response times < 1s
 - [ ] Handle 100+ workouts
@@ -126,7 +113,6 @@
 - [ ] Image optimization
 
 ### 14. **Mobile Responsiveness Tests**
-
 - [ ] iPhone SE (375px)
 - [ ] iPhone 12 (390px)
 - [ ] iPad (768px)
@@ -136,7 +122,6 @@
 - [ ] Gesture support
 
 ### 15. **Accessibility Tests**
-
 - [ ] Keyboard navigation
 - [ ] Screen reader compatibility
 - [ ] Color contrast (WCAG AA)
@@ -148,9 +133,7 @@
 ## 🔧 Test Environment Setup
 
 ### Prerequisites:
-
 1. **Supabase Local Development**
-
    ```bash
    supabase start
    supabase db reset
@@ -158,7 +141,6 @@
    ```
 
 2. **Environment Variables**
-
    ```bash
    # .env.local
    VITE_SUPABASE_URL=http://localhost:54321
@@ -176,25 +158,21 @@
 ## 🚀 Automated Test Commands
 
 ### Unit Tests:
-
 ```bash
 npm run test
 ```
 
 ### Integration Tests:
-
 ```bash
 npm run test:integration
 ```
 
 ### E2E Tests:
-
 ```bash
 npm run test:e2e
 ```
 
 ### All Tests:
-
 ```bash
 npm run test:all
 ```
@@ -202,13 +180,11 @@ npm run test:all
 ## 📊 Test Reporting
 
 ### Coverage Requirements:
-
 - Unit Tests: 80% coverage
 - Integration Tests: 70% coverage
 - E2E Tests: Critical paths only
 
 ### Reporting Tools:
-
 - Jest for unit tests
 - Cypress for E2E tests
 - Coverage reports in `/coverage`
@@ -216,7 +192,6 @@ npm run test:all
 ## 🐛 Bug Reporting Template
 
 ### When you find a bug:
-
 1. **Title**: Clear, concise description
 2. **Steps to Reproduce**:
    - Step 1
@@ -247,7 +222,6 @@ npm run test:all
 ## 🔍 Manual Testing Guide
 
 ### 1. **New User Journey**
-
 1. Land on homepage
 2. Click "Get Started"
 3. Choose role (Trainer/Athlete)
@@ -257,7 +231,6 @@ npm run test:all
 7. Explore dashboard
 
 ### 2. **Trainer Workflow**
-
 1. Login as trainer
 2. Add new athlete
 3. Create workout plan
@@ -267,7 +240,6 @@ npm run test:all
 7. View analytics
 
 ### 3. **Athlete Workflow**
-
 1. Login as athlete
 2. View assigned workouts
 3. Complete workout
@@ -277,7 +249,6 @@ npm run test:all
 7. Update goals
 
 ### 4. **AI Coach Interaction**
-
 1. Open AI chat
 2. Ask about form
 3. Request workout advice
@@ -289,7 +260,6 @@ npm run test:all
 ## 🎯 Critical User Paths
 
 These MUST work perfectly:
-
 1. **Registration → Login → Dashboard**
 2. **Create Workout → Assign → Complete**
 3. **Send Message → Receive → Reply**

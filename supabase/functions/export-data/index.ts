@@ -1,31 +1,28 @@
+
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { z } from "npm:zod@3.23.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 // Helper function for audit logging
 import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 // Helper function for audit logging
-async function logAudit(
-  supabaseClient: SupabaseClient,
-  userId: string | undefined,
-  action: string,
-  details: Record<string, unknown>,
-) {
+async function logAudit(supabaseClient: SupabaseClient, userId: string | undefined, action: string, details: Record<string, unknown>) {
   try {
-    const { error } = await supabaseClient.from("audit_logs").insert([
-      {
-        user_id: userId,
-        action: action,
-        details: details,
-      },
-    ]);
+    const { error } = await supabaseClient
+      .from('audit_logs')
+      .insert([
+        {
+          user_id: userId,
+          action: action,
+          details: details,
+        },
+      ]);
     if (error) {
       console.error("Error inserting audit log:", error);
     }
@@ -42,49 +39,41 @@ serve(async (req) => {
   const supabaseClient = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "", // Use service role key for backend operations
-    { auth: { persistSession: false } },
+    { auth: { persistSession: false } }
   );
 
   try {
-    const {
-      data: { user },
-    } = await supabaseClient.auth.getUser();
+    const { data: { user } } = await supabaseClient.auth.getUser();
     if (!user) {
-      await logAudit(supabaseClient, undefined, "Data Export Failed", {
-        reason: "Unauthorized: No active session",
-        ipAddress: req.headers.get("x-forwarded-for"),
+      await logAudit(supabaseClient, undefined, 'Data Export Failed', { reason: 'Unauthorized: No active session', ipAddress: req.headers.get('x-forwarded-for') });
+      return new Response(JSON.stringify({ error: 'Unauthorized: No active session' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
-      return new Response(
-        JSON.stringify({ error: "Unauthorized: No active session" }),
-        {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
     }
 
     const userId = user.id;
 
     // Fetch user profile
     const { data: profile, error: profileError } = await supabaseClient
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
       .single();
     if (profileError) throw profileError;
 
     // Fetch user goals
     const { data: goals, error: goalsError } = await supabaseClient
-      .from("goals")
-      .select("*")
-      .eq("user_id", userId);
+      .from('goals')
+      .select('*')
+      .eq('user_id', userId);
     if (goalsError) throw goalsError;
 
     // Fetch user workout assignments
     const { data: workoutAssignments, error: waError } = await supabaseClient
-      .from("workout_assignments")
-      .select("*, workout:workouts(*)")
-      .eq("athlete_id", userId);
+      .from('workout_assignments')
+      .select('*, workout:workouts(*)')
+      .eq('athlete_id', userId);
     if (waError) throw waError;
 
     const exportData = {
@@ -93,9 +82,7 @@ serve(async (req) => {
       workoutAssignments,
     };
 
-    await logAudit(supabaseClient, userId, "Data Export Success", {
-      ipAddress: req.headers.get("x-forwarded-for"),
-    });
+    await logAudit(supabaseClient, userId, 'Data Export Success', { ipAddress: req.headers.get('x-forwarded-for') });
 
     return new Response(JSON.stringify(exportData, null, 2), {
       status: 200,
@@ -107,13 +94,10 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Error in export-data function:", error);
-    await logAudit(supabaseClient, undefined, "Data Export Failed", {
-      error: (error as Error).message,
-      ipAddress: req.headers.get("x-forwarded-for"),
-    });
+    await logAudit(supabaseClient, undefined, 'Data Export Failed', { error: (error as Error).message, ipAddress: req.headers.get('x-forwarded-for') });
     return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 500,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   }
 });

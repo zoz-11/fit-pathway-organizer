@@ -10,7 +10,6 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-apps/web-app/dist
 *.local
 
 # Environment files
@@ -22,7 +21,8 @@ apps/web-app/dist
 .env*.local
 
 # Sensitive files
-# (Note: package.json and tsconfig.json should NOT be ignored)
+*.json
+sonner.tsx
 
 # Security files
 *.pem
