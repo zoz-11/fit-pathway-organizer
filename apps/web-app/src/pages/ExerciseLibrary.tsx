@@ -183,7 +183,12 @@ const ExerciseLibrary = () => {
               <DialogTitle>{t("exerciseLibrary.card.playVideo")}</DialogTitle>
             </DialogHeader>
             {selectedVideoUrl && (
-              <VideoPlayer url={selectedVideoUrl} />
+              <VideoPlayer
+                videoUrl={selectedVideoUrl}
+                title={t("exerciseLibrary.card.playVideo")}
+                isOpen={videoModalOpen}
+                onClose={() => setVideoModalOpen(false)}
+              />
             )}
           </DialogContent>
         </Dialog>

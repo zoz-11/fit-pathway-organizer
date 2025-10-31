@@ -96,7 +96,7 @@ const Profile = () => {
           avatar_url: data.publicUrl,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", profile?.id);
+        .eq("id", profile?.id || "");
 
       if (updateError) throw updateError;
 

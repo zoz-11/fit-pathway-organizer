@@ -138,7 +138,7 @@ export const SubscriptionManager = () => {
             <div className="flex items-center">
               <Check className="h-4 w-4 text-green-600 me-2 flex-shrink-0" />
               <span className="text-green-800 text-sm">
-                {t("subscriptionManager.subscribedMessage", { plan: subscriptionStatus.plan })}
+                {t("subscriptionManager.subscribedMessage", { plan: subscriptionStatus.plan || "Premium" })}
               </span>
             </div>
           </div>

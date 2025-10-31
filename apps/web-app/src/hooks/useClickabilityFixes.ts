@@ -23,7 +23,7 @@ export const useClickabilityFixes = () => {
         }
         
         // Add keyboard event handlers
-        card.addEventListener('keydown', (e) => {
+        card.addEventListener('keydown', (e: KeyboardEvent) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             (card as HTMLElement).click();

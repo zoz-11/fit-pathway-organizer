@@ -44,6 +44,8 @@ export const useTrainerAthletes = () => {
       }
 
       // 2. Create an invitation record.
+      if (!user) throw new Error("User not authenticated");
+      
       const { error: insertError } = await supabase
         .from("trainer_athletes")
         .insert([
@@ -82,6 +84,8 @@ export const useTrainerAthletes = () => {
 
   const removeAthlete = useMutation({
     mutationFn: async (athleteId: string) => {
+      if (!user) throw new Error("User not authenticated");
+      
       const { error } = await supabase
         .from("trainer_athletes")
         .delete()
